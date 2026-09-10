@@ -71,11 +71,7 @@
                   </template>
                 </q-input>
 
-                <q-btn
-                  type="submit"
-                  class="btn-login"
-                  unelevated
-                >
+                <q-btn type="submit" class="btn-login" unelevated>
                   <span class="btn-login-label">LOGIN</span>
                   <span class="btn-login-arrow">
                     <q-icon name="arrow_forward" />
