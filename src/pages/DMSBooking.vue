@@ -12,7 +12,9 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="local_shipping" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{ filteredBookings.length }}</span>
+                <span class="total-stat-count">{{
+                  filteredBookings.length
+                }}</span>
                 <span class="total-stat-label">Total Bookings</span>
               </div>
             </div>
@@ -31,8 +33,8 @@
             :visible-columns="visibleColumns"
             :rows-per-page-options="[15, 25, 50, 100]"
             v-model:pagination="pagination"
-            table-class="text-black m-table-style"
-            table-header-class="text-black m-table-style"
+            table-class="text-white-8 m-table-style"
+            table-header-class="text-black"
             card-class="text-black"
             :grid="$q.screen.lt.sm"
           >
@@ -141,7 +143,9 @@
 
                   <q-btn
                     flat
-                    :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                    :icon="
+                      props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'
+                    "
                     @click="props.toggleFullscreen"
                     class="m-icon-btn-style radius-md bg-blue-300 bdr-blue-2 font-Mblue"
                   />
@@ -162,7 +166,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md"
+                >Page {{ pagination.page }} of {{ maxPages }}</span
+              >
             </template>
 
             <!-- ── Desktop column slots ── -->
@@ -197,7 +203,7 @@
             </template>
 
             <template v-slot:body-cell-action="props">
-              <q-td :props="props" class="button-container booking-action-td">
+              <q-td :props="props" class="button-container">
                 <q-btn
                   icon="fa-solid fa-eye"
                   color="primary"
@@ -220,81 +226,113 @@
               </q-td>
             </template>
 
-            <!-- ── Mobile card (grid mode) ── -->
+            <!-- ── Mobile card (grid mode) — reuses the global
+                 .mobile-job-card/.mjc-* pattern (cn-style.css) already
+                 established by JobDetailsGrid.vue's own mobile card list,
+                 instead of this page's own former .dms-mobile-card
+                 markup/classes. ── -->
             <template v-slot:item="props">
-              <div class="dms-mobile-card">
-                <!-- Header row: Booking No + Status -->
-                <div class="dms-mc-header">
-                  <span class="dms-mc-bno">{{ props.row.BookingNo }}</span>
-                  <q-badge
-                    :color="props.row.Status === 'Delivered' ? 'positive' : 'orange'"
-                    :label="props.row.Status"
-                    class="dms-mc-status"
-                  />
-                </div>
-
-                <!-- Date / Delivery Type / Payment -->
-                <div class="dms-mc-meta">
-                  <span class="dms-mc-chip">{{ props.row.BookingDate }}</span>
-                  <q-badge
-                    v-if="props.row.DeliveryType === 'Door Delivery'"
-                    color="orange-6"
-                    label="Door Delivery"
-                    class="dms-mc-chip"
-                  />
-                  <span v-else class="dms-mc-chip">{{ props.row.DeliveryType }}</span>
-                  <q-badge
-                    :color="paymentColor(props.row.PaymentType)"
-                    :label="props.row.PaymentType"
-                    outline
-                    class="dms-mc-chip"
-                  />
-                </div>
-
-                <!-- Route -->
-                <div class="dms-mc-route">
-                  <q-icon name="place" size="14px" color="primary" />
-                  <span class="dms-mc-city">{{ props.row.FromCity }}</span>
-                  <q-icon name="arrow_forward" size="13px" color="grey-6" class="q-mx-xs" />
-                  <q-icon name="place" size="14px" color="red-6" />
-                  <span class="dms-mc-city">{{ props.row.ToCity }}</span>
-                </div>
-
-                <!-- Parties -->
-                <div class="dms-mc-parties">
-                  <div class="dms-mc-party">
-                    <span class="dms-mc-plabel">From:</span>
-                    <span>{{ maskName(props.row.ConsignorName) }}</span>
+              <div class="mobile-job-card">
+                <div
+                  class="mjc-header"
+                  @click="toggleMobileCard(props.row.BookingId)"
+                >
+                  <div class="mjc-header-left">
+                    <div class="mjc-job-badge">
+                      <q-icon name="local_shipping" size="14px" />
+                    </div>
+                    <div class="mjc-header-info">
+                      <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
+                      <span class="mjc-job-date">{{ props.row.BookingDate }}</span>
+                    </div>
                   </div>
-                  <div class="dms-mc-party">
-                    <span class="dms-mc-plabel">To:</span>
-                    <span>{{ maskName(props.row.ConsigneeName) }}</span>
+                  <div class="mjc-header-right">
+                    <q-badge
+                      class="mjc-status-badge"
+                      :color="
+                        props.row.Status === 'Delivered' ? 'positive' : 'orange'
+                      "
+                    >
+                      {{ props.row.Status }}
+                    </q-badge>
+                    <q-icon
+                      :name="
+                        expandedMobileCards.includes(props.row.BookingId)
+                          ? 'expand_less'
+                          : 'expand_more'
+                      "
+                      size="20px"
+                      color="grey-6"
+                    />
                   </div>
                 </div>
 
-                <!-- Footer: carrier + actions -->
-                <div class="dms-mc-footer">
-                  <span class="dms-mc-carrier">{{ props.row.LoadCarrier }}</span>
-                  <div class="button-container">
-                    <q-btn
-                      icon="fa-solid fa-eye"
-                      color="primary"
-                      dense
-                      outline
-                      class="edit-icon-style vw"
-                      @click="viewBooking(props.row)"
-                    ><q-tooltip>View</q-tooltip></q-btn>
-                    <q-btn
-                      v-if="canAddEdit"
-                      icon="fa-solid fa-pen-to-square"
-                      color="primary"
-                      dense
-                      outline
-                      class="edit-icon-style mody"
-                      @click="editBooking(props.row)"
-                    ><q-tooltip>Edit</q-tooltip></q-btn>
-                  </div>
+                <div class="mjc-actions">
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-eye"
+                    label="View"
+                    class="mjc-btn mjc-btn-view"
+                    @click="viewBooking(props.row)"
+                  />
+                  <q-btn
+                    v-if="canAddEdit"
+                    dense
+                    unelevated
+                    icon="fa-solid fa-pen-to-square"
+                    label="Edit"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="editBooking(props.row)"
+                  />
                 </div>
+
+                <transition name="mobile-expand">
+                  <div
+                    v-if="expandedMobileCards.includes(props.row.BookingId)"
+                    class="mjc-details"
+                  >
+                    <q-separator class="mjc-divider" />
+                    <div class="mjc-details-grid">
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Delivery Type</span>
+                        <span class="mjc-detail-value">{{
+                          props.row.DeliveryType || "—"
+                        }}</span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Payment</span>
+                        <span class="mjc-detail-value">{{
+                          props.row.PaymentType || "—"
+                        }}</span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Route</span>
+                        <span class="mjc-detail-value"
+                          >{{ props.row.FromCity }} → {{ props.row.ToCity }}</span
+                        >
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">From</span>
+                        <span class="mjc-detail-value">{{
+                          maskName(props.row.ConsignorName)
+                        }}</span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">To</span>
+                        <span class="mjc-detail-value">{{
+                          maskName(props.row.ConsigneeName)
+                        }}</span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Carrier</span>
+                        <span class="mjc-detail-value">{{
+                          props.row.LoadCarrier || "—"
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </transition>
               </div>
             </template>
           </q-table>
@@ -1415,12 +1453,18 @@
         <!-- Footer bar -->
         <q-separator />
         <q-card-section class="q-pa-sm bg-grey-2">
-          <div class="column" style="gap:6px">
+          <div class="column" style="gap: 6px">
             <!-- Print info row -->
             <div class="text-caption text-grey-7 row q-gutter-x-md wrap">
-              <span>Print Dt.: <b>{{ form.PrintDate }}</b></span>
-              <span>Count: <b>{{ form.Count }}</b></span>
-              <span>Print By: <b>{{ form.PrintBy }}</b></span>
+              <span
+                >Print Dt.: <b>{{ form.PrintDate }}</b></span
+              >
+              <span
+                >Count: <b>{{ form.Count }}</b></span
+              >
+              <span
+                >Print By: <b>{{ form.PrintBy }}</b></span
+              >
             </div>
             <!-- Action buttons — wrap on mobile -->
             <div class="row q-gutter-xs wrap">
@@ -2529,6 +2573,10 @@ export default {
       direction: "All",
       searchText: "",
       pagination: { page: 1, rowsPerPage: 15 },
+      // Tracks which mobile job-cards (global .mobile-job-card/.mjc-*
+      // pattern — see toggleMobileCard()) are expanded, same as
+      // JobDetailsGrid.vue's own mobile card list.
+      expandedMobileCards: [],
 
       showBookingDialog: false,
       dialogMode: "view",
@@ -2653,6 +2701,18 @@ export default {
   },
 
   methods: {
+    // Same expand/collapse toggle as JobDetailsGrid.vue's mobile card list
+    // (the global .mobile-job-card/.mjc-* pattern this page's mobile view
+    // now reuses instead of its own invented .dms-mobile-card markup).
+    toggleMobileCard(id) {
+      const index = this.expandedMobileCards.indexOf(id);
+      if (index === -1) {
+        this.expandedMobileCards.push(id);
+      } else {
+        this.expandedMobileCards.splice(index, 1);
+      }
+    },
+
     maskName(name) {
       if (!name) return "";
       const words = String(name).trim().split(/\s+/);
@@ -3082,7 +3142,11 @@ export default {
 <table class="hdr">
   <tr>
     <td class="hdr-logo">
-      ${logoDataUrl ? `<img src="${logoDataUrl}" alt="iCode Technologies" />` : ""}
+      ${
+        logoDataUrl
+          ? `<img src="${logoDataUrl}" alt="iCode Technologies" />`
+          : ""
+      }
     </td>
     <td class="hdr-info">
       <div class="hdr-company">I CODE TECHNOLOGIES PVT LTD</div>
@@ -3280,42 +3344,23 @@ export default {
 </script>
 
 <style scoped>
-/* JobDetailsGrid.vue's actual per-row/per-cell padding + grid-line borders
-   come from rules scoped under ".nvocc-form-page .job-details-grid-table
-   .m-table-style" (nvocc-common.css) — this page isn't an NVOCC page, so
-   adopting that class would also drag in NVOCC's field/button/color
-   overrides. Replicating just the padding/border/row-height values here
-   instead, scoped to this page's own table. */
-:deep(.m-table-style thead th) {
-  border-right: 1px solid #54c7ff !important;
-}
-:deep(.m-table-style thead th:last-child) {
-  border-right: 0 !important;
-}
-:deep(.m-table-style tbody tr) {
-  height: 38px;
-}
-:deep(.m-table-style tbody td) {
-  height: 38px;
-  padding: 5px 8px !important;
-  border-right: 1px solid #d0efff !important;
-  border-bottom: 1px solid #d0efff !important;
-}
-:deep(.m-table-style tbody td:first-child) {
-  padding: 5px 10px !important;
-}
-:deep(.m-table-style tbody td:last-child) {
-  border-right: 0 !important;
-}
-/* Action column — sized to its icon buttons instead of a fixed width, and
-   vertically centered rather than sharing the text cells' padding. */
-:deep(.m-table-style tbody td.booking-action-td) {
-  width: 1px;
-  white-space: nowrap;
-  padding: 0 10px !important;
-  vertical-align: middle;
-}
+/* The table border/row-height overrides and the ".dms-mobile-card"/
+   ".dms-mc-*" mobile-card system that used to live here are gone — the
+   table now takes its border styling purely from the global
+   ".m-table-style" rule (cn-style.css, header-only divider — matches
+   JobDetailsGrid.vue, the app's actual reference list-page table, which
+   never had this page's border-right/border-bottom overrides or its
+   booking-action-td width hack), and the mobile card view now reuses the
+   global ".mobile-job-card"/".mjc-*" pattern already established by
+   JobDetailsGrid.vue's own mobile card list, instead of inventing its
+   own. ".button-container" likewise had a scoped duplicate here that's
+   dropped in favor of the existing global ".button-container" rule.
 
+   ".field-label" stays: it's used ~64 times throughout this page's own
+   Add/Edit dialog (a plain caption above each field, not Quasar's
+   built-in floating label), and cn-style.css has no equivalent global
+   class for that exact pattern — removing it without one would leave
+   every one of those labels unstyled. */
 .field-label {
   display: block;
   font-size: 11px;
@@ -3323,80 +3368,4 @@ export default {
   margin-bottom: 2px;
   font-weight: 500;
 }
-.button-container {
-  white-space: nowrap;
-}
-
-/* ── Mobile card (grid mode) ── */
-.dms-mobile-card {
-  background: #fff;
-  border: 1px solid #e0e8f0;
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin: 6px 8px;
-  box-shadow: 0 1px 4px rgba(1,120,188,.10);
-  width: calc(100% - 16px);
-}
-.dms-mc-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-.dms-mc-bno {
-  font-size: 13px;
-  font-weight: 700;
-  color: #0178bc;
-  letter-spacing: .3px;
-}
-.dms-mc-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 6px;
-}
-.dms-mc-chip {
-  font-size: 11px;
-  color: #444;
-}
-.dms-mc-route {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-bottom: 5px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #222;
-}
-.dms-mc-city { font-size: 12px; }
-.dms-mc-parties {
-  border-top: 1px dashed #d0dce8;
-  padding-top: 5px;
-  margin-bottom: 6px;
-  font-size: 11px;
-  color: #333;
-}
-.dms-mc-party {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 2px;
-}
-.dms-mc-plabel {
-  font-weight: 600;
-  color: #0178bc;
-  min-width: 32px;
-}
-.dms-mc-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid #eef2f7;
-  padding-top: 6px;
-}
-.dms-mc-carrier {
-  font-size: 11px;
-  color: #666;
-  font-style: italic;
-}
-
 </style>

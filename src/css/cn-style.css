@@ -1185,20 +1185,14 @@ body {
   transform: translateY(-5px);
 }
 .custom-drawer {
-  border-left: 5px solid;
-  border-image: linear-gradient(
-    to bottom,
-    #91b90a 0%,
-    #91b90a 25%,
-    #0091ef 25%,
-    #0091ef 50%,
-    #e8c205 50%,
-    #e8c205 75%,
-    #d10107 75%,
-    #d10107 100%
-  );
+  /* Replaced the old 4-band rainbow border-image (green/blue/yellow/red)
+     with a single flat brand-blue divider — the striped edge read as
+     decorative clutter rather than conveying any real status/module
+     meaning. Matches the flat border-right cn-theme-ml2.css already uses
+     for the newer theme (see its ".custom-drawer" override). */
+  border-left: none;
+  border-right: 1px solid #e0e6ec;
   overflow-x: hidden !important;
-  border-image-slice: 1;
   /* height: 100vh; */
   /* background-image: linear-gradient(to left, #0178bc, #00bdda); */
 }
@@ -12363,7 +12357,7 @@ option {
   box-shadow: none;
 }
 
-.q-item.dashboard-menu .q-expansion-item .q-item:hover .q-icon {
+.q-item.dashboard-menu .q-expansion-item .q-item:hover:not(.child-group-header) .q-icon {
   color: #fff;
 }
 
@@ -12379,12 +12373,17 @@ option {
   padding: 6px;
 }
 
-.q-item.dashboard-menu .q-expansion-item .q-item:hover {
+/* :not(.child-group-header) — this gradient is the top-level module
+   button's hover look (e.g. DMS itself). Without the exclusion it also
+   matches the nested "Booking" group header, since that's rendered as a
+   plain Quasar .q-item too; the group header gets its own lighter hover
+   treatment below instead. */
+.q-item.dashboard-menu .q-expansion-item .q-item:hover:not(.child-group-header) {
   background-image: linear-gradient(to bottom, #21b0f3, #1976d2);
   color: #ffffff;
 }
 
-.q-item.dashboard-menu .q-expansion-item.active-menu .q-item {
+.q-item.dashboard-menu .q-expansion-item.active-menu .q-item:not(.child-group-header) {
   background-image: linear-gradient(to bottom, #21b0f3, #1976d2);
   color: #ffffff;
 }
@@ -12472,12 +12471,23 @@ option {
   overflow: hidden;
   z-index: 1;
 }
-.q-item.dashboard-menu .child-item:hover {
+.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):hover {
   background-color: rgba(166, 166, 166, 0.1);
   cursor: pointer;
 }
 
-.q-item.dashboard-menu .child-item::before {
+/* .child-item is reused as the wrapper around an entire expandable group
+   (DMS > Booking/Trip/Accounting — see ".child-item.child-group" in
+   MainLayout1.vue), around a nested row inside that group
+   (.child-item--nested), and around a plain single-row leaf link. The
+   sliding fill below was written only for the plain-leaf case: it also
+   matched .child-item--nested rows, and its negative z-index / absolute
+   box ended up painting behind the whole open group instead of just the
+   hovered row. Exclude both .child-group and .child-item--nested here so
+   the fill only ever covers a plain leaf row; the group header gets its
+   own hover treatment, and nested rows get theirs via
+   .child-item--nested:hover below. */
+.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested)::before {
   content: "";
   position: absolute;
   width: 0;
@@ -12489,9 +12499,121 @@ option {
   z-index: -1;
 }
 
-.q-item.dashboard-menu .child-item:hover::before {
+.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):hover::before {
   width: 100%;
 }
+
+/* ---- Nested group menu (DMS > Booking > BBooking/Truck Booking/...) ----
+   .child-group is the collapsible "Booking" row inside a module panel;
+   .child-item--nested is each leaf row shown once that group is opened. */
+.q-item.dashboard-menu .child-item.child-group {
+  border-bottom: none;
+  padding: 2px 0;
+}
+
+/* Neutralize the generic .child-item:hover shift/recolor (meant for plain
+   leaf rows) so hovering anywhere inside an open group doesn't nudge or
+   recolor the whole block. */
+.q-item.dashboard-menu .child-item.child-group:hover {
+  padding-left: 0;
+  color: inherit;
+}
+
+.q-item.dashboard-menu .child-group-header {
+  border-radius: 8px;
+  min-height: 36px;
+  padding: 6px 10px !important;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: "poppins", sans-serif;
+  color: var(--font-Mblue);
+  transition: background-color 0.2s ease;
+}
+
+.q-item.dashboard-menu .child-group-header:hover {
+  background-color: var(--bg-blue-1);
+}
+
+.q-item.dashboard-menu .child-group.child-group--open .child-group-header {
+  background-color: var(--bg-blue-2);
+}
+
+.q-item.dashboard-menu .child-group-header .q-icon,
+.q-item.dashboard-menu .child-group-header .q-expansion-item__toggle-icon {
+  color: var(--font-Mblue);
+}
+
+.q-item.dashboard-menu .child-group .q-expansion-item__content {
+  width: auto;
+  padding: 2px 0 2px 4px;
+  background-color: transparent;
+}
+
+.q-item.dashboard-menu .child-item--nested {
+  position: relative;
+  border-bottom: none;
+}
+
+.q-item.dashboard-menu .child-item--nested:hover {
+  padding-left: 0;
+  background-color: var(--bg-blue-1);
+  color: inherit;
+}
+
+/* Vertical tree line + node dot, drawn inside the 24px left-padding that
+   the row's q-card-section already reserves (see MainLayout1.vue). */
+.q-item.dashboard-menu .child-item--nested::before {
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #d7e6f6;
+}
+
+.q-item.dashboard-menu .child-item--nested::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b7c9de;
+  transform: translateY(-50%);
+}
+
+.q-item.dashboard-menu .child-item--nested .menu-link {
+  color: #5f5f5f;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.q-item.dashboard-menu .child-item--nested:hover .menu-link {
+  color: var(--font-Mblue);
+}
+
+.q-item.dashboard-menu .child-item--nested.child-item--active {
+  background-color: var(--bg-blue-2);
+  border-radius: 0 18px 18px 0;
+}
+
+.q-item.dashboard-menu .child-item--nested.child-item--active::before {
+  background: var(--bg-lblue);
+  width: 2px;
+}
+
+.q-item.dashboard-menu .child-item--nested.child-item--active::after {
+  background: var(--bg-dblue);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+}
+
+.q-item.dashboard-menu .child-item--nested.child-item--active .menu-link {
+  color: var(--font-Mblue);
+  font-weight: 700;
+}
+/* ---- End nested group menu ---- */
 
 .child-item a {
   font-weight: 500;

@@ -2488,6 +2488,11 @@ function apiGetBookingById(id) {
   });
 }
 
+// Shared with DMSBBookingView.vue (the full-page "view" tab opened from the
+// eye icon below) so both read the same mock booking record by id instead of
+// duplicating MOCK_BOOKINGS.
+export { apiGetBookingById };
+
 function apiSaveBooking(booking) {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -2515,6 +2520,14 @@ function apiSaveBooking(booking) {
 // ─────────────────────────────────────────────
 export default {
   name: "DMSBBooking",
+
+  // Lets the eye icon open the read-only booking view as a new full-page
+  // dynamic tab (see viewBooking() below) instead of the in-page popup.
+  // `default: null` keeps this page working standalone (outside DynamicTab.vue)
+  // by falling back to the old popup.
+  inject: {
+    openTab: { default: null },
+  },
 
   data() {
     // Fixed — this page is only ever the "BBooking" list now (see the
@@ -2854,7 +2867,22 @@ export default {
       this.showBookingDialog = true;
     },
 
-    async viewBooking(row) {
+    viewBooking(row) {
+      // Full-page view, opened as its own dynamic tab (same pattern as the
+      // rest of the app's job-form pages) instead of the popup dialog.
+      if (this.openTab) {
+        this.openTab(
+          `/DMSBBookingView?bookingId=${row.BookingId}`,
+          `BBooking ${row.BookingNo || ""}`.trim()
+        );
+        return;
+      }
+      // Fallback for when this page is rendered outside the DynamicTab shell
+      // (e.g. direct route access) — keep the old popup behavior.
+      this.viewBookingInDialog(row);
+    },
+
+    async viewBookingInDialog(row) {
       const data = await apiGetBookingById(row.BookingId);
       this.form = { ...data };
       this.dialogMode = "view";
@@ -3280,37 +3308,41 @@ export default {
 </script>
 
 <style scoped>
-/* JobDetailsGrid.vue's actual per-row/per-cell padding + grid-line borders
-   come from rules scoped under ".nvocc-form-page .job-details-grid-table
-   .m-table-style" (nvocc-common.css) — this page isn't an NVOCC page, so
-   adopting that class would also drag in NVOCC's field/button/color
-   overrides. Replicating just the padding/border/row-height values here
-   instead, scoped to this page's own table. */
-:deep(.m-table-style thead th) {
-  border-right: 1px solid #54c7ff !important;
-}
-:deep(.m-table-style thead th:last-child) {
-  border-right: 0 !important;
-}
+/* Row height + padding only — no per-cell border-right/border-bottom here.
+   The old version of this block force-added a vertical divider line to
+   EVERY body cell (only :last-child was excluded) plus a duplicate,
+   redundant copy of the header divider that's already in the global
+   ".m-table-style thead th" rule (cn-style.css). Its own comment claimed
+   to be replicating JobDetailsGrid.vue's table styling, but that page
+   (the app's actual reference list-page table) carries no such scoped
+   overrides at all — it relies purely on the global .m-table-style rules,
+   which give the header its divider lines but never touch tbody. That
+   mismatch is what produced the stray vertical lines running down every
+   column in this table's body, not just the Action column. Matching the
+   reference page now means just the layout values, no invented borders. */
 :deep(.m-table-style tbody tr) {
   height: 38px;
 }
 :deep(.m-table-style tbody td) {
   height: 38px;
   padding: 5px 8px !important;
-  border-right: 1px solid #d0efff !important;
-  border-bottom: 1px solid #d0efff !important;
 }
 :deep(.m-table-style tbody td:first-child) {
   padding: 5px 10px !important;
 }
-:deep(.m-table-style tbody td:last-child) {
-  border-right: 0 !important;
-}
 /* Action column — sized to its icon buttons instead of a fixed width, and
-   vertically centered rather than sharing the text cells' padding. */
+   vertically centered rather than sharing the text cells' padding.
+   "width: 1px" is the standard shrink-to-content trick, but it only works
+   under table-layout: auto — this q-table (wrap-cells not set) defaults
+   to table-layout: fixed via Quasar's own ".q-table--no-wrap", which took
+   that 1px literally instead of expanding to fit content. The column
+   rendered at exactly 21px (1px + the 10px+10px padding — confirmed via
+   devtools), clipping the 26px-wide round eye button (.edit-icon-style)
+   and making its cut-off edge read as a stray vertical line. Sized to
+   actually fit the button instead. */
 :deep(.m-table-style tbody td.booking-action-td) {
-  width: 1px;
+  width: 46px;
+  min-width: 46px;
   white-space: nowrap;
   padding: 0 10px !important;
   vertical-align: middle;
