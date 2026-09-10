@@ -1,0 +1,11 @@
+// app global css in SCSS form
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+// nvocc-common.css is registered directly in quasar.config.js's css array
+// (like cn-ml2-login.css) instead of being @imported here, so it doesn't
+// get re-run through the scss/sass loader chain.
+
+// Quasar's $q.loading overlay (used by CustomLoader/CustomInnerLoader in
+// src/pages/loader.vue and loaderInner.vue) backdrop opacity.
+.q-loading__backdrop {
+  opacity: 0.5 !important;
+}

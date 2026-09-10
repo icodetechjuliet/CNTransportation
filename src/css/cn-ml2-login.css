@@ -1,0 +1,699 @@
+/* @import must be the first rule(s) in a stylesheet per the CSS spec, so
+   it has to sit above this file's own explanatory comment rather than
+   with the rest of the font-related reasoning below. */
+@import url("https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+/* All CSS for LoginPageMl2.vue (MainLayout2's dark-glass login screen),
+   moved out of that .vue file entirely and into this plain global
+   stylesheet, loaded via quasar.config.js's css array.
+
+   Why: any edit to LoginPageMl2.vue's CSS — not just the one fragile
+   selector that was isolated out earlier — was collapsing that file's
+   entire styling whenever the dev server had to reinject it (Quasar's
+   dev server injects each SFC's CSS via JS/style-loader for instant
+   hot-reload, and something about that mechanism + this component's
+   combined stylesheet size/complexity was unreliable with DevTools live
+   edits). A plain external .css file loaded via a normal stylesheet
+   reference doesn't go through that same JS-injection path, so editing
+   it — from DevTools or from disk — can't trigger that collapse.
+
+   All the "why this specific value" reasoning from the original
+   inline comments is kept below, unchanged, next to each rule. */
+
+/* ── PARTICLE / ICON NETWORK (shared visual with LoginPage.vue) ── */
+#q-app .particle-network {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+#q-app .particle-network .particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(100, 220, 255, 0.3);
+  border: 1px solid rgba(100, 220, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 5px;
+  font-size: 24px;
+  box-shadow: 0 0 20px rgba(100, 220, 255, 0.3);
+  z-index: 1;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  pointer-events: auto;
+}
+#q-app .particle-network .particle img {
+  pointer-events: none;
+  padding: 3px;
+}
+#q-app .particle-network .particle-connection {
+  position: absolute;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    rgba(100, 220, 255, 0.3),
+    rgba(100, 220, 255, 0.1)
+  );
+  transform-origin: left center;
+}
+
+/* Dark-glass field chrome (MainLayout2 design) */
+#login-page-ml2 .login-container .q-field--outlined .q-field__control:before {
+  border: 0 !important;
+}
+#login-page-ml2 .login-container .q-field--outlined .q-field__control:after {
+  height: inherit;
+  border-radius: inherit;
+  border: 1.5px solid rgba(120, 190, 255, 0.75);
+  transition: border-color 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#login-page-ml2 .login-container .q-field--outlined .q-field__control {
+  border-radius: 12px;
+  padding: 0 0 0 0px;
+  height: 52px;
+  border: 0px;
+  overflow: hidden;
+}
+#login-page-ml2 .login-container .q-field__bottom {
+  font-size: 11px;
+  padding: 3px 12px 0;
+}
+#login-page-ml2
+  .login-container
+  .q-field--outlined
+  .q-field__control
+  .q-field__label {
+  left: 15px;
+  top: 16px;
+  letter-spacing: 0.8px !important;
+}
+#login-page-ml2 .login-container .q-field__marginal {
+  height: 52px;
+  color: #ffffff;
+  font-size: 25px;
+  padding-right: 12px;
+  padding-left: 15px;
+  background-color: #b0c5f600;
+  border-right: 1px solid #4d7cad;
+}
+#login-page-ml2 .login-container .q-field__marginal i {
+  font-size: 18px;
+  border-radius: 50%;
+}
+
+/* The browser's own native autofill chrome follows color-scheme — this
+   page is always dark, so the box-shadow-inset trick (the only reliable
+   cross-browser way to override an autofilled field's background) uses a
+   matching dark fill instead of the browser's light default. */
+#login-page-ml2 {
+  color-scheme: dark;
+}
+#login-page-ml2 .login-container input:-webkit-autofill,
+#login-page-ml2 .login-container input:-webkit-autofill:hover,
+#login-page-ml2 .login-container input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(70, 90, 126, 0.4) inset !important;
+  -webkit-text-fill-color: #f2f5fa !important;
+  caret-color: #f2f5fa !important;
+}
+
+/* This is what's actually painting the grey/lavender fill on an
+   autofilled field here: Chrome's undocumented internal pseudo-class
+   :-internal-autofill-selected, NOT :-webkit-autofill above — Chrome's
+   own user-agent stylesheet sets background-color on it with !important,
+   and the rule above never matches it at all (confirmed via DevTools).
+   Kept as its OWN rule (not comma-joined with :-webkit-autofill above)
+   because Firefox/Safari don't recognize this selector and a single
+   unrecognized selector in a comma list invalidates the WHOLE rule in
+   those browsers — isolating it here means only Chrome parses this block
+   while the standard rule above stays intact everywhere. */
+#login-page-ml2 .login-container input:-internal-autofill-selected,
+#login-page-ml2 .login-container input:-internal-autofill-selected:hover,
+#login-page-ml2 .login-container input:-internal-autofill-selected:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgb(31 72 137) inset !important;
+  box-shadow: 0 0 0 1000px rgb(31 72 137) inset !important;
+  -webkit-text-fill-color: #f2f5fa !important;
+  caret-color: #f2f5fa !important;
+  padding-left: 15px;
+  padding-top: 28px;
+  letter-spacing: 0.8px;
+  transition: background-color 600000s ease-in-out 0s,
+    color 600000s ease-in-out 0s;
+}
+
+@media (min-width: 1200px) and (max-width: 1499px) {
+  #login-page-ml2 .login-container .q-field--outlined .q-field__control {
+    border-radius: 12px;
+    padding: 0 12px;
+    height: 46px;
+  }
+  #login-page-ml2 .login-container .ellipsis {
+    top: 14px;
+    font-size: 14px;
+    letter-spacing: 0.8px;
+  }
+  #login-page-ml2 .login-container .q-field__native,
+  #login-page-ml2 .login-container .q-field__input {
+    font-size: 14px;
+  }
+  #login-page-ml2 .login-container .q-field__marginal {
+    height: 46px;
+    color: #78beff;
+    font-size: 25px;
+  }
+  #login-page-ml2 .login-container .q-field__marginal i {
+    font-size: 21px;
+  }
+  #login-page-ml2 .login-container .q-field--error .q-field__bottom {
+    color: var(--q-negative);
+    padding-top: 1px;
+    letter-spacing: 0.7px;
+    display: none;
+  }
+  #login-page-ml2 .login-container .q-btn.q-btn-item.btn-login {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+  }
+}
+
+/* ── PAGE LAYOUT (formerly <style scoped>) ──────────────────────────
+   This is now a plain global stylesheet, so every selector here is
+   already effectively global — nothing here relied on Vue's scoped-CSS
+   attribute for correctness (Quasar's internal elements like
+   .q-field__control were never going to receive that attribute anyway),
+   so dropping `scoped` changes nothing about how these rules match. */
+* {
+  box-sizing: border-box;
+}
+
+#login-page-ml2 input {
+  font-family: "Jost", sans-serif !important;
+}
+#login-page-ml2 {
+  height: 100vh;
+  overflow: hidden;
+  /* Same photo LoginPage.vue uses full-page — kept consistent between the
+     two login screens instead of this one having its own flat gradient.
+     The .overlay right below darkens it to keep this page's dark theme
+     (LoginPage.vue's own overlay is much lighter, for its light theme). */
+  background-image: url("../images/logistics-ai-background-15.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  position: relative;
+  font-family: "Jost", sans-serif !important;
+  color: #f2f5fa;
+}
+/* Radial vignette instead of a flat overlay — center (where the card
+   sits) stays lighter so the photo reads through clearly, the outer ring
+   darkens progressively. The varying darkness is baked into each color
+   stop's own alpha instead of one uniform element-level opacity, since a
+   single opacity value can't vary across the shape. */
+#login-page-ml2 .overlay {
+  background: radial-gradient(
+    circle at center,
+    rgb(5 28 80 / 15%) 0%,
+    rgb(6 22 58 / 34%) 55%,
+    rgb(4 15 44 / 70%) 100%
+  );
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+#login-page-ml2 .login-container {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* The card itself — translucent dark glass with a glowing cyan ring
+   border, matching the reference's frame look. Padding now lives on
+   .hero-banner/.form-section individually instead of here, since the
+   hero strip needs to run edge-to-edge under the card's rounded corners
+   (hence overflow: hidden). */
+#login-page-ml2 .q-card.login-box {
+  scale: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.192),
+    rgba(15, 23, 42, 0.55)
+  );
+  backdrop-filter: blur(20px);
+  padding: 20px;
+  border-radius: 20px;
+  width: 440px;
+  max-width: 90%;
+  text-align: center;
+  overflow: hidden;
+  border: 1px solid rgba(94, 190, 255, 0.55);
+  box-shadow: 0 0 0 1px rgba(94, 190, 255, 0.18),
+    0 0 40px rgba(56, 189, 248, 0.28), 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* ── HERO STRIP ──────────────────────────────────────────────────────
+   A flat, distinctly darker/solid color from the card's own translucent
+   glass body — a clear separate "header band" instead of blending into
+   the rest of the card. Negative-margined against the card's own 20px
+   padding so it still bleeds edge-to-edge under the rounded top corners,
+   while the form content below stays inset by that padding as normal.
+   Plain color + dot-grid texture only — no photo, no decorative icons. */
+#login-page-ml2 .hero-banner {
+  position: relative;
+  overflow: hidden;
+}
+#login-page-ml2 .hero-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(148, 210, 255, 0.3) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+#login-page-ml2 .hero-content {
+  position: relative;
+  z-index: 1;
+  padding: 0 !important;
+}
+#login-page-ml2 .welcome-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+#login-page-ml2 .dash-line {
+  width: 40px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(120, 190, 255, 0.8),
+    transparent
+  );
+}
+#login-page-ml2 .welcome-dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(148, 210, 255, 0.85);
+}
+#login-page-ml2 .brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 8px;
+}
+#login-page-ml2 .brand-text {
+  font-size: 40px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+#login-page-ml2 .brand-icon {
+  width: 40px;
+  height: 40px;
+  margin: 0 1px;
+}
+#login-page-ml2 .brand-logo {
+  max-width: 260px;
+  width: 100%;
+  height: auto;
+}
+#login-page-ml2 .brand-tm {
+  color: #78beff;
+  font-size: 12px;
+  align-self: flex-start;
+  margin-top: 2px;
+}
+#login-page-ml2 .tagline {
+  color: #eaf4ff;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+#login-page-ml2 .form-section {
+  padding-top: 20px !important;
+}
+
+#login-page-ml2 .q-field--with-bottom {
+  padding-bottom: 0px !important;
+}
+
+#login-page-ml2 .q-card.login-box h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 300;
+  color: #d7e9fb;
+  line-height: 1;
+  letter-spacing: 1.2px;
+}
+
+#login-page-ml2 .q-card__section--vert {
+  padding: 6px !important;
+}
+
+#login-page-ml2 .q-field {
+  font-size: 15px;
+  margin: 0px 0px 20px;
+}
+
+#login-page-ml2 .q-field__bottom--animated {
+  bottom: 6px !important;
+}
+
+/* ── FEATURE PANEL ── bordered box + icon, instead of a plain paragraph. */
+#login-page-ml2 .feature-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  padding: 14px 16px;
+  border: 1px solid rgba(120, 190, 255, 0.3);
+  border-radius: 14px;
+  background: rgba(120, 190, 255, 0.05);
+}
+#login-page-ml2 .feature-icon {
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(94, 190, 255, 0.5);
+  color: #78beff;
+  font-size: 20px;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.4);
+}
+#login-page-ml2 .feature-box p {
+  color: #a9b7cc;
+  line-height: 24px;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+#login-page-ml2 .feature-box p strong {
+  color: #4fc3ff;
+  font-weight: 700;
+}
+
+/* Brighter than the original #92a0bc — that was too low-contrast against
+   the dark field fill, reading as barely-there grey instead of the clear
+   light-blue caption text in the reference design. */
+#login-page-ml2
+  .q-field--outlined.login-field
+  .q-field__control
+  .q-field__label {
+  font-size: 15px !important;
+  top: 18px !important;
+  letter-spacing: 1px !important;
+  color: #a8cdf5 !important;
+  font-weight: 400 !important;
+  border-radius: 5px;
+}
+
+#login-page-ml2 .q-field--outlined .q-field__control:before {
+  border: 0 !important;
+}
+
+#login-page-ml2 .q-field--float .q-field__label {
+  max-width: 132%;
+  transform: translateY(-50%) scale(0.85);
+  transition: transform 0.36s cubic-bezier(0.4, 0, 0.2, 1),
+    max-width 0.396s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#login-page-ml2
+  .login-field.q-field--highlighted
+  .q-field__control:hover:before {
+  border-color: transparent;
+}
+
+#login-page-ml2
+  .login-field.q-field--outlined.q-field--highlighted
+  .q-field__control:after {
+  border-color: #3b82f6;
+  border-width: 2px;
+  transform: scale3d(1, 1, 1);
+}
+
+#login-page-ml2 .login-field.q-field--highlighted .q-field__label {
+  color: #78beff;
+}
+
+/* Chrome's own autofill fill only paints the <input> element's own box —
+   it can't touch the separate .q-field__prepend/marginal icon div next to
+   it, no matter what color that fill is. Leaving the surrounding control
+   transparent meant the icon area (still showing the photo through) and
+   the autofilled input (Chrome's forced slate-blue) ended up two visibly
+   different tones in the same field. Rather than fight Chrome's color
+   (confirmed impossible — see the JS workaround in LoginPageMl2.vue's own
+   <script setup>), matching this control's own background to roughly the
+   same tone Chrome uses (rgba(70,90,126,0.4), from Chrome's own
+   light-dark() autofill value) makes the icon area and the input
+   consistent whether or not the field is currently autofilled. */
+#login-page-ml2 .login-container .q-field__control {
+  background-color: rgb(0 156 255 / 0%) !important;
+  color: #f2f5fa !important;
+}
+#login-page-ml2 .login-container .q-field__native,
+#login-page-ml2 .login-container .q-field__input {
+  color: #f2f5fa !important;
+}
+
+/* Password show/hide toggle, appended inside the field. */
+#login-page-ml2 .password-toggle {
+  color: #78beff;
+  cursor: pointer;
+  font-size: 18px;
+}
+#login-page-ml2 .password-toggle:hover {
+  color: #bcdcff;
+}
+
+#login-page-ml2 .social-login-buttons {
+  display: inline-flex;
+}
+/* No ring border on the icons themselves — flat colored circles, matching
+   the reference (the earlier version's added border read as busier/
+   heavier than intended). */
+#login-page-ml2 .social-btn img {
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+}
+/* Each social icon now sits in its own labeled column, with a vertical
+   divider between columns instead of the icons just floating in a row. */
+#login-page-ml2 .social-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 0 16px;
+}
+#login-page-ml2 .social-label {
+  color: #92a0bc;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+}
+#login-page-ml2 .social-divider {
+  width: 1px;
+  align-self: stretch;
+  background: rgba(120, 190, 255, 0.25);
+  margin-top: 4px;
+}
+
+/* LOGIN button — label on the left, a circular arrow chip on the right.
+   Horizontal (not diagonal) gradient, light cyan → deep blue, matching
+   the reference more closely than the original 45deg version. */
+#login-page-ml2 .q-btn.btn-login {
+  width: 100%;
+  margin: 0;
+  padding: 12px 8px 12px 20px;
+  background: linear-gradient(90deg, #38bdf8, #2563eb);
+  box-shadow: 0 5px 16px rgba(37, 99, 235, 0.45) !important;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin-top: 0;
+  text-transform: uppercase;
+  /* cn-style.css has a blanket `.q-btn, .q-btn:hover { transition: none
+     !important; }` that disables transitions on every button app-wide —
+     without !important here too, that rule wins regardless of this
+     selector's specificity, so the hover lift/glow snapped instantly
+     instead of easing in. */
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+#login-page-ml2 .q-btn.btn-login .q-btn__content {
+  transition: all 0.4s ease !important;
+  justify-content: space-between;
+}
+#login-page-ml2 .btn-login-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.75);
+}
+
+#login-page-ml2 .q-btn.btn-login:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.6) !important;
+}
+
+#login-page-ml2 .q-field__messages {
+  line-height: 3px;
+}
+
+/* "Forgot password?" flanked by the same dash-line accent as the header. */
+#login-page-ml2 .footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+#login-page-ml2 .footer-links a {
+  color: #78beff;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+}
+
+@media (min-width: 1500px) and (max-width: 1700px) {
+  #login-page-ml2 .q-card.login-box {
+    scale: 0.85;
+  }
+}
+
+@media (min-width: 1200px) and (max-width: 1499px) {
+  #login-page-ml2 .q-card.login-box {
+    padding: 25px 30px;
+    width: 360px;
+  }
+  #login-page-ml2 .footer-links a {
+    font-size: 12px;
+  }
+  #login-page-ml2 .logo {
+    width: 235px;
+    height: auto;
+    margin: 3px 0 0;
+  }
+  #login-page-ml2 .social-btn img {
+    width: 36px;
+    height: 36px;
+    margin: 0;
+    padding: 4px;
+  }
+  #login-page-ml2 .feature-content p {
+    line-height: 20px;
+    font-size: 12px;
+    letter-spacing: 0.8px;
+  }
+  #login-page-ml2 .separate {
+    margin: 15px 0;
+  }
+  #login-page-ml2 .q-field__control {
+    height: 50px !important;
+  }
+}
+
+@media (max-width: 767px) {
+  #login-page-ml2 .login-box {
+    width: 320px;
+    padding: 18px;
+  }
+  #login-page-ml2 .logo {
+    width: 220px;
+    height: auto;
+    margin: 5px 0;
+  }
+  #login-page-ml2 .q-card.login-box {
+    padding: 20px 20px;
+  }
+  #login-page-ml2 .social-btn img {
+    width: 38px;
+    height: 38px;
+    padding: 4px;
+  }
+  #login-page-ml2 .social-item {
+    padding: 0 8px;
+  }
+  #login-page-ml2 .feature-box {
+    display: none;
+  }
+  #login-page-ml2 .q-btn.btn-login {
+    padding: 8px;
+    font-size: 14px;
+  }
+  #login-page-ml2 .q-field__control {
+    height: 40px;
+  }
+  #login-page-ml2 .q-field__marginal {
+    height: 40px;
+  }
+  #login-page-ml2 .q-field--float .q-field__label {
+    top: 12px;
+  }
+}
+
+/* ── MISC (formerly this file's 3rd, unscoped <style> block) ── */
+.notification-error {
+  border-radius: 8px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+  padding: 16px 20px !important;
+  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%) !important;
+  border-left: 5px solid #a93226 !important;
+  animation: slideInDown 0.4s ease-out !important;
+}
+.notification-error .q-notification__icon {
+  font-size: 20px;
+  margin-right: 10px;
+}
+.notification-error .q-notification__content {
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  color: white;
+}
+.notification-error .q-notification__actions {
+  padding-left: 10px;
+}
+.notification-error .q-notification__actions button {
+  min-width: 32px !important;
+  padding: 4px 8px !important;
+}
+.notification-error .q-notification__actions button:hover {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px;
+}
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

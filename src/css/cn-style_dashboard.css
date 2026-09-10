@@ -1,0 +1,731 @@
+/* =====================================================
+   SHIPMENT TABLE WRAPPER
+===================================================== */
+.shipment-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.shipment-table-inner {
+  padding: 0 16px;
+  min-width: max-content;
+}
+
+/* =====================================================
+   SHIPMENT ROW (q-item)
+===================================================== */
+.shipment-row {
+  display: grid;
+  grid-template-columns:
+    44px /* icon */
+    2fr /* shipment */
+    1fr /* date */
+    0.7fr /* module */
+    1.2fr /* commodity */
+    0.9fr /* SB */
+    1.2fr /* exp inv */
+    1.4fr /* ref no */
+    1.3fr /* status */
+    0.7fr /* ETD */
+    0.7fr; /* ETA */
+
+  align-items: center;
+  column-gap: 12px;
+  padding: 14px 16px;
+  min-width: 1200px;
+
+  border-radius: 12px;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.shipment-row:hover {
+  background: rgba(0, 123, 255, 0.04);
+  transform: translateY(-1px);
+}
+
+/* Required for grid ellipsis */
+.shipment-row > div {
+  min-width: 0;
+}
+
+/* =====================================================
+   COLUMN ALIGNMENT
+===================================================== */
+.col-icon {
+  display: flex;
+  justify-content: center;
+}
+
+.col-status {
+  display: flex;
+  justify-content: center;
+}
+
+.col-etd,
+.col-eta {
+  text-align: right;
+}
+
+/* =====================================================
+   TEXT & LABELS
+===================================================== */
+.shipment-label {
+  font-size: 11px;
+  color: #7a869a;
+  line-height: 1;
+}
+
+.shipment-value {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.raised-numbers {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; /* max 2 lines */
+  max-width: 100px;
+  line-clamp: 2; /* standard */
+  overflow: hidden;
+}
+
+.shipment-no {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.single-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =====================================================
+   ROUTE / LOCATION
+===================================================== */
+.shipment-sub {
+  font-size: 12px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.loc-text {
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.route-arrow {
+  margin: 0 6px;
+  color: #9ca3af;
+}
+
+/* =====================================================
+   STATUS BADGES
+===================================================== */
+.status-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+.status-badge {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+/* =====================================================
+   RESPONSIVE — TABLET
+===================================================== */
+@media (max-width: 1200px) {
+  .shipment-row {
+    grid-template-columns:
+      44px
+      2fr
+      1fr
+      1fr
+      2fr;
+  }
+
+  .col-sb,
+  .col-expinv,
+  .col-etd,
+  .col-eta {
+    display: none;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE — MOBILE
+===================================================== */
+@media (max-width: 768px) {
+  .shipment-row {
+    grid-template-columns: 44px 1fr;
+    row-gap: 8px;
+    min-width: unset;
+  }
+
+  .col-date,
+  .col-module,
+  .col-commodity,
+  .col-sb,
+  .col-expinv,
+  .col-etd,
+  .col-eta {
+    display: none;
+  }
+
+  .col-status {
+    justify-content: flex-start;
+  }
+}
+/* =====================================================
+   COUNTER CARD – BASE
+===================================================== */
+.counter-card {
+  position: relative;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: cardPulse 0.6s ease-out both;
+
+  cursor: grab; /* Indicates draggable on hover */
+}
+.counter-card.shimmer::before {
+  display: block;
+}
+@keyframes cardPulse {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.counter-card.loading {
+  animation: pulseIn 0.45s ease-out both;
+}
+
+@keyframes pulseIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.counter-card.loading {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18),
+    0 0 14px rgba(255, 255, 255, 0.25);
+}
+.counter-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  width: 150%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 100%
+  );
+  animation: shimmerOnce 3s linear forwards;
+  pointer-events: none;
+}
+
+/* Logistics flow line: A moving "conveyor" path for operational feel */
+.counter-card .q-icon {
+  color: rgba(255, 255, 255, 0.9); /* default white */
+}
+/* Keyframe for one-time shimmer: From left to right, stops */
+@keyframes shimmerOnce {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
+
+/* Keyframe for logistics flow: Simulates movement, stops */
+@keyframes logisticsFlow {
+  0% {
+    transform: translateX(-100%); /* Starts left */
+  }
+  100% {
+    transform: translateX(0%); /* Ends right, stops */
+  }
+}
+.counter-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  cursor: grabbing; /* Drag cursor */
+  background: linear-gradient(
+    135deg,
+    #60a5fa,
+    #3b82f6
+  ); /* Temp blue shift for "change" */
+}
+
+.counter-card:hover .q-icon {
+  color: #fbbf24; /* Icon color change on hover/drag */
+}
+
+/* Accessibility: Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .counter-card,
+  .counter-card::before,
+  .counter-card::after {
+    animation: none;
+  }
+}
+.counter-card:hover::before {
+  opacity: 1;
+}
+/* =====================================================
+   CARD CONTENT LAYOUT
+===================================================== */
+.card-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.card-icon {
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.counter-card:hover .card-icon {
+  transform: scale(1.05);
+}
+
+.card-text {
+  flex: 1;
+  text-align: left;
+}
+
+.text-subtitle2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* =====================================================
+   CARD COLOR THEMES
+===================================================== */
+.booking {
+  background: linear-gradient(135deg, #ff7f50, #e63946);
+}
+
+.job {
+  background: linear-gradient(135deg, #2a9d8f, #264653);
+}
+
+.master {
+  background: linear-gradient(135deg, #8d6e63, #5d4037);
+}
+
+.purchase {
+  background: linear-gradient(135deg, #52b788, #2d6a4f);
+}
+
+.sales {
+  background: linear-gradient(135deg, #4a90e2, #1e3a8a);
+}
+
+.debit {
+  background: linear-gradient(135deg, #f4a261, #e76f51);
+}
+
+.credit {
+  background: linear-gradient(135deg, #9c4dcc, #6a1b9a);
+}
+
+/* BANK */
+.bankreceipt {
+  background: linear-gradient(135deg, #6a5acd, #483d8b);
+}
+
+.bankpayment {
+  background: linear-gradient(135deg, #38bdf8, #0369a1);
+}
+
+/* CASH */
+.cashreceipt {
+  background: linear-gradient(135deg, #84cc16, #3f6212);
+}
+
+.cashpayment {
+  background: linear-gradient(135deg, #fb7185, #9f1239);
+}
+
+/* ADJUSTMENT / JOURNAL */
+.adjustmentcumjournal {
+  background: linear-gradient(135deg, #94a3b8, #334155);
+}
+
+/* Add any additional status-specific colors */
+.hbl-mbl-not-raised {
+  background: linear-gradient(135deg, #f4a261, #e76f51);
+}
+
+.mbl-completed {
+  background: linear-gradient(135deg, #2a9d8f, #264653);
+}
+
+.hbl-completed {
+  background: linear-gradient(135deg, #06d6a0, #1b4332);
+}
+.shipment-pending {
+  background: linear-gradient(135deg, #f77f00, #d62828);
+}
+.voucher-raised {
+  background: linear-gradient(135deg, #7209b7, #560bad);
+}
+.no-charges-for-job {
+  background: linear-gradient(135deg, #adb5bd, #6c757d);
+}
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+@keyframes counterShimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes logisticsFlow {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* =====================================================
+   ACCESSIBILITY
+===================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .counter-card,
+  .counter-card::before,
+  .counter-card::after {
+    animation: none;
+  }
+}
+
+/* ================= LOGISTICS FLOW STRIP ================= */
+
+.logistics-strip {
+  position: relative;
+  height: 30px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.035),
+    rgba(0, 0, 0, 0.015),
+    rgba(0, 0, 0, 0.035)
+  );
+}
+
+/* Transport lane */
+.logistics-strip::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.25) 6px,
+    transparent 6px,
+    transparent 14px
+  );
+  transform: translateY(-50%);
+  opacity: 0.35;
+}
+
+/* Moving container */
+.logistics-track {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  animation: logisticsMove 22s linear infinite;
+}
+
+/* Icon styling */
+.lg-icon {
+  font-size: 18px;
+  margin-right: 90px;
+  opacity: 0.6;
+  color: #374151; /* neutral professional grey */
+}
+
+/* Slight emphasis per mode */
+.lg-icon.air {
+  color: #2563eb;
+}
+.lg-icon.ship {
+  color: #0f766e;
+}
+.lg-icon.truck {
+  color: #7c2d12;
+}
+
+/* Forward motion */
+@keyframes logisticsMove {
+  from {
+    transform: translateX(-25%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .logistics-track {
+    animation: none;
+  }
+}
+.rope {
+  display: inline-block;
+  width: 120px;
+  height: 2px;
+  margin-right: 14px;
+  background: repeating-linear-gradient(
+    90deg,
+    #2563eb,
+    #2563eb 6px,
+    transparent 6px,
+    transparent 12px
+  );
+  opacity: 0.45;
+  transform: translateY(1px);
+}
+.cargo-text {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: #1f2937;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+.logistics-track {
+  animation: logisticsMove 22s linear infinite;
+}
+
+.cargo-text {
+  animation: textFloat 2.2s ease-in-out infinite;
+}
+
+@keyframes textFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+.rope-wrap {
+  display: flex;
+  align-items: center;
+  margin-right: 14px;
+}
+.rope-logo {
+  width: 22px;
+  height: 22px;
+  margin-left: 10px;
+  object-fit: contain;
+  opacity: 0.85;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.15));
+}
+.rope-logo {
+  animation: logoSwing 2.4s ease-in-out infinite;
+}
+
+@keyframes logoSwing {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+/* =========================
+   THEME: WHITE CARD
+========================= */
+:deep(.theme-white) {
+  background: #ffffff !important;
+}
+
+:deep(.theme-white .q-icon) {
+  color: currentColor;
+}
+
+:deep(.theme-white .text-subtitle2),
+:deep(.theme-white .text-h4) {
+  color: #111827 !important;
+}
+
+:deep(.theme-white.booking) {
+  color: #e63946;
+}
+:deep(.theme-white.job) {
+  color: #2a9d8f;
+}
+:deep(.theme-white.master) {
+  color: #5d4037;
+}
+:deep(.theme-white.purchase) {
+  color: #2d6a4f;
+}
+:deep(.theme-white.sales) {
+  color: #1e3a8a;
+}
+:deep(.theme-white.debit) {
+  color: #e76f51;
+}
+:deep(.theme-white.credit) {
+  color: #6a1b9a;
+}
+
+:deep(.theme-white::before),
+:deep(.theme-white::after) {
+  display: none !important;
+}
+.db-tab-panels .q-card {
+  overflow-x: scroll;
+  position: relative;
+  padding-right: -10px;
+}
+/* ================= FLOATING CARGONET AVATAR ================= */
+.cargonet-avatar {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* Avatar circle */
+.avatar-circle {
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  animation: avatarFloat 2.4s ease-in-out infinite;
+}
+
+/* Speech bubble */
+.speech-bubble {
+  max-width: 260px;
+  background: #ffffff;
+  position: relative;
+  pointer-events: auto;
+  color: #1f2937;
+  font-size: 13px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+/* Bubble arrow */
+.speech-bubble::after {
+  content: "";
+  position: absolute;
+  right: -6px;
+  bottom: 14px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: transparent transparent transparent #ffffff;
+}
+.bubble-close {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  z-index: 10;
+  background: white;
+}
+/* Floating animation */
+@keyframes avatarFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Bubble entrance */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile adjustment */
+@media (max-width: 600px) {
+  .speech-bubble {
+    display: none;
+  }
+}
+.close-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #f3f4f6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+.voucher-title {
+  transition: all 0.25s ease;
+  color: #9e9e9e;
+}
+
+.voucher-title.active {
+  color: #1976d2; /* primary */
+  font-weight: 700;
+  border-bottom: 3px solid #1976d2;
+  padding-bottom: 4px;
+}

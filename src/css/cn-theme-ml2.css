@@ -1,0 +1,3967 @@
+/* ============================================================
+   CargoNet — MainLayout2 Theme ("ml2")
+   Completely separate from cn-style.css / cn-themes.css (Aurora).
+   Applied via: document.documentElement.setAttribute('data-theme', 'ml2')
+   Driven by the Ml2SwitcherPanel component's controls:
+     data-accent        slate (default, follows Background) | violet | emerald
+                        | amber | rose | cyan
+     data-menu-color    slate (default) | white | black | accent | accent-grad
+     data-header-color  slate (default) | white | black | accent | accent-grad
+     data-color-mode    dark (default) | light
+     data-layout-width  full (default) | boxed
+     data-bg-color      slate (default) | indigo | emerald | rose | black
+                        (also drives the header gradient — no separate switch)
+   ============================================================ */
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+html[data-theme="ml2"] {
+  color-scheme: dark;
+  background-color: var(--ml2-bg);
+  color: var(--ml2-text);
+  font-family: var(--ml2-font);
+}
+[data-theme="ml2"] .page-title,
+[data-theme="ml2"] .brand-name,
+[data-theme="ml2"] .metric-value,
+[data-theme="ml2"] h1,
+[data-theme="ml2"] h2,
+[data-theme="ml2"] h3,
+[data-theme="ml2"] .text-h4,
+[data-theme="ml2"] .text-h5,
+[data-theme="ml2"] .text-h6 {
+  font-family: var(--ml2-font-display);
+  letter-spacing: -0.01em;
+}
+[data-theme="ml2"] div,
+[data-theme="ml2"] section,
+[data-theme="ml2"] span,
+[data-theme="ml2"] p,
+[data-theme="ml2"] li,
+[data-theme="ml2"] table,
+[data-theme="ml2"] tr,
+[data-theme="ml2"] td,
+[data-theme="ml2"] th {
+  background-color: transparent;
+}
+/* The blanket rule above (attribute selector + tag = higher specificity
+   than a single class) was beating Quasar's own
+   .q-linear-progress__model--determinate { background: currentColor; }
+   — every tab's status-color progress fill was forced transparent
+   regardless of its actual value/color, even once the value itself was
+   fixed to a real 0-1 fraction. Restore the fill explicitly. */
+[data-theme="ml2"] .q-linear-progress__model {
+  background-color: currentColor !important;
+}
+/* Thinner status line under each tab — cn-style.css's .progress is 2px. */
+[data-theme="ml2"] .custom-tabs .progress {
+  height: 1px !important;
+}
+/* AI Smart vertical tab (SalesLeadDetails.vue's .aismart_button_vertical)
+   is a plain <div>, so the blanket div-reset above (same specificity
+   issue as .q-linear-progress__model) was beating its own solid green
+   background-color, leaving just the border/icon/text visible — a
+   see-through outline instead of a proper tab. Give it its own polished
+   look: solid accent-tinted gradient fill, soft shadow, refined padding,
+   instead of just restoring the flat #4caf50 it had before. */
+[data-theme="ml2"] .aismart_button_vertical {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--ml2-accent) 85%, black),
+    var(--ml2-accent)
+  ) !important;
+  border: 1px solid color-mix(in srgb, var(--ml2-accent) 60%, white) !important;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.35) !important;
+  color: #ffffff !important;
+}
+[data-theme="ml2"] .aismart_button_vertical:hover {
+  background: linear-gradient(
+    135deg,
+    var(--ml2-accent),
+    color-mix(in srgb, var(--ml2-accent) 70%, white)
+  ) !important;
+  box-shadow: -2px 0 14px color-mix(in srgb, var(--ml2-accent) 45%, transparent) !important;
+}
+
+[data-theme="ml2"] {
+  /* Default fallback accent — follows the Background's own hue via
+     --ml2-accent-default (overridden by whichever data-accent the
+     switcher applies). */
+  --ml2-accent: var(--ml2-accent-default, #3b82f6);
+  --ml2-accent-soft: var(--ml2-accent-default-soft, rgba(59, 130, 246, 0.16));
+  --ml2-bg: #0b1120;
+  --ml2-surface: #111a2e;
+  --ml2-surface-alt: #16213a;
+  --ml2-border: rgba(255, 255, 255, 0.07);
+  --ml2-text: #f2f5fa;
+  --ml2-text-dim: #92a0bc;
+  /* Default menu tint — follows the Background surface tone, so an unset
+     data-menu-color still reads as "matches background" rather than the
+     old flat near-black. */
+  --ml2-menu-bg: var(--ml2-surface);
+  --ml2-menu-bg-2: var(--ml2-surface);
+  --ml2-radius: 8px;
+  --ml2-teal: #17c3b2;
+  --ml2-amber: #ffb648;
+  --ml2-coral: #ff6b6b;
+  --ml2-font: "Inter", sans-serif;
+  --ml2-font-display: "Inter", sans-serif;
+
+  /* Legacy light-theme utility variables (--bg-blue-3, --bdr-blue-2,
+     --font-Mblue) are consumed by .bg-blue-3/.bg-blue-300, .bdr-blue-2 and
+     .font-Mblue across many filter-bar toolbars (refresh/Columns/fullscreen
+     icon buttons). Re-pointing them at the ml2 vars here fixes all of those
+     buttons at once, everywhere they're used, without touching every page. */
+  --bg-blue-3: var(--ml2-surface-alt);
+  --bdr-blue-2: 1px solid var(--ml2-border);
+  --font-Mblue: var(--ml2-accent);
+  /* Same idea — .bg-dblue-lblue (Copy Job button + its settings-gear
+     sibling) was still falling back to cn-style.css's own static blue
+     gradient because nothing here repointed it, unlike the trio above.
+     Matches the same darkened-accent -> accent gradient used for "Raise
+     New Shipment" (further down this file) instead of fading to
+     surface-alt, so both CTAs read as the same button style. */
+  --bg-dblue-lblue: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--ml2-accent) 55%, black) 0%,
+    var(--ml2-accent) 100%
+  );
+  /* --text-dgreen/dblue/dred/dbrown are dark-on-light text colors (e.g.
+     .text-dgreen = #003f1e, near-black) meant to sit on a light tinted
+     background like .bg-green-white's original white-to-mint gradient.
+     On our dark surface tint instead, that near-black text is nearly
+     invisible (the Save button read as a hollow, textless outline).
+     Re-point them at bright, readable colors — same fix shape as the
+     --bg-blue-3/--font-Mblue trio above. */
+  --text-dgreen: #ffffff;
+  --text-dblue: var(--ml2-accent);
+  --text-dred: var(--ml2-coral);
+  --text-dbrown: var(--ml2-amber);
+}
+
+/* ── Background — page canvas tint, independent of accent/menu/header ──
+   Same 5-name vocabulary as Menu Colors below (slate/indigo/emerald/rose/
+   black) instead of a different set (it used to be charcoal/navy) — so
+   the two controls read as parallel, cross-referenceable options instead
+   of two unrelated color pickers with mismatched language.
+   Deliberately desaturated (barely a hue whisper, not a saturated tint) —
+   a saturated background clashes when Theme Primary happens to land on
+   the same hue family (e.g. Emerald background + Emerald accent both
+   fighting for the same teal, reading as muddy/flat). A near-neutral
+   canvas lets ANY accent color pop cleanly on top, regardless of match. */
+/* Each Background also carries a matching --ml2-accent-default (and soft
+   variant) — the hue Theme Primary's "Default" option resolves to via
+   [data-accent="slate"] below, so switching Background updates the accent
+   too instead of leaving it pinned to a fixed blue. */
+[data-theme="ml2"][data-bg-color="slate"] {
+  --ml2-bg: #0b1120;
+  --ml2-surface: #111a2e;
+  --ml2-accent-default: #3b82f6;
+  --ml2-accent-default-soft: rgba(59, 130, 246, 0.16);
+}
+[data-theme="ml2"][data-bg-color="indigo"] {
+  --ml2-bg: #0e0d18;
+  --ml2-surface: #16152a;
+  --ml2-accent-default: #6c63ff;
+  --ml2-accent-default-soft: rgba(108, 99, 255, 0.16);
+}
+[data-theme="ml2"][data-bg-color="emerald"] {
+  --ml2-bg: #0a1412;
+  --ml2-surface: #12211d;
+  --ml2-accent-default: #17c3b2;
+  --ml2-accent-default-soft: rgba(23, 195, 178, 0.16);
+}
+[data-theme="ml2"][data-bg-color="rose"] {
+  --ml2-bg: #150e11;
+  --ml2-surface: #221419;
+  --ml2-accent-default: #ff6b6b;
+  --ml2-accent-default-soft: rgba(255, 107, 107, 0.16);
+}
+[data-theme="ml2"][data-bg-color="black"] {
+  --ml2-bg: #07080d;
+  --ml2-surface: #121319;
+  --ml2-accent-default: #06b6d4;
+  --ml2-accent-default-soft: rgba(6, 182, 212, 0.16);
+}
+
+/* ── Theme Primary (accent) ──
+   "Default" (data-accent="slate", kept as-is for backward-compatible
+   localStorage) follows whichever Background is selected via the
+   --ml2-accent-default set above, instead of a fixed blue. */
+[data-theme="ml2"][data-accent="slate"] {
+  --ml2-accent: var(--ml2-accent-default, #3b82f6);
+  --ml2-accent-soft: var(--ml2-accent-default-soft, rgba(59, 130, 246, 0.16));
+}
+[data-theme="ml2"][data-accent="violet"] {
+  --ml2-accent: #6c63ff;
+  --ml2-accent-soft: rgba(108, 99, 255, 0.16);
+}
+[data-theme="ml2"][data-accent="emerald"] {
+  --ml2-accent: #17c3b2;
+  --ml2-accent-soft: rgba(23, 195, 178, 0.16);
+}
+[data-theme="ml2"][data-accent="amber"] {
+  --ml2-accent: #ffb648;
+  --ml2-accent-soft: rgba(255, 182, 72, 0.16);
+}
+[data-theme="ml2"][data-accent="rose"] {
+  --ml2-accent: #ff6b6b;
+  --ml2-accent-soft: rgba(255, 107, 107, 0.16);
+}
+[data-theme="ml2"][data-accent="cyan"] {
+  --ml2-accent: #06b6d4;
+  --ml2-accent-soft: rgba(6, 182, 212, 0.16);
+}
+
+/* ── Theme Colors: Menu (drawer) tint — Default (dynamic, follows
+   Background) / White (fixed) / Black (fixed) / Accent (solid) / Accent
+   Gradient (dynamic, derived from Theme Primary). "Default" and
+   "Accent"/"Accent Gradient" all track another picker (Background /
+   Theme Primary respectively) via var() instead of a fixed hex, so
+   changing that other picker updates these automatically. */
+[data-theme="ml2"][data-menu-color="slate"] {
+  --ml2-menu-bg: var(--ml2-surface);
+  --ml2-menu-bg-2: var(--ml2-surface);
+}
+[data-theme="ml2"][data-menu-color="white"] {
+  --ml2-menu-bg: #ffffff;
+  --ml2-menu-bg-2: #ffffff;
+}
+[data-theme="ml2"][data-menu-color="black"] {
+  --ml2-menu-bg: #0a0a0c;
+  --ml2-menu-bg-2: #0a0a0c;
+}
+/* Muted/darkened, not the raw full-brightness accent — a fully saturated
+   fill (especially amber/cyan) washes out light text. Blending it into the
+   dark surface keeps the tint recognizable while staying readable, like
+   the rest of the dark theme. "accent" is one flat mix; "accent-grad" uses
+   TWO distinctly different mixes (12% vs 55%) so it actually reads as a
+   gradient instead of being visually identical to the solid option. */
+[data-theme="ml2"][data-menu-color="accent"] {
+  --ml2-menu-bg: color-mix(in srgb, var(--ml2-accent) 22%, #0d1424 78%);
+  --ml2-menu-bg-2: color-mix(in srgb, var(--ml2-accent) 22%, #0d1424 78%);
+}
+[data-theme="ml2"][data-menu-color="accent-grad"] {
+  --ml2-menu-bg: color-mix(in srgb, var(--ml2-accent) 12%, #0d1424 88%);
+  --ml2-menu-bg-2: color-mix(in srgb, var(--ml2-accent) 55%, #0d1424 45%);
+}
+
+/* ── Theme Colors: Header tint — same Default/White/Black/Accent/Accent
+   Gradient set as Menu Colors, its own independent switch. */
+[data-theme="ml2"] {
+  /* Default header tint — follows the Background surface tone, matching
+     the default Menu Color. */
+  --ml2-header-from: var(--ml2-surface);
+  --ml2-header-to: var(--ml2-surface);
+}
+[data-theme="ml2"][data-header-color="slate"] {
+  --ml2-header-from: var(--ml2-surface);
+  --ml2-header-to: var(--ml2-surface);
+}
+[data-theme="ml2"][data-header-color="white"] {
+  /* A hair off pure white (a faint mix of the page's own dark surface)
+     instead of #ffffff flat — against a dark sidebar/body it read as a
+     stark, disconnected block; this keeps it recognizably "white" while
+     softening the jump. */
+  --ml2-header-from: color-mix(in srgb, var(--ml2-surface) 6%, #ffffff 94%);
+  --ml2-header-to: color-mix(in srgb, var(--ml2-surface) 6%, #ffffff 94%);
+}
+/* The drop-shadow this used to have (elevation, meant to separate the
+   White header from the dark sidebar/body) instead rendered as a visible
+   seam artifact right where the header meets the sidebar. A clean border
+   only — no shadow. */
+[data-theme="ml2"][data-header-color="white"] .top-bar,
+[data-theme="ml2"][data-header-color="white"] .q-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: none !important;
+}
+[data-theme="ml2"][data-header-color="black"] {
+  --ml2-header-from: #0a0a0c;
+  --ml2-header-to: #0a0a0c;
+}
+/* Same muted darkening as Menu Colors above, for the same reason. "accent"
+   is a flat mix (from == to, no visible gradient); "accent-grad" spreads
+   the two stops much further apart (10% vs 60%) so it actually reads as a
+   directional gradient instead of being identical to the solid option. */
+[data-theme="ml2"][data-header-color="accent"] {
+  --ml2-header-from: color-mix(in srgb, var(--ml2-accent) 20%, #0b1120 80%);
+  --ml2-header-to: color-mix(in srgb, var(--ml2-accent) 20%, #0b1120 80%);
+}
+[data-theme="ml2"][data-header-color="accent-grad"] {
+  --ml2-header-from: color-mix(in srgb, var(--ml2-accent) 10%, #0b1120 90%);
+  --ml2-header-to: color-mix(in srgb, var(--ml2-accent) 60%, #0d1424 40%);
+}
+
+/* White menu & header need dark text/icons for contrast instead of the
+   theme's normal light text — only the most visible elements are covered
+   (brand name/tagline, nav labels/chevrons/icons, search input,
+   breadcrumb, header action icons), not every sub-pixel of chrome. Accent/
+   Accent Gradient no longer need this now that they're darkened mixes,
+   not a raw bright fill — the normal light theme text stays legible. */
+[data-theme="ml2"][data-menu-color="white"] .custom-drawer,
+[data-theme="ml2"][data-menu-color="white"] .ml2-sidebar-brand__name,
+[data-theme="ml2"][data-menu-color="white"] .ml2-nav-label,
+[data-theme="ml2"][data-menu-color="white"] .ml2-nav-header,
+[data-theme="ml2"][data-menu-color="white"] .ml2-sidebar-row-text,
+[data-theme="ml2"][data-menu-color="white"] .ml2-sidebar-card__title,
+[data-theme="ml2"][data-menu-color="white"] .search-box-input {
+  color: #1c1d2b !important;
+}
+/* Submenu items — same idea as the group above (var(--ml2-text-dim) was
+   too pale on white), but a notch lighter than the near-black used there,
+   since children are secondary to their parent module label. */
+[data-theme="ml2"][data-menu-color="white"] .ml2-nav-child-link {
+  color: #454860 !important;
+}
+[data-theme="ml2"][data-menu-color="white"] .ml2-sidebar-brand__tagline,
+[data-theme="ml2"][data-menu-color="white"] .ml2-nav-chevron,
+[data-theme="ml2"][data-menu-color="white"] .ml2-sidebar-row-time,
+[data-theme="ml2"][data-menu-color="white"] .ml2-sidebar-card__chevron,
+[data-theme="ml2"][data-menu-color="white"] .search-box-input::placeholder {
+  color: #5b5d78 !important;
+}
+[data-theme="ml2"][data-menu-color="white"] .ml2-nav-header:hover,
+[data-theme="ml2"][data-menu-color="white"] .ml2-nav-child-link:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+/* Search button — was var(--ml2-text-dim), the dark-mode grey token, left
+   un-adjusted for a white sidebar; make it visibly accent-colored (its
+   hover state already was, just not the resting state) so it reads as an
+   active, on-theme control instead of a faint grey blob. */
+[data-theme="ml2"][data-menu-color="white"] .search-box-icon-btn {
+  background: color-mix(in srgb, var(--ml2-accent) 10%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--ml2-accent) 25%, transparent) !important;
+}
+[data-theme="ml2"][data-menu-color="white"]
+  .search-box-icon-btn
+  .q-btn__content
+  .q-icon {
+  color: var(--ml2-accent) !important;
+}
+/* Recently Opened / Favorites cards — same "text/icons vanish on the
+   white sidebar" problem as the nav labels above, since .ml2-sidebar-row-*
+   also only ever used var(--ml2-text)/var(--ml2-accent), which stay light
+   regardless of Menu Color. Give the whole card a mild background too, so
+   it reads as its own distinct panel instead of blending into the sidebar. */
+[data-theme="ml2"][data-menu-color="white"] .ml2-sidebar-card--recents,
+[data-theme="ml2"][data-menu-color="white"] .ml2-sidebar-card--favorites {
+  background: color-mix(in srgb, var(--ml2-accent) 8%, white) !important;
+  border: 1px solid color-mix(in srgb, var(--ml2-accent) 20%, transparent) !important;
+}
+[data-theme="ml2"][data-menu-color="white"] .ml2-sidebar-row:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+[data-theme="ml2"][data-header-color="white"] .top-bar,
+[data-theme="ml2"][data-header-color="white"] .ml2-breadcrumb,
+[data-theme="ml2"][data-header-color="white"] .ml2-brandbar__name {
+  color: #1c1d2b !important;
+}
+/* .ml2-breadcrumb-current (the active/current crumb, e.g. "Dashboard")
+   carries its own more specific color: var(--ml2-text) rule further down
+   this file — that stays the theme's normal light text regardless of the
+   !important above, since a directly-matching rule on the element itself
+   always wins over an inherited value, important or not. That's why it
+   was washing out near-invisible against the White header. */
+[data-theme="ml2"][data-header-color="white"] .ml2-breadcrumb-current {
+  color: #1c1d2b !important;
+}
+/* Icons themed to the theme's own Primary/accent color instead of a flat
+   dark-grey scheme, so the header visibly reflects whichever accent is
+   selected instead of looking unthemed. Excludes .lifting-btn (the
+   workspace switcher / "AREM LOGISTICS", handled separately below with
+   its own solid-accent-fill look) and .menu-icon-btn (the sidebar-toggle
+   hamburger, which keeps its own dedicated "permanent accent highlight"
+   background further up this file — this rule was otherwise specific
+   enough to win over that one and flatten it to the same light tint as
+   every other icon, which wasn't wanted). */
+[data-theme="ml2"][data-header-color="white"]
+  .top-bar
+  .q-btn.q-btn--round:not(.lifting-btn):not(.menu-icon-btn) {
+  /* Flat light-blue accent tint, no border/shadow. */
+  background: color-mix(in srgb, var(--ml2-accent) 27%, white 85%) !important;
+  border: none !important;
+  color: var(--ml2-accent) !important;
+  box-shadow: none !important;
+}
+[data-theme="ml2"][data-header-color="white"]
+  .top-bar
+  .q-btn.q-btn--round:not(.lifting-btn):not(.menu-icon-btn):hover {
+  background: var(--ml2-accent) !important;
+  color: #ffffff !important;
+}
+/* The theme-switcher (color="blue-6"), key-shortcuts FAB (also color=
+   "blue-6"), and Layout-1-switch (color="deep-purple-6") buttons each
+   bring their own .bg-*-6 rule (further down this file): .bg-blue-6
+   forces a solid accent fill + white icon (both the .q-btn and the
+   .q-fab variant), .bg-deep-purple-6 forces its icon to var(--ml2-accent)
+   — inconsistent with each other, and either way not matching the light
+   tint every other icon here now uses. Pin the background and icon on
+   all three to the same accent-at-rest/white-on-hover behavior. */
+[data-theme="ml2"][data-header-color="white"] .top-bar .q-btn.bg-blue-6,
+[data-theme="ml2"][data-header-color="white"] .top-bar .q-fab.bg-blue-6 {
+  background: color-mix(in srgb, var(--ml2-accent) 27%, white 85%) !important;
+}
+[data-theme="ml2"][data-header-color="white"] .top-bar .q-btn.bg-blue-6 .q-icon,
+[data-theme="ml2"][data-header-color="white"] .top-bar .q-fab.bg-blue-6 .q-icon,
+[data-theme="ml2"][data-header-color="white"]
+  .top-bar
+  .q-btn.bg-deep-purple-6
+  .q-icon {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"][data-header-color="white"] .top-bar .q-btn.bg-blue-6:hover,
+[data-theme="ml2"][data-header-color="white"] .top-bar .q-fab.bg-blue-6:hover {
+  background: var(--ml2-accent) !important;
+}
+[data-theme="ml2"][data-header-color="white"]
+  .top-bar
+  .q-btn.bg-blue-6:hover
+  .q-icon,
+[data-theme="ml2"][data-header-color="white"]
+  .top-bar
+  .q-fab.bg-blue-6:hover
+  .q-icon,
+[data-theme="ml2"][data-header-color="white"]
+  .top-bar
+  .q-btn.bg-deep-purple-6:hover
+  .q-icon {
+  color: #ffffff !important;
+}
+/* Workspace switcher ("AREM LOGISTICS") — kept as the solid-accent-fill/
+   white-text look, unlike every other header icon above. */
+[data-theme="ml2"][data-header-color="white"] .top-bar .lifting-btn {
+  background: var(--ml2-accent) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+[data-theme="ml2"][data-header-color="white"]
+  .top-bar
+  .lifting-btn
+  .q-btn__content,
+[data-theme="ml2"][data-header-color="white"]
+  .top-bar
+  .lifting-btn
+  .q-btn__content
+  .block,
+[data-theme="ml2"][data-header-color="white"]
+  .top-bar
+  .lifting-btn
+  .q-btn__content
+  .q-icon {
+  color: #ffffff !important;
+}
+[data-theme="ml2"][data-header-color="white"] .top-bar .lifting-btn:hover {
+  filter: brightness(1.1);
+}
+
+/* ── Theme Styles: Color Mode — light variant ── */
+[data-theme="ml2"][data-color-mode="light"] {
+  --ml2-bg: #f5f5fa;
+  --ml2-surface: #ffffff;
+  --ml2-surface-alt: #eef0f7;
+  --ml2-border: #dcdfeb;
+  --ml2-text: #1c1d2b;
+  --ml2-text-dim: #5b5d78;
+  --ml2-menu-bg: #ffffff;
+  --ml2-header-from: #ffffff;
+  --ml2-header-to: #eef0f7;
+  color-scheme: light;
+}
+[data-theme="ml2"][data-color-mode="light"] .modul-icon,
+[data-theme="ml2"][data-color-mode="light"] .fixed-icon,
+[data-theme="ml2"][data-color-mode="light"] .item-label .row.fixed img,
+[data-theme="ml2"][data-color-mode="light"] .top-bar-logo img,
+[data-theme="ml2"][data-color-mode="light"] .mob-menu img {
+  filter: none !important;
+}
+[data-theme="ml2"][data-color-mode="light"] .q-header,
+[data-theme="ml2"][data-color-mode="light"] .top-bar,
+[data-theme="ml2"][data-color-mode="light"] .q-card,
+[data-theme="ml2"][data-color-mode="light"] .q-table {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* ── Theme Styles: Layout Width — boxed centers the page ── */
+[data-theme="ml2"][data-layout-width="boxed"] .q-page-container {
+  display: flex;
+  justify-content: center;
+}
+[data-theme="ml2"][data-layout-width="boxed"] .q-page {
+  max-width: 1400px;
+  width: 100%;
+}
+
+/* scrollbars — same slim, bar-only treatment everywhere in the app: no
+   track background at all (transparent, so it never shows as its own
+   colored strip), thin, with just a mild accent-tinted thumb that
+   brightens to the full accent on hover. */
+[data-theme="ml2"] ::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+[data-theme="ml2"] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-theme="ml2"] ::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--ml2-accent) 35%, transparent);
+  border-radius: 3px;
+}
+[data-theme="ml2"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--ml2-accent);
+}
+/* The sidebar drawer's actual scrolling element is Quasar's own nested
+   .q-drawer__content, not .custom-drawer itself — .custom-drawer alone
+   never matched it, leaving an unstyled/native scrollbar there. Same
+   bar-only treatment as everywhere else, just re-declared for that
+   specific nested element. */
+[data-theme="ml2"] .custom-drawer::-webkit-scrollbar,
+[data-theme="ml2"] .custom-drawer .q-drawer__content::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+[data-theme="ml2"] .custom-drawer::-webkit-scrollbar-track,
+[data-theme="ml2"] .custom-drawer .q-drawer__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-theme="ml2"] .custom-drawer::-webkit-scrollbar-thumb,
+[data-theme="ml2"] .custom-drawer .q-drawer__content::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--ml2-accent) 35%, transparent);
+  border-radius: 3px;
+}
+[data-theme="ml2"] .custom-drawer::-webkit-scrollbar-thumb:hover,
+[data-theme="ml2"]
+  .custom-drawer
+  .q-drawer__content::-webkit-scrollbar-thumb:hover {
+  background: var(--ml2-accent);
+}
+
+/* Sidebar module badges (Ml2Sidebar.vue's MODULE_ICONS) cycle through 5
+   colors per module (accent/teal/amber/coral/cyan) via an inline :style,
+   so they can't be re-themed from CSS the normal way — but a filter
+   applies on top of whatever color ends up there regardless. Boosted
+   (not muted) so each module reads as a clearly distinct, vivid color
+   against the dark rail instead of blending into it. */
+[data-theme="ml2"] .ml2-module-badge {
+  filter: saturate(1.5) brightness(1.15) contrast(1.05);
+}
+
+/* logo */
+[data-theme="ml2"] .item-label .row.fixed img,
+[data-theme="ml2"] .top-bar-logo img,
+[data-theme="ml2"] .mob-menu img {
+  filter: brightness(0) invert(1) !important;
+}
+
+/* header / top bar — the base header-from/to gradient (follows Background)
+   plus a wash of the selected Theme Primary (accent) layered on top, so the
+   header visibly reflects whichever accent color is chosen. */
+[data-theme="ml2"] .q-header,
+[data-theme="ml2"] .top-bar {
+  background: linear-gradient(90deg, var(--ml2-accent-soft), transparent 75%),
+    linear-gradient(90deg, var(--ml2-header-from), var(--ml2-header-to)) !important;
+  color: var(--ml2-text) !important;
+  border-bottom: 1px solid var(--ml2-border) !important;
+  box-shadow: none !important;
+  border-left: 0;
+}
+
+/* Flatten every action button in the topbar to the mockup's bordered
+   "icon-btn" square — no filled colored circles, tinted icon instead. */
+[data-theme="ml2"] .top-bar .q-btn.q-btn--round,
+[data-theme="ml2"] .top-bar .q-btn-dropdown,
+[data-theme="ml2"] .top-bar .lifting-btn {
+  background: var(--ml2-surface) !important;
+  background-image: none !important;
+  border: 1px solid var(--ml2-border) !important;
+  border-radius: var(--ml2-radius-sm) !important;
+  color: var(--ml2-text-dim) !important;
+  box-shadow: none !important;
+  transition: border-color var(--ml2-transition), color var(--ml2-transition);
+}
+/* Every icon button in the topbar — search/bell/mail/task/fullscreen, the
+   sidebar toggle, palette/settings/key-shortcuts — shares one identical
+   size and the theme's own rounded-square radius (14px), matching the
+   original mockup look. The user avatar keeps its own dedicated true-circle
+   rule below — that one was a deliberate, separate exception. */
+[data-theme="ml2"] .top-bar .q-btn.q-btn--round:not(.user-menu-btn),
+[data-theme="ml2"] .top-bar .q-fab .q-btn--fab {
+  border-radius: 8px !important;
+  width: 36px !important;
+  height: 36px !important;
+  min-width: 36px !important;
+  min-height: 36px !important;
+  max-width: 36px !important;
+  max-height: 36px !important;
+  padding: 0 !important;
+}
+[data-theme="ml2"] .top-bar .q-btn.q-btn--round .q-icon,
+[data-theme="ml2"] .top-bar .q-btn-dropdown .q-icon,
+[data-theme="ml2"] .top-bar .lifting-btn .q-icon {
+  color: inherit !important;
+}
+[data-theme="ml2"] .top-bar .q-btn.q-btn--round:hover,
+[data-theme="ml2"] .top-bar .q-btn-dropdown:hover,
+[data-theme="ml2"] .top-bar .lifting-btn:hover {
+  border-color: var(--ml2-accent) !important;
+  color: var(--ml2-text) !important;
+}
+/* The sidebar toggle is the primary nav control, not just another utility
+   icon (search/bell/mail/...) — give it a permanent accent highlight
+   instead of flattening it to the same muted bordered square as the rest. */
+[data-theme="ml2"] .top-bar .q-btn.q-btn--round.menu-icon-btn {
+  background: var(--ml2-accent) !important;
+  border-color: var(--ml2-accent) !important;
+  color: #fff !important;
+}
+[data-theme="ml2"] .top-bar .q-btn.q-btn--round.menu-icon-btn .q-icon {
+  color: #fff !important;
+}
+[data-theme="ml2"] .top-bar .q-btn.q-btn--round.menu-icon-btn:hover {
+  filter: brightness(1.1);
+  border-color: var(--ml2-accent) !important;
+}
+/* Metabase / theme-switcher / key-shortcuts buttons — these use Quasar's
+   `color="blue-6"` prop, which renders as a `.bg-blue-6` class (a filled
+   solid-blue circle), NOT a literal `color="blue-6"` HTML attribute — the
+   old `[color="blue-6"]` selector below never matched anything, so these
+   stayed Quasar's stock blue regardless of theme. Match the real class and
+   follow the theme's own accent instead. */
+[data-theme="ml2"] .top-bar .q-btn.bg-blue-6,
+[data-theme="ml2"] .top-bar .q-fab.bg-blue-6 {
+  background: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .top-bar .q-btn.bg-blue-6 .q-icon,
+[data-theme="ml2"] .top-bar .q-fab.bg-blue-6 .q-icon {
+  color: #fff !important;
+}
+[data-theme="ml2"] .top-bar .q-btn.bg-deep-purple-6,
+[data-theme="ml2"] .top-bar .q-btn.bg-deep-purple-6 .q-icon {
+  color: var(--ml2-accent) !important;
+}
+/* User profile menu trigger — matches the same 8px radius every other
+   topbar icon button uses, on both the button and the avatar chip inside
+   it (see .ml2-trigger-avatar in cn-style.css for why the avatar needs its
+   own explicit radius: it ships a competing Quasar default). */
+[data-theme="ml2"] .top-bar .user-menu-btn,
+[data-theme="ml2"] .top-bar .ml2-trigger-avatar {
+  border-radius: 8px !important;
+}
+[data-theme="ml2"] .top-bar .user-trigger-close-icon {
+  color: var(--ml2-accent) !important;
+}
+/* Colored gradient identity marker — applies to both the small trigger
+   avatar and the bigger one in the popup header, since .user-log is
+   shared by both. */
+[data-theme="ml2"] .top-bar .user-log {
+  background: linear-gradient(
+    135deg,
+    var(--ml2-accent),
+    var(--ml2-teal)
+  ) !important;
+}
+/* User profile menu popup */
+[data-theme="ml2"] .user-menu {
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .user-menu-header {
+  background: var(--ml2-accent-soft) !important;
+  border-bottom: 1px solid var(--ml2-border) !important;
+}
+[data-theme="ml2"] .user-menu-header .user-menu-avatar {
+  box-shadow: 0 0 0 3px var(--ml2-accent-soft) !important;
+}
+[data-theme="ml2"] .user-menu-name {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .user-menu-role {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .user-menu-item {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .user-menu-item .q-icon {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .user-menu-item-icon {
+  background: var(--ml2-surface-alt) !important;
+}
+[data-theme="ml2"] .user-menu-item:hover {
+  background: var(--ml2-accent-soft) !important;
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .user-menu-item:hover .q-icon {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .user-menu-item:hover .user-menu-item-icon {
+  background: var(--ml2-accent-soft) !important;
+}
+/* Logout keeps its own warm/destructive hover even in dark theme, instead
+   of blending into the same accent tint as an ordinary item. */
+[data-theme="ml2"] .user-menu-item--logout:hover {
+  background: rgba(224, 66, 66, 0.14) !important;
+  color: #ff6b6b !important;
+}
+[data-theme="ml2"] .user-menu-item--logout:hover .q-icon {
+  color: #ff6b6b !important;
+}
+[data-theme="ml2"] .user-menu-item--logout:hover .user-menu-item-icon {
+  background: rgba(224, 66, 66, 0.2) !important;
+}
+
+/* sidebar / drawer */
+/* Menu (drawer) background — same idea as the header: the selected Menu
+   Color as a base fill, plus a wash of the selected Theme Primary (accent)
+   fading down from the top so it visibly reflects the chosen accent too. */
+[data-theme="ml2"] .q-drawer,
+[data-theme="ml2"] .custom-drawer {
+  background: linear-gradient(180deg, var(--ml2-accent-soft), transparent 65%),
+    linear-gradient(180deg, var(--ml2-menu-bg), var(--ml2-menu-bg-2)) !important;
+  border-right: 1px solid var(--ml2-border) !important;
+  box-shadow: none !important;
+  transition: width var(--ml2-transition, 180ms ease) !important;
+}
+/* cn-style.css's ".custom-drawer" sets a 4-stop rainbow border-image on
+   border-left (green/blue/yellow/red bands) for the legacy layout — that's
+   the multicolor stripe. Neutralize both properties; the flat border-right
+   above is the only divider ml2 needs. */
+[data-theme="ml2"] .custom-drawer {
+  border-left: none !important;
+  border-image: none !important;
+}
+/* cn-style.css pins ".q-drawer--left.q-drawer--bordered { width: 290px
+   !important }" for the legacy layout — that !important beats the plain
+   inline width Quasar's own :width prop sets on the drawer, so the
+   collapsed rail never actually narrowed. MainLayout2.vue mirrors the
+   collapsed state onto <html data-sidebar="..."> specifically so this can
+   win over that legacy rule with matching !important specificity. */
+html[data-theme="ml2"] .q-drawer--left.q-drawer--bordered {
+  width: 300px !important;
+  transition: width var(--ml2-transition, 180ms ease) !important;
+}
+html[data-theme="ml2"][data-sidebar="collapsed"]
+  .q-drawer--left.q-drawer--bordered {
+  width: 68px !important;
+}
+
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-sidebar-brand {
+  justify-content: center;
+  padding: 14px 0;
+}
+
+/* ── Collapsed rail layout — icons only, centered, no labels/submenus ──
+   Toggled by the header's existing menu icon (Ml2Header.vue) — no separate
+   collapse button in the sidebar itself. */
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-nav-label,
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-nav-chevron,
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-nav-children {
+  display: none !important;
+}
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-nav {
+  align-items: center;
+  gap: 8px;
+}
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-nav-item {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 0;
+}
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px !important;
+  height: 44px !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  transform: none !important;
+  background: transparent !important;
+}
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-nav-header:hover {
+  background: transparent !important;
+}
+/* Icon is now a plain q-icon (real vector icon) inside .ml2-module-badge —
+   no more image-sizing fights with cn-style.css's legacy PNG rules. */
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-nav-icon {
+  width: 34px;
+  height: 34px;
+}
+[data-theme="ml2"] .custom-drawer.ml2-sidebar--collapsed .ml2-module-badge {
+  width: 34px !important;
+  height: 34px !important;
+}
+[data-theme="ml2"]
+  .custom-drawer.ml2-sidebar--collapsed
+  .ml2-nav-item--active
+  > .ml2-nav-header {
+  background: transparent !important;
+  box-shadow: none;
+}
+[data-theme="ml2"] .left_menu_search .q-field__control {
+  background-color: var(--ml2-surface-alt) !important;
+  border-radius: var(--ml2-radius) !important;
+}
+[data-theme="ml2"] .left_menu_search input,
+[data-theme="ml2"] .left_menu_search .q-field__native {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .left_menu_search .q-field__control:before {
+  border-color: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .left_menu_search .q-field__control:after {
+  border-color: var(--ml2-accent) !important;
+}
+
+/* Sidebar menu search box — cn-style.css's ".search-box-*" rules are a
+   light-theme design (white bg, sky-blue accents); override for ml2 so the
+   pill input + search trigger button read as part of the dark theme.
+   Nested under .search-filter-wrapper for extra specificity — this element
+   also carries a ".bg-blue-1" class, and the theme's generic utility-class
+   override maps that to var(--ml2-surface) (the general page background,
+   not the sidebar's own tone) at the same specificity tier, so a plain
+   ".search-box-container" rule could lose that tie depending on source
+   order. */
+[data-theme="ml2"] .search-filter-wrapper .search-box-container {
+  background: var(--ml2-menu-bg) !important;
+  border: 1px solid var(--ml2-border) !important;
+  /* cn-style.css's base rule hardcodes a 20px pill here, never overridden
+     for this theme before — while the search button inside it uses
+     var(--ml2-radius-sm), a visibly different (smaller/squarer) radius.
+     Match the same 8px radius everything else in this theme uses. */
+  border-radius: var(--ml2-radius) !important;
+  transition: border-color var(--ml2-transition),
+    box-shadow var(--ml2-transition);
+}
+[data-theme="ml2"] .search-filter-wrapper .search-box-container:focus-within {
+  background: var(--ml2-menu-bg) !important;
+  border-color: var(--ml2-accent) !important;
+  box-shadow: 0 0 0 3px var(--ml2-accent-soft);
+}
+[data-theme="ml2"] .search-box-input {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .search-box-input::placeholder {
+  color: var(--ml2-text-dim) !important;
+}
+/* Flat, bordered, icon-tinted — same professional treatment as the
+   header's own action buttons (.ml2-chrome-btn), rather than a bold
+   filled/gradient button. */
+[data-theme="ml2"] .search-box-icon-btn {
+  /* A relative accent-tinted wash instead of a flat white one (which read
+     as an unthemed light patch sitting inside an otherwise colored,
+     theme-following field) or a fixed var(--ml2-surface) — that token
+     follows the page Background swatch, not the sidebar's own Menu Color,
+     so it could visibly mismatch the search field/sidebar right next to
+     it. This overlay blends with whatever menu-bg is actually behind it
+     while still carrying the theme's own accent hue. */
+  background: color-mix(in srgb, var(--ml2-accent) 12%, transparent) !important;
+  margin: 3px !important;
+  width: 32px !important;
+  height: 32px !important;
+  min-height: 32px !important;
+  border-radius: var(--ml2-radius-sm) !important;
+  box-shadow: none !important;
+  transition: border-color var(--ml2-transition), color var(--ml2-transition);
+}
+[data-theme="ml2"] .search-box-icon-btn .q-btn__content .q-icon {
+  color: var(--ml2-text-dim) !important;
+  font-size: 12px;
+}
+[data-theme="ml2"] .search-box-icon-btn:hover {
+  border-color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .search-box-icon-btn:hover .q-btn__content .q-icon {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .search-box-clear-btn {
+  background: var(--ml2-surface) !important;
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .search-box-clear-btn:hover {
+  background: var(--ml2-coral) !important;
+  color: #fff !important;
+}
+
+[data-theme="ml2"] .dropdown-menu {
+  background-color: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+  border-radius: var(--ml2-radius) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+[data-theme="ml2"] .menu-link-search {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .menu-link-search:hover {
+  background-color: var(--ml2-accent-soft) !important;
+  color: var(--ml2-text) !important;
+}
+/* ============================================================
+   Sidebar navigation — plain, fully-owned markup (Ml2Sidebar.vue).
+   Deliberately NOT built on q-expansion-item/q-card, so there's no
+   hidden Quasar-internal background to fight; every visual state here
+   is defined by these rules alone.
+   ============================================================ */
+[data-theme="ml2"] .ml2-nav-no-results {
+  padding: 16px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ml2-text-dim);
+}
+[data-theme="ml2"] .ml2-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+[data-theme="ml2"] .ml2-nav-item {
+  border-radius: var(--ml2-radius-sm);
+  overflow: hidden;
+}
+[data-theme="ml2"] .ml2-nav-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  cursor: pointer;
+  border-radius: var(--ml2-radius-sm);
+  color: var(--ml2-text-dim);
+  transition: background-color var(--ml2-transition),
+    color var(--ml2-transition), transform var(--ml2-transition);
+}
+[data-theme="ml2"] .ml2-nav-header:hover {
+  /* Relative overlay, not var(--ml2-surface-alt) — that token follows the
+     page Background swatch, which can diverge from the sidebar's own
+     Menu Color, making hover read as a mismatched patch. */
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--ml2-text);
+  transform: translateX(2px);
+}
+[data-theme="ml2"] .ml2-nav-item--active > .ml2-nav-header {
+  background: linear-gradient(90deg, var(--ml2-accent-soft), transparent);
+  color: var(--ml2-text);
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 var(--ml2-teal);
+}
+[data-theme="ml2"][data-menu-color="white"]
+  .ml2-nav-item--active
+  > .ml2-nav-header {
+  background: rgba(0, 0, 0, 0.08);
+  color: #1c1d2b;
+  box-shadow: inset 2px 0 0 var(--ml2-accent);
+}
+[data-theme="ml2"] .ml2-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+/* Real vector icon badge — replaces the old per-module PNG images. Each
+   module gets its own color (see MODULE_ICONS in Ml2Sidebar.vue), applied
+   via inline style, on a small tinted rounded-square background. */
+[data-theme="ml2"] .ml2-module-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--ml2-radius-sm);
+  transition: transform var(--ml2-transition);
+}
+[data-theme="ml2"] .ml2-nav-header:hover .ml2-module-badge {
+  transform: scale(1.05);
+}
+/* White Menu Color previously flattened every badge to a plain dark-grey
+   background + dark-grey icon here, on the assumption the per-module
+   colors (MODULE_ICONS in Ml2Sidebar.vue) wouldn't have enough contrast
+   on a light surface — but that wiped out the intended rainbow look
+   entirely instead of just fixing contrast. Keep each module's own inline
+   color/background; just deepen them a bit for legibility against white,
+   the same way the boost filter above already brightens them for dark. */
+[data-theme="ml2"][data-menu-color="white"] .ml2-module-badge {
+  filter: saturate(1.8) brightness(0.9) contrast(1.35);
+}
+[data-theme="ml2"] .ml2-nav-label {
+  flex: 1;
+  font-size: 13.5px;
+  font-weight: inherit;
+}
+[data-theme="ml2"] .ml2-nav-chevron {
+  font-size: 12px;
+  color: var(--ml2-text-dim);
+  transition: transform var(--ml2-transition);
+}
+[data-theme="ml2"] .ml2-nav-chevron--open {
+  transform: rotate(180deg);
+  color: var(--ml2-teal);
+}
+[data-theme="ml2"] .ml2-nav-children {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px 8px 6px 40px;
+}
+[data-theme="ml2"] .ml2-nav-child {
+  display: flex;
+  align-items: center;
+  border-radius: var(--ml2-radius-sm);
+}
+[data-theme="ml2"] .ml2-nav-child-link {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ml2-text-dim) !important;
+  border-radius: var(--ml2-radius-sm);
+  text-decoration: none;
+  transition: background-color var(--ml2-transition),
+    color var(--ml2-transition);
+}
+[data-theme="ml2"] .ml2-nav-child-link:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--ml2-accent) !important;
+}
+/* The currently-open route. Deliberately NOT keyed off Vue Router's
+   automatic .router-link-exact-active class — several menu children share
+   the same path and differ only by query string (e.g. a shared form
+   component keyed by ?FormID=/?type=), and that class only compares path +
+   params, ignoring query, so it was lighting up every child sharing a path
+   at once. ml2-nav-child-link--active is computed manually (full path
+   including query) in Ml2Sidebar.vue instead. Just a left accent line, no
+   background/pill change — rest of the menu stays as-is. */
+[data-theme="ml2"] .ml2-nav-child-link.ml2-nav-child-link--active {
+  box-shadow: inset 2px 0 0 var(--ml2-accent);
+  color: var(--ml2-text) !important;
+}
+/* "Reports" group heading (the plain <span>, not a link) sitting above
+   the SL Report* items — no click target, so it gets a distinct
+   highlighted treatment instead of the dimmed/disabled look, so it
+   reads as a section label rather than a greyed-out menu item. */
+[data-theme="ml2"] .ml2-nav-child--heading {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--ml2-border);
+}
+[data-theme="ml2"] .ml2-nav-child-heading {
+  display: block;
+  width: 100%;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--ml2-accent) !important;
+  cursor: default;
+  user-select: none;
+}
+[data-theme="ml2"] .ml2-nav-star {
+  flex-shrink: 0;
+  font-size: 16px;
+  padding: 4px;
+  color: var(--ml2-text-dim);
+  cursor: pointer;
+  opacity: 0.35;
+  transition: opacity var(--ml2-transition), color var(--ml2-transition);
+}
+[data-theme="ml2"] .ml2-nav-child:hover .ml2-nav-star,
+[data-theme="ml2"] .ml2-nav-star--active {
+  opacity: 1;
+}
+[data-theme="ml2"] .ml2-nav-star--active {
+  color: var(--ml2-amber);
+}
+[data-theme="ml2"] .ml2-nav-star:hover {
+  color: var(--ml2-amber);
+}
+
+/* ── Favorites / Recently opened — card-style panels ── */
+[data-theme="ml2"] .ml2-sidebar-card {
+  margin: 10px 12px;
+  border-radius: var(--ml2-radius);
+  /* Mild accent-tinted wash (relative color-mix, not a fixed token like
+     var(--ml2-surface-alt), which follows the page Background swatch and
+     could mismatch the sidebar's own Menu Color right behind it) — reads
+     as "this panel belongs to the current theme" instead of a plain
+     neutral highlight. */
+  background: color-mix(in srgb, var(--ml2-accent) 8%, transparent);
+  border: 1px solid var(--ml2-border);
+  border-left: 3px solid var(--ml2-accent);
+  overflow: hidden;
+}
+[data-theme="ml2"] .ml2-sidebar-card__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+[data-theme="ml2"] .ml2-sidebar-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--ml2-accent-soft);
+  color: var(--ml2-accent);
+}
+[data-theme="ml2"] .ml2-sidebar-card--recents .ml2-sidebar-card__icon {
+  background: rgba(139, 158, 189, 0.16);
+  color: #3b82f6;
+  border-radius: 8px;
+}
+[data-theme="ml2"] .ml2-sidebar-card__title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ml2-accent);
+}
+[data-theme="ml2"] .ml2-sidebar-card--recents .ml2-sidebar-card__title {
+  color: #3b82f6;
+}
+[data-theme="ml2"] .ml2-sidebar-card__count {
+  margin-left: auto;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ml2-accent);
+  background: var(--ml2-accent-soft);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+[data-theme="ml2"] .ml2-sidebar-card--recents .ml2-sidebar-card__count {
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.16);
+}
+[data-theme="ml2"] .ml2-sidebar-card__chevron {
+  flex-shrink: 0;
+  font-size: 18px;
+  color: var(--ml2-text-dim);
+  transition: transform var(--ml2-transition);
+}
+[data-theme="ml2"] .ml2-sidebar-card__chevron--closed {
+  transform: rotate(180deg);
+}
+[data-theme="ml2"] .ml2-sidebar-card__body {
+  padding: 0 8px 8px;
+}
+[data-theme="ml2"] .ml2-sidebar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 8px;
+  border-radius: var(--ml2-radius-sm);
+  transition: background-color var(--ml2-transition);
+}
+[data-theme="ml2"] .ml2-sidebar-row:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+[data-theme="ml2"] .ml2-sidebar-row-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--ml2-radius-sm);
+}
+[data-theme="ml2"] .ml2-sidebar-row-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ml2-text);
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+[data-theme="ml2"] .ml2-sidebar-row-time {
+  flex-shrink: 0;
+  font-size: 10.5px;
+  color: var(--ml2-text-dim);
+  white-space: nowrap;
+}
+[data-theme="ml2"] .ml2-sidebar-star {
+  flex-shrink: 0;
+  font-size: 15px;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 50%;
+  color: var(--ml2-amber);
+  transition: background-color var(--ml2-transition);
+}
+[data-theme="ml2"] .ml2-sidebar-star:hover {
+  background-color: rgba(255, 182, 72, 0.16);
+}
+[data-theme="ml2"] .ml2-sidebar-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 8px 4px 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ml2-accent);
+  cursor: pointer;
+}
+[data-theme="ml2"] .ml2-sidebar-card--recents .ml2-sidebar-card__footer {
+  color: #3b82f6;
+}
+
+/* cards (dialogs, feedback panel, etc. — not the sidebar nav anymore) */
+[data-theme="ml2"] .q-card {
+  background-color: var(--ml2-surface) !important;
+  color: var(--ml2-text) !important;
+  border: 1px solid var(--ml2-border) !important;
+  border-radius: var(--ml2-radius) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+/* cn-style.css's .q-card.notab-container-report hardcodes `overflow-y:
+   scroll` (not `auto`) plus a light-theme `border-bottom: 15px solid #fff`
+   — scroll always reserves the scrollbar gutter even when the page's
+   content doesn't actually overflow, and that gutter's track color
+   (var(--ml2-bg), the page background) is darker than this card's own
+   surface, showing as a permanent dark strip regardless of whether
+   there's anything to scroll. auto only reserves/shows it when needed,
+   and the border-bottom is dropped since it was a light-card-on-white-
+   page spacing trick that doesn't apply on a dark surface. */
+[data-theme="ml2"] .q-card.notab-container-report {
+  overflow-y: auto !important;
+  border-bottom: none !important;
+}
+[data-theme="ml2"] .q-card.notab-container-report::-webkit-scrollbar {
+  width: 4px;
+}
+[data-theme="ml2"] .q-card.notab-container-report::-webkit-scrollbar-track {
+  background: transparent;
+}
+[data-theme="ml2"] .q-card.notab-container-report::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--ml2-accent) 35%, transparent);
+  border-radius: 3px;
+}
+[data-theme="ml2"]
+  .q-card.notab-container-report::-webkit-scrollbar-thumb:hover {
+  background: var(--ml2-accent);
+}
+/* The tab-content wrapper card (q-card--bordered q-card--flat no-shadow
+   my-card) already asks to opt out of border/shadow via its own classes,
+   but the generic .q-card rule above still forces one on via !important.
+   my-card is unique to this wrapper, so target it directly rather than
+   .q-card--flat/.no-shadow generally, which other cards may rely on. */
+[data-theme="ml2"] .q-card.my-card {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* top page header bar (breadcrumb + action buttons row) */
+[data-theme="ml2"] .header-style {
+  background-color: var(--ml2-surface) !important;
+  color: var(--ml2-text) !important;
+  border: 1px solid var(--ml2-border) !important;
+  box-shadow: none !important;
+}
+
+/* page + tables */
+[data-theme="ml2"] .q-page-container {
+  background-color: var(--ml2-bg) !important;
+}
+[data-theme="ml2"] .q-table {
+  border: 1px solid var(--ml2-border) !important;
+  /* Mild accent wash instead of a flat surface color — odd rows (the
+     table's own background, showing through wherever a row doesn't
+     match the even-row rule below) were the one part of the grid with
+     no accent mixed in at all, unlike the header just below. */
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 4%,
+    var(--ml2-surface)
+  ) !important;
+  border-radius: var(--ml2-radius) !important;
+  overflow: hidden !important;
+}
+/* cn-style.css's :root defines --bg-blue-white/--bg-grey-white as fixed
+   white→light-blue / white→grey gradients (used by .radio-btn-container
+   for things like the Quote Details "Comparative Quote"/"Multiple
+   Services" pills), with no ml2 override — like cn-themes.css already
+   does for its own named themes (e.g. aurora). Without this, those
+   pills render as solid white patches under ml2 regardless of any
+   .radio-btn-container rule tweaks, since it's the underlying variable
+   that's unthemed, not the class that consumes it. */
+html[data-theme="ml2"] {
+  --bg-blue-white: linear-gradient(
+    to bottom,
+    var(--ml2-surface-alt),
+    var(--ml2-accent)
+  ) !important;
+  --bg-grey-white: linear-gradient(
+    to bottom,
+    var(--ml2-surface-alt),
+    var(--ml2-surface)
+  ) !important;
+}
+html[data-theme="ml2"] .radio-btn-container {
+  color: var(--ml2-text) !important;
+}
+html[data-theme="ml2"] .radio-btn-inactive.radio-btn-container {
+  border-color: var(--ml2-border) !important;
+}
+html[data-theme="ml2"] .radio-btn-active.radio-btn-container,
+html[data-theme="ml2"] .radio-btn-container:hover {
+  border-color: var(--ml2-accent) !important;
+}
+
+/* cn-style.css's .m-table-style thead rule sets a light var(--bg-blue-white)
+   directly on the <thead> element itself — the <th> cells' own background
+   below normally paints over it, but themeing the <thead> too closes any
+   gap and gives the header a richer, more deliberate look (a mild accent
+   wash) instead of just matching the plain surface-alt tone used elsewhere. */
+[data-theme="ml2"] .q-table thead,
+[data-theme="ml2"] .m-table-style thead {
+  background: color-mix(in srgb, var(--ml2-accent) 50%, transparent) !important;
+}
+/* cn-style.css's .erp-table table.q-table th.income-cell carries its own
+   background-color (var(--bg-blue-white)), more specific than the plain
+   thead-th rule below — without this it would resurface a light patch on
+   the Charges grid's header cells specifically. Only the <thead> itself
+   should paint a background; every th is transparent. */
+[data-theme="ml2"] .erp-table table.q-table thead th.income-cell,
+[data-theme="ml2"] .erp-table table.q-table thead th.expense-cell {
+  background: transparent !important;
+}
+[data-theme="ml2"] .q-table thead th {
+  color: #fff !important;
+  border-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 75%,
+    transparent
+  ) !important;
+}
+/* In-table search box (.table-search) — cn-style.css hardcodes it as a
+   plain white pill with a static blue border, entirely unthemed; the
+   borderless q-input's own .q-field__control never gets a visible
+   background/border since this OUTER wrapper is the one actually drawing
+   both. */
+/* cn-style.css redefines .table-search's geometry (height/padding/border-
+   radius) at least half a dozen times — a plain base rule, a .header-style
+   variant, a .m-table-style variant, and several @media breakpoint copies,
+   each with slightly different numbers. Rather than chase every variant,
+   this theme owns the geometry outright (attribute-selector + !important
+   beats every plain-class rule cn-style.css has, regardless of which one
+   would otherwise win at a given breakpoint) so the search box is always
+   the same size/shape under ml2, on every page and tab. */
+[data-theme="ml2"] .table-search,
+[data-theme="ml2"] .table-search-full,
+[data-theme="ml2"] .header-style .table-search,
+[data-theme="ml2"] .m-table-style .table-search {
+  height: 38px !important;
+  padding: 0 0 0 0px !important;
+  margin: 0 6px 0 0 !important;
+  border-radius: var(--ml2-radius-sm) !important;
+  background-color: var(--ml2-surface-alt) !important;
+  color: var(--ml2-text) !important;
+  border: 1px solid var(--ml2-border) !important;
+  overflow: hidden !important;
+}
+[data-theme="ml2"] .table-search .q-field__inner .q-field__control,
+[data-theme="ml2"] .table-search-full .q-field__inner .q-field__control,
+[data-theme="ml2"]
+  .header-style
+  .table-search
+  .q-field__inner
+  .q-field__control,
+[data-theme="ml2"]
+  .m-table-style
+  .table-search
+  .q-field__inner
+  .q-field__control {
+  height: 38px !important;
+}
+/* The generic [data-theme="ml2"] .q-field__control rule further down
+   (theming every input) paints its OWN background/border/inset-shadow —
+   stacked inside the pill this rule just built, it read as a second,
+   slightly different-toned box nested in the first. .table-search already
+   owns the outer chrome, so the inner control goes fully transparent here. */
+[data-theme="ml2"] .table-search .q-field__control,
+[data-theme="ml2"] .table-search-full .q-field__control,
+[data-theme="ml2"] .header-style .table-search .q-field__control,
+[data-theme="ml2"] .m-table-style .table-search .q-field__control {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+[data-theme="ml2"] .table-search:hover .q-field__control,
+[data-theme="ml2"] .table-search-full:hover .q-field__control {
+  background: transparent !important;
+  border-color: transparent !important;
+}
+[data-theme="ml2"] .table-search .q-field__native,
+[data-theme="ml2"] .table-search input {
+  color: var(--ml2-text) !important;
+  padding: 0 14px !important;
+}
+[data-theme="ml2"] .table-search .q-field__native::placeholder {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .table-search:focus-within {
+  border-color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .table-search.q-field--dense .q-field__append,
+[data-theme="ml2"] .table-search-full.q-field--dense .q-field__append,
+[data-theme="ml2"] .header-style .table-search.q-field--dense .q-field__append,
+[data-theme="ml2"]
+  .m-table-style
+  .table-search.q-field--dense
+  .q-field__append {
+  height: 38px !important;
+  width: 38px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: var(--ml2-accent) !important;
+  border-left: 1px solid var(--ml2-border) !important;
+}
+[data-theme="ml2"]
+  .table-search.q-field--dense
+  .q-field__append
+  .material-icons,
+[data-theme="ml2"] .table-search .q-field__append .q-icon {
+  color: #ffffff !important;
+  font-size: 16px !important;
+}
+[data-theme="ml2"] .q-table tbody td {
+  border-color: var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+  align-items: center;
+}
+/* var(--ml2-accent-soft) is set per accent preset (Ml2SwitcherPanel) and
+   some presets define it as a solid color rather than a translucent rgba
+   — the row-hover tint then rendered as a flat opaque block instead of a
+   soft highlight, especially stacked over the Charges grid's own tinted
+   rows. Derive it from --ml2-accent + transparent directly instead, so
+   translucency is guaranteed regardless of which preset is active. */
+[data-theme="ml2"] .q-table tbody tr:hover td {
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 12%,
+    transparent
+  ) !important;
+}
+[data-theme="ml2"] .m-table-style .q-table tbody tr:nth-child(even) {
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 9%,
+    var(--ml2-surface-alt)
+  ) !important;
+}
+/* Charges grid (.erp-table) opts out of the generic zebra striping above —
+   its own income/expense-cell tinting already carries the row's meaning,
+   so the alternating accent stripe on top of that just muddies it.
+   .erp-table/.charges-color-table land on the OUTER q-table wrapper (via
+   QTable's `class` prop) while .m-table-style lands on the inner <table>
+   itself (via `table-class`) — they're on different elements, not one, so
+   this has to mirror that same ancestor/descendant shape (not a compound
+   class on one element, which never matched anything). Higher specificity
+   than the rule above so it wins regardless of source order. */
+[data-theme="ml2"]
+  .erp-table.charges-color-table
+  .q-table
+  tbody
+  tr:nth-child(even) {
+  background-color: transparent !important;
+}
+[data-theme="ml2"] .gridtable tr:nth-child(even) {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 9%,
+    var(--ml2-surface-alt)
+  ) !important;
+}
+[data-theme="ml2"] .gridtable tbody tr:hover {
+  background-color: var(--ml2-accent-soft) !important;
+}
+
+/* fields — VS-Code-style theming: instead of neutral white/grey borders
+   and backgrounds, everything is tinted FROM the theme's own accent color
+   (via color-mix), so switching accent (purple/teal/amber/red/cyan) recolors
+   the whole form, not just a couple of highlight spots. */
+[data-theme="ml2"] .q-field__control {
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 9%,
+    var(--ml2-surface-alt)
+  ) !important;
+  color: var(--ml2-text) !important;
+  border-radius: var(--ml2-radius) !important;
+  border: 1px solid color-mix(in srgb, var(--ml2-accent) 22%, transparent) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+/* Quasar's own .q-field--outlined draws a SECOND, native border via a
+   :before pseudo-element (1px solid rgba(0,0,0,0.24), unthemed) layered
+   on top of the .q-field__control border set above — every outlined field
+   in the app was showing two concentric outlines. Hide the native one;
+   the :after focus-ring pseudo-element is untouched so focus highlighting
+   still works. */
+[data-theme="ml2"] .q-field--outlined .q-field__control:before {
+  border-color: transparent !important;
+}
+[data-theme="ml2"] .q-field:hover .q-field__control {
+  border-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 70%,
+    transparent
+  ) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 15%,
+    var(--ml2-surface)
+  ) !important;
+}
+[data-theme="ml2"] .q-field__native,
+[data-theme="ml2"] .q-field__input {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .q-field__label {
+  /* Muted neutral with just a hint of the theme's accent — not a loud
+     saturated tint. Labels are secondary text; the accent color is
+     reserved for things that are actually interactive (buttons, active
+     tab, focus ring, icons), so it still means something when you see it.
+     Still dynamic — follows whichever accent is selected, just subtly. */
+  color: color-mix(in srgb, var(--ml2-accent) 20%, var(--ml2-text)) !important;
+  font-weight: 400 !important;
+  transition: color 0.15s ease;
+}
+/* Once the label has floated up (field has a value — Quasar's
+   .q-field--float, not just .q-field--focused), it switches fully to the
+   theme's accent color and STAYS that way even after focus is lost,
+   since a floated label means "this field has content", not "this field
+   is currently active". Still dynamic (follows whichever accent is
+   selected). */
+[data-theme="ml2"] .q-field--float .q-field__label {
+  /* Bright, un-muted accent (no white mixed in) so the floated label
+     reads as the theme's actual primary color, not a softened tint —
+     and back to a regular weight instead of bold. */
+  color: var(--ml2-accent) !important;
+  font-weight: 500 !important;
+  transform: translateY(-37%) scale(0.78);
+}
+[data-theme="ml2"] .q-field__marginal .q-icon,
+[data-theme="ml2"] .q-field__append .q-icon {
+  color: var(--ml2-accent) !important;
+  opacity: 0.9;
+}
+/* cn-style.css hardcodes every select's dropdown arrow to black
+   (`.q-select__dropdown-icon { color: #000 !important }`), globally,
+   unscoped — invisible against any dark field background app-wide. */
+[data-theme="ml2"] .q-select__dropdown-icon {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .q-field__control:before,
+[data-theme="ml2"] .q-field__control:after {
+  border: none !important;
+}
+[data-theme="ml2"] .q-field--focused .q-field__control,
+[data-theme="ml2"] .q-field__control:focus-within {
+  border-color: var(--ml2-accent) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35) !important;
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 12%,
+    var(--ml2-surface)
+  ) !important;
+}
+
+/* radio / checkbox — Quasar's own default unchecked color is
+   rgba(0,0,0,0.54) (near-black), meant for a light background; on this
+   dark surface it's nearly invisible ("Refer Booking" reading as no
+   circle at all next to the visible checked "Direct" dot). */
+[data-theme="ml2"] .q-radio__inner,
+[data-theme="ml2"] .q-checkbox__inner {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .q-radio__inner--truthy,
+[data-theme="ml2"] .q-checkbox__inner--truthy {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .q-radio__label,
+[data-theme="ml2"] .q-checkbox__label {
+  color: var(--ml2-text) !important;
+}
+/* Every checkbox's square — Quasar draws a hard 2px radius and, once
+   checked, fills the box with a solid `currentColor` (the accent, at full
+   strength). Round it to match the field radius used everywhere else, and
+   swap the checked fill for the same tinted tone fields use instead of a
+   flat accent block; the checkmark keeps full accent color on its own via
+   .q-checkbox__truthy so it still reads clearly against that tint. */
+[data-theme="ml2"] .q-checkbox__bg {
+  border-radius: var(--ml2-radius-sm) !important;
+}
+[data-theme="ml2"] .q-checkbox__inner--truthy .q-checkbox__bg {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 9%,
+    var(--ml2-surface-alt)
+  ) !important;
+}
+[data-theme="ml2"] .q-checkbox__truthy {
+  stroke: var(--ml2-accent) !important;
+}
+/* The "Columns" filter menu's checkboxes (.column-item .q-checkbox__inner)
+   are blown up to font-size:32px — at that scale the same fixed 8px
+   border-radius from the rule above becomes ~50% of the (smaller,
+   proportional) checkbox box, rendering it as a full circle instead of a
+   rounded square. Use a smaller absolute radius here specifically. */
+[data-theme="ml2"] .column-item .q-checkbox__bg {
+  border-radius: 3px !important;
+}
+[data-theme="ml2"] .column-item .q-checkbox__truthy {
+  stroke: #ffffff !important;
+}
+/* The checkmark path runs edge-to-edge with the box at this enlarged
+   size — scale it down slightly around its own center so there's visible
+   inset padding between the tick and the box border, instead of touching
+   it. */
+[data-theme="ml2"] .column-item .q-checkbox__svg {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+[data-theme="ml2"] .column-item .q-checkbox__truthy {
+  transform: scale(0.75);
+  transform-origin: center;
+}
+
+/* tabs */
+[data-theme="ml2"] .custom-tabs,
+[data-theme="ml2"] .q-tabs {
+  background-color: var(--ml2-surface) !important;
+}
+/* cn-style.css hardcodes a light-grey #e4e4e4 border-bottom here, meant
+   for a white card — themed to match the dark surface instead. */
+[data-theme="ml2"] .custom-tabs {
+  border-bottom: 1px solid var(--ml2-border) !important;
+}
+/* SalesLeadDetails.vue's <q-tabs> carries an inline
+   style="background-color: #fff !important" — inline !important can't be
+   beaten by any stylesheet rule, including the background-color override
+   just above. Cover it with an opaque ::before layer instead (same
+   technique used for the Tax Details box): the inline style keeps
+   painting underneath, unseen, and each <q-tab> renders above it via
+   z-index so its own active/hover backgrounds still show normally. */
+[data-theme="ml2"] .custom-tabs {
+  position: relative;
+  isolation: isolate;
+}
+[data-theme="ml2"] .custom-tabs::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-color: var(--ml2-surface);
+}
+[data-theme="ml2"] .custom-tabs > * {
+  position: relative;
+  z-index: 1;
+}
+[data-theme="ml2"] .q-tab__label,
+[data-theme="ml2"] .q-tab {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .custom-tabs .q-tab.q-tab--active,
+[data-theme="ml2"] .q-tab--active {
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 30%,
+    transparent
+  ) !important;
+  backdrop-filter: blur(6px);
+  color: #ffffff !important;
+  border-top: 2px solid var(--ml2-accent) !important;
+}
+/* .q-tab__label has its own color: var(--ml2-text-dim) !important rule
+   that otherwise wins over the active tab's own color above. */
+[data-theme="ml2"] .custom-tabs .q-tab.q-tab--active .q-tab__label,
+[data-theme="ml2"] .q-tab--active .q-tab__label {
+  color: #ffffff !important;
+}
+/* Hovering an inactive tab previews the active tab's own treatment — a
+   mild accent tint fading in, white text, and a top bar (matching the
+   active tab's own border-top position, not a bottom underline) that
+   slides in from the left instead of just appearing. */
+[data-theme="ml2"] .custom-tabs .q-tab:not(.q-tab--active) {
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+[data-theme="ml2"] .custom-tabs .q-tab:not(.q-tab--active)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--ml2-accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.25s ease;
+}
+[data-theme="ml2"] .custom-tabs .q-tab:not(.q-tab--active):hover {
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 14%,
+    transparent
+  ) !important;
+  color: #ffffff !important;
+}
+[data-theme="ml2"] .custom-tabs .q-tab:not(.q-tab--active):hover .q-tab__label {
+  color: #ffffff !important;
+}
+[data-theme="ml2"] .custom-tabs .q-tab:not(.q-tab--active):hover::after {
+  transform: scaleX(1);
+}
+/* Per-tab status progress bar (JobCNFormDynamicTab) — cn-style.css only
+   makes the track see-through for the ACTIVE tab
+   (.q-tab--active .progress { background: rgb(20 205 255 / 9%) }); every
+   other tab keeps the opaque light-cyan #a5dfff track, which visually
+   masks each tab's own status color (red/green/etc., bound per-tab via
+   :style="{ color: tab.color }") behind a uniform bright cyan line. Same
+   near-transparent track for every tab, active or not, so each tab's
+   actual status color is visible, not just the currently-open one. */
+[data-theme="ml2"] .custom-tabs .q-tab .progress {
+  background: rgb(20 205 255 / 20%) !important;
+}
+/* Tab overflow scroll arrows (chevrons that appear when there are more
+   tabs than fit) — keep MainLayout1's own shape (plain icon-only chevron,
+   no filled background/circle) rather than inventing a new ml2-specific
+   button look. cn-style.css's light-grey glow (box-shadow meant for a
+   white card) is the only part that's actually wrong here, showing up as
+   a mismatched pale smudge on this dark surface — swap it for a themed
+   accent glow and recolor the glyph, nothing else. */
+[data-theme="ml2"] .q-tabs--horizontal .q-tabs__arrow--left,
+[data-theme="ml2"] .q-tabs--horizontal .q-tabs__arrow--right {
+  color: var(--ml2-accent) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+[data-theme="ml2"] .q-tabs--horizontal .q-tabs__arrow--left:hover,
+[data-theme="ml2"] .q-tabs--horizontal .q-tabs__arrow--right:hover {
+  color: #ffffff !important;
+}
+/* MainLayout1 shows these flush against the true left/right edges of the
+   tab bar (flanking "General Details" on one side, "EDocs" on the other).
+   Under ml2 they were instead landing bunched together right after the
+   last tab — Quasar only positions them at the true edges (absolute,
+   outside the scrollable content) when it decides the bar needs the
+   "outside-arrows" treatment, which depends on measured widths we don't
+   control from CSS. Pin them to the true edges ourselves instead, so the
+   placement is consistent regardless of that internal state. */
+[data-theme="ml2"] .custom-tabs {
+  position: relative;
+}
+[data-theme="ml2"] .custom-tabs .q-tabs__arrow--left,
+[data-theme="ml2"] .custom-tabs .q-tabs__arrow--right {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  z-index: 2 !important;
+}
+[data-theme="ml2"] .custom-tabs .q-tabs__arrow--left {
+  left: 0 !important;
+}
+[data-theme="ml2"] .custom-tabs .q-tabs__arrow--right {
+  right: 0 !important;
+}
+
+/* Save + dropdown-arrow "joined" button pair (JobCNFormDynamicTab header) —
+   the global [data-theme="ml2"] .q-btn { border-radius: var(--ml2-radius) }
+   rule was rounding every corner uniformly, including the two inner corners
+   that are supposed to stay square so the pair reads as one seamless
+   joined control instead of two separate rounded buttons with a gap. */
+[data-theme="ml2"] .q-btn.desktop-action-save-joined {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+[data-theme="ml2"] .q-btn.desktop-action-more-joined {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+[data-theme="ml2"] .q-btn.desktop-action-save-joined,
+[data-theme="ml2"] .q-btn.desktop-action-more-joined {
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  font-weight: 400 !important;
+}
+/* Save dropdown menu (Save & New / Export PDF / Reset) — cn-style.css
+   colors its item labels #1e293b (dark slate) and its hover state
+   #f8f9fa (near-white), both meant for a white popup menu. On our dark
+   .q-menu they read as faint, almost-disabled-looking text with a
+   jarring bright flash on hover. */
+[data-theme="ml2"] .desktop-actions-item .q-item__label {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .desktop-actions-item {
+  border-left: 3px solid transparent !important;
+  transition: background 0.15s ease, border-color 0.15s ease !important;
+}
+[data-theme="ml2"] .desktop-actions-item:hover,
+[data-theme="ml2"] .desktop-actions-item:active,
+[data-theme="ml2"] .desktop-actions-item.q-manual-focusable--focused {
+  background: color-mix(in srgb, var(--ml2-accent) 28%, transparent) !important;
+  border-left-color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .desktop-actions-item:hover .q-item__label,
+[data-theme="ml2"] .desktop-actions-item:active .q-item__label,
+[data-theme="ml2"]
+  .desktop-actions-item.q-manual-focusable--focused
+  .q-item__label {
+  color: #ffffff !important;
+}
+
+/* misc text/accents */
+[data-theme="ml2"] .text-primary,
+[data-theme="ml2"] .q-field__control .text-blue {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .Theme-font-color,
+[data-theme="ml2"] .mod-header,
+[data-theme="ml2"] .header_text2 {
+  color: var(--ml2-accent) !important;
+}
+/* Breadcrumb lead text ("Air Export - Job" + its ">" chevron) — cn-style.css
+   hardcodes these to dark greys (#4c5258 / #555) meant for a light card,
+   which read as near-invisible dim text on this theme's dark surface. */
+[data-theme="ml2"] .header_text1,
+[data-theme="ml2"] .arrow_right_icon,
+[data-theme="ml2"] .arrow_right_icon::before {
+  color: var(--ml2-text-dim) !important;
+}
+/* "Total Shipments" tile next to the header text — dark surface, icon/
+   count follow the theme's own accent color, matching the rest of the
+   page's buttons/links instead of a fixed color. */
+[data-theme="ml2"] .total-stat-tile--inline {
+  background: var(--ml2-surface-alt) !important;
+  border: 1px solid var(--ml2-border) !important;
+  border-radius: var(--ml2-radius) !important;
+}
+[data-theme="ml2"] .total-stat-tile--inline .q-icon,
+[data-theme="ml2"] .total-stat-tile--inline .total-stat-count {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .total-stat-tile--inline .total-stat-label {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .q-separator {
+  background-color: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .q-btn {
+  border-radius: var(--ml2-radius) !important;
+}
+
+/* App-wide Theme Primary — Quasar's own compiled CSS already reads
+   background/text/border color="primary" (buttons, tabs, checkboxes,
+   radios, toggles, spinners, badges, etc.) from this one CSS custom
+   property everywhere in the app, not just MainLayout2 chrome. Overriding
+   it here means every "primary" colored button on every page repaints to
+   whichever Theme Primary swatch (or Background-derived Default) is
+   selected, without needing a rule per component. */
+[data-theme="ml2"] {
+  --q-primary: var(--ml2-accent);
+}
+
+/* page-wide fallback */
+[data-theme="ml2"] body,
+[data-theme="ml2"] #q-app,
+[data-theme="ml2"] .q-layout,
+[data-theme="ml2"] .q-page,
+[data-theme="ml2"] .page {
+  background-color: var(--ml2-bg) !important;
+  color: var(--ml2-text) !important;
+}
+
+/* neutral light utility classes — several of these (bg-blue-white,
+   bg-green-white, bg-orange-white, bg-yellow-white, bg-red-white) are
+   defined in cn-style.css via `background: linear-gradient(...)`, a
+   background-IMAGE set through the shorthand. Overriding background-color
+   alone (the previous version of this rule) doesn't touch that image
+   layer, so the gradient kept painting over this dark tint wherever one
+   of these classes lands directly on an element (e.g. table-header-class
+   on a q-table putting .bg-blue-white on every <th>). Use the shorthand
+   here too so it actually replaces the gradient. */
+[data-theme="ml2"] .bg-white,
+[data-theme="ml2"] .bg-white-1,
+[data-theme="ml2"] .bg-white-3,
+[data-theme="ml2"] .bg-grey,
+[data-theme="ml2"] .bg-grey-1,
+[data-theme="ml2"] .bg-grey-2,
+[data-theme="ml2"] .bg-grey-3,
+[data-theme="ml2"] .bg-grey-4,
+[data-theme="ml2"] .bg-grey-6,
+[data-theme="ml2"] .bg-grey-8,
+[data-theme="ml2"] .bg-grey-9,
+[data-theme="ml2"] .bg-grey-white,
+[data-theme="ml2"] .bg-gray-50,
+[data-theme="ml2"] .bg-gray-100,
+[data-theme="ml2"] .bg-blue-1,
+[data-theme="ml2"] .bg-blue-grey-1 {
+  background: var(--ml2-surface) !important;
+}
+/* bg-blue-white/bg-green-white/bg-orange-white/bg-yellow-white/
+   bg-red-white aren't neutral like the ones above — they're used as
+   SEMANTIC colors (e.g. the Save button's bg-green-white bdr-green
+   text-dgreen combo, or a table header's bg-blue-white). Flattening them
+   to plain var(--ml2-surface) (as an earlier version of this rule did)
+   stripped the Save button of its green identity entirely. Give each its
+   own tinted-into-the-surface treatment instead, keeping the semantic hue
+   while still fitting the dark theme. */
+[data-theme="ml2"] .bg-blue-white {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 30%,
+    var(--ml2-surface)
+  ) !important;
+}
+/* MainLayout1's original .bg-green-white is `linear-gradient(to bottom,
+   #ffffff, #79ffba)` — white fading to mint, top-to-bottom. Same
+   direction/structure here, just with theme-appropriate dark colors
+   instead of literal white, so both layouts share one gradient design
+   language (light top edge -> saturated green bottom) rather than each
+   button style being invented independently. */
+[data-theme="ml2"] .bg-green-white {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, #00b760 25%, var(--ml2-surface-alt)),
+    color-mix(in srgb, #1ac95a 100%, var(--ml2-surface))
+  ) !important;
+}
+[data-theme="ml2"] .bg-orange-white {
+  background: color-mix(
+    in srgb,
+    var(--ml2-amber) 25%,
+    var(--ml2-surface)
+  ) !important;
+}
+[data-theme="ml2"] .bg-yellow-white {
+  background: color-mix(in srgb, #facc15 25%, var(--ml2-surface)) !important;
+}
+[data-theme="ml2"] .bg-red-white {
+  background: color-mix(
+    in srgb,
+    var(--ml2-coral) 25%,
+    var(--ml2-surface)
+  ) !important;
+}
+/* When one of these utility classes lands directly on the field's OUTER
+   wrapper (e.g. class="bg-blue-1" passed straight to a <q-select>/<q-input>
+   instead of via the bg-color prop, which Quasar puts on .q-field__control
+   instead) — the rule above paints the outer <label class="q-field"> flat
+   var(--ml2-surface), while the inner .q-field__control gets its own
+   different accent-tinted background from the rule further down. Two
+   different dark tones stacked read as a visible "patch" edge around the
+   field. Make the outer wrapper transparent so only the inner control's
+   background shows. */
+[data-theme="ml2"] .q-field.bg-white,
+[data-theme="ml2"] .q-field.bg-white-1,
+[data-theme="ml2"] .q-field.bg-white-3,
+[data-theme="ml2"] .q-field.bg-grey,
+[data-theme="ml2"] .q-field.bg-grey-1,
+[data-theme="ml2"] .q-field.bg-grey-2,
+[data-theme="ml2"] .q-field.bg-grey-3,
+[data-theme="ml2"] .q-field.bg-grey-4,
+[data-theme="ml2"] .q-field.bg-grey-6,
+[data-theme="ml2"] .q-field.bg-grey-8,
+[data-theme="ml2"] .q-field.bg-grey-9,
+[data-theme="ml2"] .q-field.bg-grey-white,
+[data-theme="ml2"] .q-field.bg-gray-50,
+[data-theme="ml2"] .q-field.bg-gray-100,
+[data-theme="ml2"] .q-field.bg-blue-1,
+[data-theme="ml2"] .q-field.bg-blue-white,
+[data-theme="ml2"] .q-field.bg-blue-grey-1,
+[data-theme="ml2"] .q-field.bg-yellow-white,
+[data-theme="ml2"] .q-field.bg-green-white,
+[data-theme="ml2"] .q-field.bg-red-white,
+[data-theme="ml2"] .q-field.bg-orange-white {
+  background-color: transparent !important;
+}
+
+/* Form fields almost always carry a bg-color="blue-1" (etc.) prop, which
+   Quasar renders as one of the utility classes above directly on
+   .q-field__control. That utility rule ties in specificity with the
+   .q-field__control rule further up this file and wins by source order,
+   flattening every field to the plain page-background tone (--ml2-surface)
+   instead of the intended mild highlight (--ml2-surface-alt) — fields end
+   up blending into the page instead of reading as distinct inputs. Force
+   the field tone back with a compound selector, which naturally outranks
+   the single-class utility rule regardless of order. */
+[data-theme="ml2"] .q-field__control.bg-white,
+[data-theme="ml2"] .q-field__control.bg-white-1,
+[data-theme="ml2"] .q-field__control.bg-white-3,
+[data-theme="ml2"] .q-field__control.bg-grey,
+[data-theme="ml2"] .q-field__control.bg-grey-1,
+[data-theme="ml2"] .q-field__control.bg-grey-2,
+[data-theme="ml2"] .q-field__control.bg-grey-3,
+[data-theme="ml2"] .q-field__control.bg-grey-4,
+[data-theme="ml2"] .q-field__control.bg-grey-6,
+[data-theme="ml2"] .q-field__control.bg-grey-8,
+[data-theme="ml2"] .q-field__control.bg-grey-9,
+[data-theme="ml2"] .q-field__control.bg-grey-white,
+[data-theme="ml2"] .q-field__control.bg-gray-50,
+[data-theme="ml2"] .q-field__control.bg-gray-100,
+[data-theme="ml2"] .q-field__control.bg-blue-1,
+[data-theme="ml2"] .q-field__control.bg-blue-white,
+[data-theme="ml2"] .q-field__control.bg-blue-grey-1,
+[data-theme="ml2"] .q-field__control.bg-yellow-white,
+[data-theme="ml2"] .q-field__control.bg-green-white,
+[data-theme="ml2"] .q-field__control.bg-red-white,
+[data-theme="ml2"] .q-field__control.bg-orange-white {
+  /* Same accent-tinted formula as the plain .q-field__control rule above
+     — was a flat var(--ml2-surface-alt) with no accent mixed in, so any
+     field carrying a bg-color prop (almost all of them) lost the accent
+     tint the rest of the theme relies on. Percentage kept identical to
+     that rule so both paths land on the same visible tint. */
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 9%,
+    var(--ml2-surface-alt)
+  ) !important;
+}
+
+[data-theme="ml2"] .text-black,
+[data-theme="ml2"] .text-black-3,
+[data-theme="ml2"] .text-black-8,
+[data-theme="ml2"] .text-dark,
+[data-theme="ml2"] .text-blue,
+[data-theme="ml2"] .text-blue-8,
+[data-theme="ml2"] .text-dblue,
+[data-theme="ml2"] .text-grey,
+[data-theme="ml2"] .text-grey-4,
+[data-theme="ml2"] .text-grey-5,
+[data-theme="ml2"] .text-grey-6,
+[data-theme="ml2"] .text-grey-7,
+[data-theme="ml2"] .text-grey-8,
+[data-theme="ml2"] .text-grey-9,
+[data-theme="ml2"] .text-gray-600,
+[data-theme="ml2"] .text-gray-700 {
+  color: var(--ml2-text) !important;
+}
+
+/* Quasar internals */
+[data-theme="ml2"] .q-menu,
+[data-theme="ml2"] .q-dialog__inner > div,
+[data-theme="ml2"] .q-date,
+[data-theme="ml2"] .q-time,
+[data-theme="ml2"] .q-picker,
+[data-theme="ml2"] .q-notification,
+[data-theme="ml2"] .q-list {
+  background-color: var(--ml2-surface) !important;
+  color: var(--ml2-text) !important;
+}
+/* cn-style.css sets `background: rgb(0 0 0 / 90%) !important` (the
+   shorthand) on .q-tooltip — overriding just background-color (longhand)
+   left the shorthand's own color component still winning on tooltips.
+   Match shorthand-for-shorthand instead. */
+[data-theme="ml2"] .q-tooltip {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 25%,
+    var(--ml2-surface-alt)
+  ) !important;
+  color: #ffffff !important;
+  border: 1px solid var(--ml2-accent) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4) !important;
+}
+[data-theme="ml2"] .q-item {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .q-item:hover,
+[data-theme="ml2"] .q-item--active,
+[data-theme="ml2"] .q-manual-focusable--focused > .q-item {
+  background-color: var(--ml2-accent-soft) !important;
+}
+[data-theme="ml2"] .q-item__label--caption {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .q-date__header {
+  background-color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .q-date__calendar-item .q-btn,
+[data-theme="ml2"] .q-time__link {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .q-select__dialog {
+  background-color: var(--ml2-surface) !important;
+}
+[data-theme="ml2"] .q-card-section {
+  color: var(--ml2-text) !important;
+}
+
+/* q-table wrapper variants + tab-panels */
+[data-theme="ml2"] .q-table__container,
+[data-theme="ml2"] .q-table__top,
+[data-theme="ml2"] .q-table__bottom,
+[data-theme="ml2"] .q-tab-panel,
+[data-theme="ml2"] .q-tab-panels {
+  background-color: var(--ml2-surface) !important;
+  color: var(--ml2-text) !important;
+}
+
+/* "Records per page" select — cn-style.css hardcodes it as a light-blue
+   pill (var(--bg-blue-2)/var(--bdr-blue-2)) that ignores the theme, leaving
+   a bright box sitting on the dark surface. */
+[data-theme="ml2"] .q-table__bottom .q-field.q-select {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 18%,
+    var(--ml2-surface-alt)
+  ) !important;
+  border: 1px solid color-mix(in srgb, var(--ml2-accent) 45%, transparent) !important;
+  border-radius: 8px !important;
+  color: #ccc !important;
+}
+/* The generic [data-theme="ml2"] .q-field__control rule paints its own
+   background/border/inset-shadow — stacked inside the box the rule above
+   just built, it showed up as a second, differently-colored border nested
+   inside the first. This select's outer .q-field.q-select already owns
+   the chrome, so the inner control goes transparent/borderless here. */
+[data-theme="ml2"] .q-table__bottom .q-field.q-select .q-field__control {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+[data-theme="ml2"] .q-table__bottom .q-field.q-select .q-field__native,
+[data-theme="ml2"] .q-table__bottom .q-field.q-select .q-field__native span {
+  color: #ccc !important;
+}
+[data-theme="ml2"] .q-table__bottom .q-field.q-select .q-field__append .q-icon {
+  color: #1095ff !important;
+}
+[data-theme="ml2"] .q-table__bottom-item {
+  color: var(--ml2-text-dim) !important;
+}
+/* Breadcrumb "search"/back-navigation button (SalesLeadDetails.vue's
+   .search_button_icon) — cn-style.css defines this class twice with
+   different rules; the second one's background-color:#1e88e5/border both
+   solid blue win, painting a flat bright-blue circle with no visible
+   border distinction. Match the same accent-tinted look as the other
+   toolbar icon buttons instead. */
+[data-theme="ml2"] .search_button_icon {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 18%,
+    var(--ml2-surface-alt)
+  ) !important;
+  border: 1px solid color-mix(in srgb, var(--ml2-accent) 45%, transparent) !important;
+  color: #1095ff !important;
+}
+[data-theme="ml2"] .search_button_icon:hover {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 30%,
+    var(--ml2-surface-alt)
+  ) !important;
+  border-color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .search_button_icon::before {
+  border-color: transparent !important;
+}
+
+/* filter bar (Filters: search combo strip above grids) */
+[data-theme="ml2"] .tb-app .filter-bar-wrapper,
+[data-theme="ml2"] .sl-app .filter-bar-wrapper {
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+}
+[data-theme="ml2"] .tb-app .filter-pill-label,
+[data-theme="ml2"] .sl-app .filter-pill-label {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .tb-app .filter-pill .q-btn-dropdown {
+  background: var(--ml2-surface-alt) !important;
+  border: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .tb-app .filter-pill .q-btn-dropdown .q-btn__content i {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .tb-app .filter-bar-wrapper {
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+}
+[data-theme="ml2"] .tb-app .total-stat-tile {
+  background: var(--ml2-surface-alt) !important;
+  border: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .tb-app .total-stat-tile .q-icon,
+[data-theme="ml2"] .tb-app .total-stat-count {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .tb-app .total-stat-label {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .tb-app .filter-bar-wrapper .search-combo-wrapper {
+  background: var(--ml2-surface-alt) !important;
+  border: 1px solid color-mix(in srgb, var(--ml2-accent) 45%, transparent) !important;
+}
+/* "Raise New Shipment/Lead/Voucher/etc." button — its color comes from a
+   ::after pseudo-element on .q-btn__content (see cn-style.css), not the
+   button's own background, so it needs its own ml2 override rather than
+   picking up the shared --bg-blue-3/--font-Mblue vars.
+   IMPORTANT stays off `background` here on purpose: this selector is
+   already more specific than the original (unthemed) rule in cn-style.css,
+   so specificity alone wins without needing !important — and `!important`
+   here would then always beat the :hover rule below regardless of actual
+   hover state, since importance trumps specificity/pseudo-classes entirely
+   in the cascade. border-color has no competing :hover value, so it's safe
+   to keep !important there. */
+[data-theme="ml2"] .tb-app .filter-bar-wrapper .add_new_job .q-btn__content,
+[data-theme="ml2"] .tb-app .filter-bar-wrapper .add_new_Master .q-btn__content,
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .add_new_delivery
+  .q-btn__content {
+  /* Was surface-alt -> accent, so the bottom half nearly matched the dark
+     page background and looked muddy/undefined instead of a vibrant CTA.
+     Two accent-derived tones instead (darkened accent -> full accent),
+     matching the original light-theme button's dark-blue -> bright-blue
+     look, just dynamically derived from whichever accent is selected. */
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--ml2-accent) 55%, black) 0%,
+    var(--ml2-accent) 100%
+  );
+  /* cn-style.css's actual visible border for this button lives here, on
+     .q-btn__content (border: 1px solid #00a2ff) — the OUTER <button>
+     itself is deliberately borderless/transparent (see the note further
+     down: "its own background is transparent so it's not visible
+     directly"). Theme the border where it's actually drawn. */
+  border-color: var(--ml2-accent) !important;
+}
+/* The outer <button> must stay borderless — .bg-dblue-lblue's own border
+   rule (added for the settings-gear button, further down this file) also
+   happens to match this element, since it carries that same utility
+   class. Without this, that rule wins (its !important beats cn-style.css's
+   non-important "border: 0") and puts a second, real border on the OUTER
+   element too — a visible ring around the already-bordered content pill
+   above. Force it back off here. */
+[data-theme="ml2"] .tb-app .filter-bar-wrapper .add_new_job,
+[data-theme="ml2"] .tb-app .filter-bar-wrapper .add_new_Master,
+[data-theme="ml2"] .tb-app .filter-bar-wrapper .add_new_delivery {
+  border: 0 !important;
+}
+/* Being more specific than cn-style.css's own :hover rule (needed above so
+   the themed background wins over the base state) also means it was
+   overriding — and silently killing — the hover glass-sweep animation:
+   `!important` declarations always beat CSS animations in the cascade, so
+   tagging `background` (and the `background-position` it implies)
+   !important let the shine *render* but blocked glassSweep from ever
+   moving it. Dropping !important here fixes that — being :hover-qualified
+   and more specific than the original rule is already enough to win
+   without it, and now the animation is free to actually animate. */
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .add_new_job
+  .q-btn__content:hover,
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .add_new_Master
+  .q-btn__content:hover,
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .add_new_delivery
+  .q-btn__content:hover {
+  background: linear-gradient(
+      -75deg,
+      transparent 0%,
+      transparent 15%,
+      rgba(255, 255, 255, 0.06) 25%,
+      rgba(255, 255, 255, 0.22) 38%,
+      rgba(255, 255, 255, 0.38) 50%,
+      rgba(255, 255, 255, 0.22) 62%,
+      rgba(255, 255, 255, 0.06) 75%,
+      transparent 85%,
+      transparent 100%
+    ),
+    linear-gradient(
+      0deg,
+      color-mix(in srgb, var(--ml2-accent) 55%, black) 0%,
+      var(--ml2-accent) 100%
+    );
+  background-size: 40% 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+  background-position: -40% 0, 0 0;
+  animation: glassSweep 1.8s linear forwards;
+}
+[data-theme="ml2"] .tb-app .filter-bar-wrapper .search-combo-divider {
+  background: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .tb-app .filter-bar-wrapper .search-combo-input {
+  background: var(--ml2-surface-alt) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .search-combo-input::placeholder {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .tb-app .filter-bar-wrapper .search-combo-icon-btn {
+  background: var(--ml2-accent-soft) !important;
+  border-left: 1px solid var(--ml2-border) !important;
+}
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .search-combo-icon-btn
+  .q-btn__content
+  .q-icon {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .q-btn--dense.q-btn--round.search-combo-clear-btn {
+  background-color: var(--ml2-surface-alt) !important;
+  border: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-accent) !important;
+}
+
+/* ── Dark panel, following the theme's own accent color (JobDetailsGrid) ──
+   Every button/text/border here now follows the SAME dynamic --ml2-accent
+   variable as the rest of the app (purple/teal/amber/red/cyan — whatever
+   the user has picked), instead of a fixed blue that clashed once a
+   non-blue accent was selected. Most colors below simply fall through to
+   the general (non-.accent-filter-bar) ml2 rules already using
+   --ml2-accent elsewhere in this file — what's left here is just the
+   border-radius fixes that are still needed regardless of color. */
+[data-theme="ml2"] .tb-app .accent-filter-bar .search-combo-wrapper {
+  border-radius: 8px !important;
+}
+[data-theme="ml2"] .tb-app .accent-filter-bar .search-combo-icon-btn {
+  border-radius: 0 8px 8px 0 !important;
+}
+/* .q-btn__content isn't a .q-btn itself, so the global
+   [data-theme="ml2"] .q-btn { border-radius: var(--ml2-radius) !important; }
+   rule never reaches "Raise New Shipment" — match it explicitly (color
+   already comes from the general accent-based rule earlier in this file). */
+[data-theme="ml2"] .tb-app .accent-filter-bar .add_new_job .q-btn__content,
+[data-theme="ml2"] .tb-app .accent-filter-bar .add_new_Master .q-btn__content,
+[data-theme="ml2"]
+  .tb-app
+  .accent-filter-bar
+  .add_new_delivery
+  .q-btn__content {
+  border-radius: 8px !important;
+}
+/* The OUTER <button> (.add_new_job itself, not .q-btn__content above) DOES
+   match .q-btn, so the global var(--ml2-radius)=14px rule still won there
+   — its own background is transparent so it's not visible directly, but it
+   clips the ripple/focus-helper overlay, which then peeked out rounder
+   (14px) than the visible 8px content box underneath. Match it too. */
+[data-theme="ml2"] .tb-app .accent-filter-bar .add_new_job,
+[data-theme="ml2"] .tb-app .accent-filter-bar .add_new_Master,
+[data-theme="ml2"] .tb-app .accent-filter-bar .add_new_delivery {
+  border-radius: 8px !important;
+}
+/* Refresh / Columns / fullscreen have their visible border/background
+   directly on the outer <button> (not a wrapped .q-btn__content like
+   "Raise New Shipment" above), so the global
+   [data-theme="ml2"] .q-btn { border-radius: var(--ml2-radius) } rule was
+   directly determining their visible corners at 14px. Match 8px here too. */
+[data-theme="ml2"] .tb-app .accent-filter-bar .filter-btn,
+[data-theme="ml2"] .tb-app .accent-filter-bar .m-icon-btn-style {
+  border-radius: 8px !important;
+}
+/* "Columns" doesn't actually carry the font-Mblue class (only
+   refresh/fullscreen do) — it was still showing .filter-btn's own
+   hardcoded #096aad text color untouched, since nothing else overrode it. */
+[data-theme="ml2"] .tb-app .accent-filter-bar .filter-btn {
+  color: var(--ml2-accent) !important;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+[data-theme="ml2"] .tb-app .accent-filter-bar .filter-btn .q-icon {
+  color: var(--ml2-accent) !important;
+  transition: color 0.2s ease;
+}
+/* Soft accent-colored glow instead of a stark black shadow + hard inset
+   ring — reads as a gentle lift/highlight rather than a heavy outline. */
+[data-theme="ml2"] .tb-app .accent-filter-bar .filter-btn:hover {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ml2-accent) 16%, transparent),
+    color-mix(in srgb, var(--ml2-accent) 8%, transparent)
+  ) !important;
+  border-color: var(--ml2-accent) !important;
+  color: var(--ml2-text) !important;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--ml2-accent) 30%, transparent);
+  transform: translateY(-1px);
+}
+[data-theme="ml2"] .tb-app .accent-filter-bar .filter-btn:hover .q-icon {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .tb-app .accent-filter-bar .filter-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px color-mix(in srgb, var(--ml2-accent) 25%, transparent);
+}
+/* SalesLead.vue's toolbar (search/refresh/Columns/fullscreen) is plain
+   .tb-app, without the .accent-filter-bar wrapper the rules above are
+   scoped to — so refresh/Columns/fullscreen there only ever got the
+   generic --bg-blue-3/--bdr-blue-2 surface-alt tint (barely distinct from
+   the toolbar background) and never the more visible accent treatment.
+   Give the base (not just hover) state a stronger always-on accent tint
+   and border so these read as distinct, clickable controls at rest. */
+[data-theme="ml2"] .tb-app .filter-btn,
+[data-theme="ml2"] .tb-app .m-icon-btn-style {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 18%,
+    var(--ml2-surface-alt)
+  ) !important;
+  border: 1px solid color-mix(in srgb, var(--ml2-accent) 45%, transparent) !important;
+  color: #ccc !important;
+  border-radius: 8px !important;
+}
+[data-theme="ml2"] .tb-app .filter-btn .q-icon,
+[data-theme="ml2"] .tb-app .m-icon-btn-style .q-icon {
+  color: #1095ff !important;
+}
+[data-theme="ml2"] .tb-app .filter-btn:hover,
+[data-theme="ml2"] .tb-app .m-icon-btn-style:hover {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 30%,
+    var(--ml2-surface-alt)
+  ) !important;
+  border-color: var(--ml2-accent) !important;
+  color: var(--ml2-text) !important;
+}
+
+/* The "Search by <field>" dropdown (e.g. JobNo) glued to the left of the
+   search combo — several pages (JobDetailsGrid and others reusing this
+   same markup) style it locally with a hardcoded white .q-field__control,
+   which otherwise wins over the plain [data-theme="ml2"] .q-field__control
+   rule due to higher selector specificity, leaving a white patch inside an
+   otherwise dark search bar. Matched here with one extra ancestor class
+   (.tb-app) so this rule outranks that local override instead of relying
+   on !important alone. */
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .search-by-select
+  .q-field__control {
+  /* A mild accent tint instead of the same flat --ml2-surface-alt as the
+     input next to it — reads as its own distinct segment of the combo
+     box instead of blending flush into the input's background. */
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 10%,
+    var(--ml2-surface-alt)
+  ) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .search-by-select
+  .q-field__native {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"]
+  .tb-app
+  .filter-bar-wrapper
+  .search-by-select
+  .q-field__append
+  .q-icon {
+  color: var(--ml2-accent) !important;
+}
+
+/* Generic card fallback (e.g. the chart panels, which are a plain .card
+   with no color class) — declared first so the colored KPI tiles below
+   (same specificity, later in source) win and override this background. */
+[data-theme="ml2"] .card {
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+  border-radius: var(--ml2-radius) !important;
+}
+
+/* dashboard KPI tiles — a real, visible two-stop color gradient (not a
+   faint overlay) so each tile keeps a clearly distinct identity. */
+[data-theme="ml2"] .peach {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 107, 0.55),
+    var(--ml2-surface) 75%
+  ) !important;
+  border: 1px solid rgba(255, 107, 107, 0.35) !important;
+}
+[data-theme="ml2"] .Seablue {
+  background: linear-gradient(
+    135deg,
+    rgba(108, 99, 255, 0.55),
+    var(--ml2-surface) 75%
+  ) !important;
+  border: 1px solid rgba(108, 99, 255, 0.35) !important;
+}
+[data-theme="ml2"] .Grass1,
+[data-theme="ml2"] .gradient-scooter {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 182, 72, 0.55),
+    var(--ml2-surface) 75%
+  ) !important;
+  border: 1px solid rgba(255, 182, 72, 0.35) !important;
+}
+[data-theme="ml2"] .PinkRose,
+[data-theme="ml2"] .Ruby {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 107, 107, 0.55),
+    var(--ml2-surface) 75%
+  ) !important;
+  border: 1px solid rgba(255, 107, 107, 0.35) !important;
+}
+[data-theme="ml2"] .Grass,
+[data-theme="ml2"] .Teal_Light {
+  background: linear-gradient(
+    135deg,
+    rgba(23, 195, 178, 0.55),
+    var(--ml2-surface) 75%
+  ) !important;
+  border: 1px solid rgba(23, 195, 178, 0.35) !important;
+}
+[data-theme="ml2"] .peach,
+[data-theme="ml2"] .Seablue,
+[data-theme="ml2"] .Grass1,
+[data-theme="ml2"] .PinkRose,
+[data-theme="ml2"] .Ruby,
+[data-theme="ml2"] .Grass,
+[data-theme="ml2"] .Teal_Light,
+[data-theme="ml2"] .gradient-scooter {
+  position: relative;
+  overflow: hidden;
+}
+[data-theme="ml2"] .card-shadow,
+[data-theme="ml2"] .card {
+  box-shadow: none !important;
+}
+
+/* Per-card icon badge tint — matches each card's own wash color instead of
+   one flat generic accent for all four (so cards keep a distinct identity). */
+[data-theme="ml2"] .peach .card-inner {
+  background: rgba(255, 107, 107, 0.18);
+}
+[data-theme="ml2"] .Seablue .card-inner {
+  background: var(--ml2-accent-soft);
+}
+[data-theme="ml2"] .Grass1 .card-inner {
+  background: rgba(255, 182, 72, 0.18);
+}
+[data-theme="ml2"] .PinkRose .card-inner,
+[data-theme="ml2"] .Ruby .card-inner {
+  background: rgba(255, 107, 107, 0.18);
+}
+[data-theme="ml2"] .Grass .card-inner,
+[data-theme="ml2"] .Teal_Light .card-inner {
+  background: rgba(23, 195, 178, 0.18);
+}
+[data-theme="ml2"] .gradient-scooter .card-inner {
+  background: rgba(255, 182, 72, 0.18);
+}
+
+/* Neutralize cn-style.css's decorative ::before "ring" on .card-body — it
+   was designed to sit on top of a bold saturated gradient; on our flat
+   dark card it just reads as a muddy circle behind the icon. */
+[data-theme="ml2"] .card-body::before {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+/* Icon area: small tinted rounded-square badge instead of a large
+   semi-transparent floated icon + overlapping letters. */
+[data-theme="ml2"] .card-inner {
+  position: relative;
+  width: 52px;
+  height: 48px;
+  margin-left: auto;
+  border-radius: var(--ml2-radius-sm);
+  background: var(--ml2-accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+[data-theme="ml2"] .card-img {
+  height: auto !important;
+  width: 40px !important;
+  margin: 0 !important;
+  float: none !important;
+  opacity: 0.9 !important;
+  filter: brightness(0) invert(1) !important;
+  position: static !important;
+}
+[data-theme="ml2"] .background-text {
+  position: static !important;
+  display: none;
+}
+[data-theme="ml2"] .DB-Font {
+  font-family: var(--ml2-font-display);
+  font-weight: 700 !important;
+  font-size: 30px !important;
+  line-height: 1.2 !important;
+  color: var(--ml2-text) !important;
+  letter-spacing: -0.01em;
+}
+[data-theme="ml2"] .DB-Font small {
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  color: color-mix(in srgb, var(--ml2-text-dim) 55%, #ffffff) !important;
+}
+[data-theme="ml2"] .ml2-metric-label {
+  color: color-mix(in srgb, var(--ml2-text-dim) 55%, #ffffff) !important;
+}
+[data-theme="ml2"] .DB-Inner-Font {
+  color: color-mix(in srgb, var(--ml2-text-dim) 55%, #ffffff) !important;
+  font-weight: 500 !important;
+  font-size: 12.5px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* highcharts */
+[data-theme="ml2"] .highcharts-background {
+  fill: var(--ml2-surface) !important;
+}
+[data-theme="ml2"] .highcharts-grid-line {
+  stroke: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .highcharts-axis-line,
+[data-theme="ml2"] .highcharts-tick {
+  stroke: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .highcharts-title,
+[data-theme="ml2"] .highcharts-subtitle {
+  fill: var(--ml2-text) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .highcharts-axis-labels text,
+[data-theme="ml2"] .highcharts-legend-item text,
+[data-theme="ml2"] .highcharts-xaxis-labels text,
+[data-theme="ml2"] .highcharts-yaxis-labels text {
+  fill: var(--ml2-text-dim) !important;
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .highcharts-tooltip-box {
+  fill: var(--ml2-surface) !important;
+  stroke: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .highcharts-tooltip text {
+  fill: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .highcharts-contextbutton .highcharts-button-box {
+  fill: var(--ml2-surface-alt) !important;
+}
+[data-theme="ml2"] .highcharts-button-symbol {
+  stroke: var(--ml2-text) !important;
+}
+
+/* apexcharts — the dashboard's actual charting library. ApexCharts sets
+   text/line colors via inline SVG style attributes, so these need
+   !important to win (an !important stylesheet rule does override a plain
+   inline style). */
+[data-theme="ml2"] .apexcharts-canvas {
+  background: transparent !important;
+}
+[data-theme="ml2"] .custom-chart {
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+[data-theme="ml2"] .apexcharts-text,
+[data-theme="ml2"] .apexcharts-xaxis-label,
+[data-theme="ml2"] .apexcharts-yaxis-label,
+[data-theme="ml2"] .apexcharts-xaxis text,
+[data-theme="ml2"] .apexcharts-yaxis text {
+  fill: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .apexcharts-title-text {
+  fill: var(--ml2-text) !important;
+  font-family: var(--ml2-font-display) !important;
+}
+[data-theme="ml2"] .apexcharts-legend-text {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .apexcharts-gridline {
+  stroke: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .apexcharts-xaxis line,
+[data-theme="ml2"] .apexcharts-yaxis line,
+[data-theme="ml2"] .apexcharts-xaxis-tick,
+[data-theme="ml2"] .apexcharts-yaxis-tick {
+  stroke: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .apexcharts-tooltip {
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+  box-shadow: var(--ml2-shadow-md) !important;
+}
+[data-theme="ml2"] .apexcharts-tooltip-title {
+  background: var(--ml2-surface-alt) !important;
+  border-bottom: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .apexcharts-tooltip-series-group,
+[data-theme="ml2"] .apexcharts-tooltip-text,
+[data-theme="ml2"] .apexcharts-tooltip-y-group,
+[data-theme="ml2"] .apexcharts-tooltip-text-label,
+[data-theme="ml2"] .apexcharts-tooltip-text-value {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .apexcharts-xaxistooltip,
+[data-theme="ml2"] .apexcharts-yaxistooltip {
+  background: var(--ml2-surface-alt) !important;
+  border: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .apexcharts-xaxistooltip:before,
+[data-theme="ml2"] .apexcharts-xaxistooltip:after {
+  border-bottom-color: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .apexcharts-xcrosshairs,
+[data-theme="ml2"] .apexcharts-ycrosshairs {
+  stroke: var(--ml2-accent) !important;
+}
+
+/* ============================================================
+   PREMIUM DESIGN SYSTEM — additional tokens + utilities
+   Layered on top of the tokens above. Everything here stays
+   scoped under [data-theme="ml2"] so it never touches Layout 1.
+   ============================================================ */
+
+[data-theme="ml2"] {
+  --ml2-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --ml2-shadow-md: 0 4px 14px rgba(0, 0, 0, 0.25);
+  --ml2-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --ml2-transition: 180ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ml2-radius-sm: 8px;
+  --ml2-radius-lg: 18px;
+  --ml2-space-1: 4px;
+  --ml2-space-2: 8px;
+  --ml2-space-3: 12px;
+  --ml2-space-4: 16px;
+  --ml2-space-5: 24px;
+}
+
+/* ── Animation utilities ── */
+@keyframes ml2FadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+[data-theme="ml2"] .ml2-fade-in {
+  animation: ml2FadeIn 220ms ease-out;
+}
+
+[data-theme="ml2"] .ml2-card-hover {
+  transition: transform var(--ml2-transition), box-shadow var(--ml2-transition);
+}
+[data-theme="ml2"] .ml2-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ml2-shadow-lg) !important;
+}
+
+@keyframes ml2Skeleton {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+[data-theme="ml2"] .ml2-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--ml2-surface-alt) 25%,
+    var(--ml2-surface) 37%,
+    var(--ml2-surface-alt) 63%
+  );
+  background-size: 200px 100%;
+  animation: ml2Skeleton 1.4s ease-in-out infinite;
+  border-radius: var(--ml2-radius-sm);
+}
+
+/* ── Sticky header w/ scroll shadow ── */
+[data-theme="ml2"] .top-bar.ml2-scrolled {
+  box-shadow: none !important;
+}
+
+/* ── Breadcrumb (static, driven by active tab label) ── */
+[data-theme="ml2"] .ml2-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ml2-text-dim);
+  padding-left: 4px;
+}
+[data-theme="ml2"] .ml2-breadcrumb .ml2-breadcrumb-current {
+  color: var(--ml2-text);
+  font-weight: 600;
+}
+
+/* ── Static header chrome (notifications/messages/tasks/workspace) ──
+   Flat bordered squares (like a modern SaaS topbar), not filled circles. */
+[data-theme="ml2"] .ml2-chrome-btn {
+  position: relative;
+  transition: transform var(--ml2-transition),
+    border-color var(--ml2-transition);
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+  border-radius: var(--ml2-radius-sm) !important;
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .ml2-chrome-btn .q-icon {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .ml2-chrome-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--ml2-accent) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .ml2-chrome-btn:hover .q-icon {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .ml2-chrome-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ml2-accent);
+  border: 2px solid var(--ml2-header-to);
+}
+
+[data-theme="ml2"] .ml2-sidebar-empty {
+  font-size: 12px;
+  color: var(--ml2-text-dim);
+  padding: 0 var(--ml2-space-4) var(--ml2-space-3);
+}
+
+/* ── Scroll-to-top FAB ── */
+[data-theme="ml2"] .ml2-scroll-top-btn {
+  box-shadow: var(--ml2-shadow-md) !important;
+  transition: opacity var(--ml2-transition), transform var(--ml2-transition);
+}
+
+/* ── User Log Dashboard header bar (DashboardPage.vue) ── */
+[data-theme="ml2"] .Dashboard-header {
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+  border-radius: var(--ml2-radius-lg) !important;
+  box-shadow: var(--ml2-shadow-md) !important;
+  padding: 14px 22px !important;
+  display: flex;
+  align-items: center;
+}
+[data-theme="ml2"] .Dashboard-header .tittle-text {
+  font-family: var(--ml2-font-display);
+  font-weight: 700 !important;
+  letter-spacing: -0.01em;
+  background: linear-gradient(90deg, var(--ml2-text), var(--ml2-text-dim));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* Quasar's `color`/`icon` props are consumed internally and never reflected
+   as real DOM attributes, so selectors like [color="primary"] never match —
+   target the actual classes Quasar renders (.bg-primary / .text-white)
+   instead. This is why the filter/menu/fab/person buttons previously looked
+   inconsistent: only .note-btn (a real class) was ever being styled. */
+[data-theme="ml2"] .Dashboard-header .q-btn.bg-primary,
+[data-theme="ml2"] .Dashboard-header .q-fab.note-btn > .q-btn {
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-text-dim) !important;
+  box-shadow: none !important;
+  transition: border-color var(--ml2-transition), color var(--ml2-transition),
+    transform var(--ml2-transition);
+}
+[data-theme="ml2"] .Dashboard-header .q-btn.bg-primary .q-icon,
+[data-theme="ml2"] .Dashboard-header .q-fab.note-btn > .q-btn .q-icon {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .Dashboard-header .q-btn.bg-primary:hover,
+[data-theme="ml2"] .Dashboard-header .q-fab.note-btn > .q-btn:hover {
+  border-color: var(--ml2-accent) !important;
+  color: var(--ml2-text) !important;
+  transform: translateY(-1px);
+}
+/* Person button carries a text label — force text-white's inline color
+   back to the same flat scheme so all four buttons genuinely match. */
+[data-theme="ml2"] .Dashboard-header .q-btn.bg-primary.text-white,
+[data-theme="ml2"] .Dashboard-header .q-btn.bg-primary .q-btn__content {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .Dashboard-header .q-btn.bg-primary:hover .q-btn__content {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .db-header-card {
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+  box-shadow: var(--ml2-shadow-md) !important;
+}
+[data-theme="ml2"] .db-header-title span {
+  font-family: var(--ml2-font-display);
+  font-weight: 700 !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .db-header-actions .q-btn.bg-dblue-lblue {
+  background: var(--ml2-surface) !important;
+  border: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-accent) !important;
+}
+
+/* ── Brand logo (Ml2Header.vue) ──
+   cn-style.css's ".top-bar img { width: 170px !important; height: auto
+   !important }" (sized for the old wide text-logo) also matches this new
+   round icon's inner <img>, blowing it up past its 40px circular frame so
+   it gets clipped down to a blank corner. Pin it back explicitly, at
+   higher specificity + later in the cascade than that legacy rule. */
+[data-theme="ml2"] .top-bar .ml2-brandbar__logo {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+}
+[data-theme="ml2"] .top-bar .ml2-brandbar__logo img {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+}
+
+/* ── Footer tab bar (DynamicTab.vue) — restyled for ml2 only ──
+   Full redesign: solid accent pill for the active tab (not just a soft
+   tint), flat borderless pills for inactive tabs, and the native browser
+   focus ring (blue outline on the <a href="#">, visible after a click)
+   suppressed everywhere in favor of our own accent ring. */
+[data-theme="ml2"] .modern-tabs-footer,
+[data-theme="ml2"] .footer-tabs-bar {
+  /* Tinted with the theme's own accent color instead of a flat neutral
+     surface — same color-mix() approach as data-header-color="accent"
+     above, so the footer bar visibly ties back to whichever accent the
+     switcher currently has selected instead of looking unthemed. */
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 20%,
+    var(--ml2-surface) 80%
+  ) !important;
+  border-top: 1px solid var(--ml2-border) !important;
+  padding: 10px 12px !important;
+  /* cn-style.css's own ".modern-tabs-footer" sets a light-blue glow
+     ("box-shadow: 0px 1px 3px rgb(103 199 255)") around this rounded
+     capsule bar that survived every earlier fix — that glow is the
+     "white patch" outlining the whole tab group. */
+  box-shadow: none !important;
+}
+/* Nested under .modern-tabs-footer for extra specificity — cn-style.css's
+   ".bg-grey-white" class (also present on this element) sets `background`
+   (the shorthand, which resets background-image too) at the same
+   specificity tier as a bare ".modern-tab" rule, so ties could go either
+   way; this selector is unambiguously more specific. */
+[data-theme="ml2"] .modern-tabs-footer .modern-tab {
+  /* Mild accent tint + accent-colored border instead of a plain surface
+     fill with an invisible (transparent) border, so an inactive pill
+     already reads as "on-theme" rather than only the active pill doing
+     so via its solid accent fill below. */
+  background: var(--ml2-accent-soft) !important;
+  background-image: none !important;
+  border: 1px solid var(--ml2-accent) !important;
+  border-radius: 999px !important;
+  color: var(--ml2-text-dim) !important;
+  outline: none !important;
+  box-shadow: none !important;
+  padding: 7px 14px !important;
+  transition: background-color var(--ml2-transition),
+    color var(--ml2-transition), border-color var(--ml2-transition);
+}
+[data-theme="ml2"] .modern-tab:focus,
+[data-theme="ml2"] .modern-tab:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px var(--ml2-accent-soft) !important;
+}
+[data-theme="ml2"] .modern-tabs-footer .modern-tab .tab-text {
+  color: #ffffff !important;
+}
+[data-theme="ml2"] .modern-tabs-footer .modern-tab .tab-close {
+  color: #ffffff !important;
+  background-color: var(--ml2-accent) !important;
+  opacity: 1;
+}
+[data-theme="ml2"] .modern-tabs-footer .modern-tab:hover {
+  background: var(--ml2-accent) !important;
+  background-image: none !important;
+  border-color: var(--ml2-accent) !important;
+  color: #fff !important;
+}
+[data-theme="ml2"] .modern-tab:hover .tab-close {
+  /* Same white-circle treatment as the active tab's close button, since
+     the hovered tab's own background is now also the solid accent color
+     (matching .modern-tab.active) — a white icon here would go invisible
+     against it the same way it would on the active tab. */
+  color: var(--ml2-accent) !important;
+  background-color: #ffffff !important;
+  opacity: 1;
+}
+[data-theme="ml2"] .modern-tabs-footer .modern-tab.active {
+  background: var(--ml2-accent) !important;
+  background-image: none !important;
+  border-color: var(--ml2-accent) !important;
+  color: #fff !important;
+  font-weight: 600;
+  box-shadow: 0 2px 8px var(--ml2-accent-soft) !important;
+}
+[data-theme="ml2"] .modern-tabs-footer .modern-tab.active .tab-close {
+  /* Close icon needs to invert to the accent color now that its own
+     background is white — keeping it white-on-white would make it
+     invisible against the new close-button fill. */
+  color: var(--ml2-accent) !important;
+  background-color: #ffffff !important;
+  opacity: 0.85;
+}
+[data-theme="ml2"] .modern-tab.active .tab-close:hover {
+  opacity: 1;
+}
+
+/* ── Misc static-color buttons that never got an ml2 override ──
+   The "Usability Feedback" side tab and the prev/next tab-scroll arrows
+   (.Navtab, next to the Job form's General/Party/Routing… tab strip)
+   both hardcode cn-style.css's own Aurora-era blue (#1976d2 / #0178bc)
+   with !important, so they stayed static blue regardless of theme/accent
+   until now. */
+[data-theme="ml2"] .q-btn.feedbackheader {
+  background: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .q-btn.feedbackheader:hover {
+  background: var(--ml2-accent) !important;
+}
+/* Plain color="blue" buttons (e.g. the Refer Booking search's own "Search"
+   button) — Quasar's stock material blue, same unthemed-static-color
+   pattern as the fixes above. */
+[data-theme="ml2"] .q-btn.bg-blue {
+  background: var(--ml2-accent) !important;
+}
+/* Transshipment rows (Routing Details) — cn-style.css's own
+   ".transshipment-row" is a light-theme card (background: #e7f7ff,
+   border: 1px solid #9edfff), but the blanket
+   "[data-theme='ml2'] div { background-color: transparent }" rule
+   elsewhere in this file strips the background specifically, leaving a
+   flat, cardless row with only the light-blue border surviving —
+   unthemed and low-contrast against the dark page. Give it a proper
+   accent-tinted card treatment instead. */
+[data-theme="ml2"] .transshipment-row {
+  /* Same accent-tinted-glass formula as .q-tab--active, reused here for a
+     consistent "active/highlighted panel" look across the theme. */
+  background: color-mix(in srgb, var(--ml2-accent) 30%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--ml2-accent) 25%, transparent) !important;
+  border-radius: var(--ml2-radius) !important;
+}
+/* Dimension Details panel (Commodity tab) — cn-style.css's own
+   ".dimention-section" [sic] hardcodes a flat white background with a
+   static light-blue glow (box-shadow: 0px 0px 5px #a9dfff), both
+   unthemed. Same accent-tinted-glass formula as .transshipment-row/
+   .q-tab--active above, no shadow. */
+[data-theme="ml2"] .dimention-section {
+  background: color-mix(in srgb, var(--ml2-accent) 30%, transparent) !important;
+  box-shadow: none !important;
+  border-radius: 12px !important;
+}
+/* cn-style.css's .dimention-info (the "Formula: ..." line) hardcodes a
+   dark grey (#555/#555-ish), unreadable against this panel's dark/accent
+   background. */
+[data-theme="ml2"] .dimention-info,
+[data-theme="ml2"] .q-radio.radio-dimension .q-radio__label .dimention-info {
+  color: #ffffff !important;
+}
+/* The grid inside .dimention-section (Pieces/Length/.../"No data available")
+   carries its own flat dark .q-table/.q-table__container background —
+   stacked on top of the panel's own accent-tinted glass, it read as a
+   separate, mismatched dark box rather than part of the same panel. Let
+   the panel's background show through instead. */
+[data-theme="ml2"] .dimention-section .q-table__container,
+[data-theme="ml2"] .dimention-section .q-table__top,
+[data-theme="ml2"] .dimention-section .q-table__bottom,
+[data-theme="ml2"] .dimention-section .q-table {
+  background: transparent !important;
+}
+[data-theme="ml2"] .dimention-section .q-table {
+  border-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 75%,
+    transparent
+  ) !important;
+}
+[data-theme="ml2"] .dimention-section .q-table tbody td {
+  border-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 75%,
+    transparent
+  ) !important;
+}
+/* Charges Details grid (.erp-table.charges-color-table) — cn-style.css
+   marks revenue rows with a solid pastel mint (#b1e9c7) and cost rows with
+   a solid pastel peach (#ffde8c), plus near-white input/select fields
+   inside them with dark-on-light text. All of it is light-mode-only and
+   was rendering as bright, unthemed blocks on the dark grid. Re-tint with
+   the same green/orange semantic (revenue vs cost) but mixed into the
+   theme's own dark surface, and re-tint the fields inside to match. */
+/* Scoped to tbody — without it these also matched the header's
+   <th class="income-cell">/.expense-cell>, painting a background onto
+   individual header cells when only the <thead> itself should carry one. */
+[data-theme="ml2"] .erp-table table.q-table tbody .income-cell {
+  background-color: color-mix(
+    in srgb,
+    #22c55e 42%,
+    var(--ml2-surface-alt)
+  ) !important;
+  color: var(--ml2-text) !important;
+  padding: 1px 0px 1px 0px;
+}
+[data-theme="ml2"] .erp-table table.q-table tbody .expense-cell {
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-amber) 16%,
+    var(--ml2-surface-alt)
+  ) !important;
+  color: var(--ml2-text) !important;
+  padding: 1px 0px 1px 0px;
+}
+/* The "(+)"/"(-)" row-type badge cells additionally carry .bg-blue-2/
+   .bg-green-white (income) or .bg-orange-white (expense). Those set the
+   `background` SHORTHAND to a linear-gradient — a background-IMAGE, a
+   different layer than background-color. Overriding background-color
+   above doesn't touch that image layer, so the bright gradient kept
+   painting over the dark tint. Use the shorthand here too so it actually
+   replaces the gradient instead of just sitting underneath it. */
+[data-theme="ml2"] .erp-table table.q-table tbody .income-cell.tittle-box {
+  background: color-mix(
+    in srgb,
+    #22c55e 30%,
+    var(--ml2-surface-alt)
+  ) !important;
+  color: #6ee7a8 !important;
+}
+[data-theme="ml2"] .erp-table table.q-table tbody .expense-cell.tittle-box {
+  background: color-mix(
+    in srgb,
+    var(--ml2-amber) 30%,
+    var(--ml2-surface-alt)
+  ) !important;
+  color: #ffcb7a !important;
+}
+[data-theme="ml2"] .charges-color-table .income-cell .q-field,
+[data-theme="ml2"] .charges-color-table .income-cell .q-field__control,
+[data-theme="ml2"]
+  .charges-color-table
+  .income-cell
+  .q-field--disabled
+  .q-field__control {
+  background: color-mix(in srgb, #4ade80 12%, var(--ml2-surface)) !important;
+  color: #6ee7a8 !important;
+}
+/* cn-style.css's .charges-color-table .q-field__native/input::placeholder
+   hardcodes `color: #555 !important` — a dark grey invisible against this
+   dark background. Quasar's own .q-placeholder::placeholder only adds
+   opacity:0.7 on top of THAT color, so fixing opacity alone (previous
+   attempt) did nothing; the color itself has to be overridden too. */
+[data-theme="ml2"]
+  .charges-color-table
+  .income-cell
+  .q-field__native::placeholder,
+[data-theme="ml2"]
+  .charges-color-table
+  .income-cell
+  .q-field__input::placeholder {
+  color: #ffffff !important;
+  opacity: 0.75 !important;
+  font-weight: normal !important;
+}
+[data-theme="ml2"] .charges-color-table .income-cell .q-field__input,
+[data-theme="ml2"] .charges-color-table .income-cell .q-field__native,
+[data-theme="ml2"] .charges-color-table .income-cell .q-item__label,
+[data-theme="ml2"]
+  .charges-color-table
+  .income-cell
+  .q-field--disabled
+  .q-field__input,
+[data-theme="ml2"]
+  .charges-color-table
+  .income-cell
+  .q-field--disabled
+  .q-field__native,
+[data-theme="ml2"]
+  .charges-color-table
+  .income-cell
+  .q-field--disabled
+  .q-item__label {
+  color: #6ee7a8 !important;
+}
+/* Field append/marginal icons (e.g. the "Apply To" search icon) default to
+   the generic accent color everywhere else in the app — inside the
+   Charges grid they should match the row's own revenue/cost text color
+   instead, same as the rest of that row's field text. */
+[data-theme="ml2"] .charges-color-table .income-cell .q-field__marginal .q-icon,
+[data-theme="ml2"] .charges-color-table .income-cell .q-field__append .q-icon {
+  color: #6ee7a8 !important;
+}
+[data-theme="ml2"] .charges-color-table .expense-cell .q-field,
+[data-theme="ml2"] .charges-color-table .expense-cell .q-field__control,
+[data-theme="ml2"]
+  .charges-color-table
+  .expense-cell
+  .q-field--disabled
+  .q-field__control {
+  background: color-mix(
+    in srgb,
+    var(--ml2-amber) 12%,
+    var(--ml2-surface)
+  ) !important;
+  color: #ffcb7a !important;
+}
+[data-theme="ml2"]
+  .charges-color-table
+  .expense-cell
+  .q-field__native::placeholder,
+[data-theme="ml2"]
+  .charges-color-table
+  .expense-cell
+  .q-field__input::placeholder {
+  color: #ffffff !important;
+  opacity: 0.95 !important;
+  font-weight: normal !important;
+}
+[data-theme="ml2"] .charges-color-table .expense-cell .q-field__input,
+[data-theme="ml2"] .charges-color-table .expense-cell .q-field__native,
+[data-theme="ml2"] .charges-color-table .expense-cell .q-item__label,
+[data-theme="ml2"]
+  .charges-color-table
+  .expense-cell
+  .q-field--disabled
+  .q-field__input,
+[data-theme="ml2"]
+  .charges-color-table
+  .expense-cell
+  .q-field--disabled
+  .q-field__native,
+[data-theme="ml2"]
+  .charges-color-table
+  .expense-cell
+  .q-field--disabled
+  .q-item__label {
+  color: #ffcb7a !important;
+}
+[data-theme="ml2"]
+  .charges-color-table
+  .expense-cell
+  .q-field__marginal
+  .q-icon,
+[data-theme="ml2"] .charges-color-table .expense-cell .q-field__append .q-icon {
+  color: #ffcb7a !important;
+}
+[data-theme="ml2"] .index-cell.bg-grey-3 {
+  background-color: var(--ml2-surface-alt) !important;
+  color: var(--ml2-text) !important;
+}
+/* Revenue/Cost Description popup — its q-card has an inline style (no
+   !important) laying out title/input/buttons with no gap between them.
+   An !important rule here beats that inline style, so this is scoped to
+   ml2 only via CSS, without touching the shared .vue template. */
+[data-theme="ml2"] [data-cy="description-dialog"] .q-card {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+/* Revenue/Cost Description popup title — bright green/orange instead of
+   the plain blue .sub-header_text default, matching the revenue/cost
+   color coding used throughout the Charges grid. */
+[data-theme="ml2"] .desc-popup-title--rev {
+  color: #4ade80 !important;
+}
+[data-theme="ml2"] .desc-popup-title--cost {
+  color: var(--ml2-amber) !important;
+}
+/* "View mode" select bar (Revenue Charge View / Cost Charge View /
+   Revenue-Cost Comparison View) — cn-style.css's .Select-INC-heading/
+   .Select-EXP-heading give it a light gradient (background-image, so
+   overriding background-color alone wouldn't replace it) with a light
+   border and near-black text via .selectmode .q-field__native. */
+[data-theme="ml2"] .Select-INC-heading,
+[data-theme="ml2"] .Select-EXP-heading {
+  background: var(--ml2-surface-alt) !important;
+  border-color: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .selectmode .q-field__native {
+  color: var(--ml2-text) !important;
+}
+/* Total-revenue/cost summary fields (.green_field/.red_field/.blue_field/
+   .orange_field/.yellow_field) — leave the outer wrapper's own background
+   alone; tint the inner .q-field__control instead (same spot the rest of
+   the form's field theming already lives). A subtle top-to-bottom
+   gradient + rounded corners + matching accent left-edge reads as a
+   deliberate stat-tile design instead of a flat color swatch. */
+[data-theme="ml2"] .green_field .q-field__control {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #22c55e 30%, var(--ml2-surface-alt)),
+    color-mix(in srgb, #22c55e 14%, var(--ml2-surface-alt))
+  ) !important;
+  border-left: 3px solid #22c55e !important;
+  border-radius: var(--ml2-radius) !important;
+}
+[data-theme="ml2"] .red_field .q-field__control {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ml2-coral) 30%, var(--ml2-surface-alt)),
+    color-mix(in srgb, var(--ml2-coral) 14%, var(--ml2-surface-alt))
+  ) !important;
+  border-left: 3px solid var(--ml2-coral) !important;
+  border-radius: var(--ml2-radius) !important;
+}
+[data-theme="ml2"] .blue_field .q-field__control {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ml2-accent) 30%, var(--ml2-surface-alt)),
+    color-mix(in srgb, var(--ml2-accent) 14%, var(--ml2-surface-alt))
+  ) !important;
+  border-left: 3px solid var(--ml2-accent) !important;
+  border-radius: var(--ml2-radius) !important;
+}
+[data-theme="ml2"] .orange_field .q-field__control {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ml2-amber) 30%, var(--ml2-surface-alt)),
+    color-mix(in srgb, var(--ml2-amber) 14%, var(--ml2-surface-alt))
+  ) !important;
+  border-left: 3px solid var(--ml2-amber) !important;
+  border-radius: var(--ml2-radius) !important;
+}
+[data-theme="ml2"] .yellow_field .q-field__control {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #facc15 30%, var(--ml2-surface-alt)),
+    color-mix(in srgb, #facc15 14%, var(--ml2-surface-alt))
+  ) !important;
+  border-left: 3px solid #facc15 !important;
+  border-radius: var(--ml2-radius) !important;
+}
+[data-theme="ml2"] .green_field,
+[data-theme="ml2"] .red_field,
+[data-theme="ml2"] .blue_field,
+[data-theme="ml2"] .orange_field,
+[data-theme="ml2"] .yellow_field {
+  /* The outer wrapper's own background-image gradient (not just its
+     border) was still visible in the gap around the inner control,
+     reading as a leftover colored ring/border. background shorthand
+     clears the image too, not just border-color alone. */
+  background: transparent !important;
+  border-color: transparent !important;
+}
+/* Label AND value text both need theming — cn-style.css's .q-field__label
+   rule only exists for green/red/yellow (hardcoded black), while
+   blue/orange fell through to a generic accent-blue label color, which is
+   why "Tax for Revenue"/"Tax for Cost" read in blue regardless of their
+   own field's color. Cover all five, plus the actual value text. */
+[data-theme="ml2"] .green_field .q-field__label,
+[data-theme="ml2"] .red_field .q-field__label,
+[data-theme="ml2"] .blue_field .q-field__label,
+[data-theme="ml2"] .orange_field .q-field__label,
+[data-theme="ml2"] .yellow_field .q-field__label,
+[data-theme="ml2"] .green_field .q-field__native,
+[data-theme="ml2"] .red_field .q-field__native,
+[data-theme="ml2"] .blue_field .q-field__native,
+[data-theme="ml2"] .orange_field .q-field__native,
+[data-theme="ml2"] .yellow_field .q-field__native {
+  color: var(--ml2-text) !important;
+}
+/* Focused/highlighted select fields (e.g. "Party Type" while its dropdown
+   is open) in the Charges grid — cn-style.css hardcodes bright pastel
+   mint/peach fills here too, both on the field itself and on the outlined
+   focus-ring pseudo-element, all !important. Unthemed, they showed up as
+   a bright white/mint patch breaking out of the dark row. */
+[data-theme="ml2"] .erp-table .income-cell .q-field--highlighted:focus,
+[data-theme="ml2"]
+  .erp-table
+  .income-cell
+  .q-field--outlined.q-field--highlighted
+  .q-field__control:after {
+  background: color-mix(in srgb, #4ade80 25%, var(--ml2-surface)) !important;
+  border-color: color-mix(in srgb, #4ade80 60%, transparent) !important;
+}
+[data-theme="ml2"] .erp-table .expense-cell .q-field--highlighted:focus,
+[data-theme="ml2"]
+  .erp-table
+  .expense-cell
+  .q-field--outlined.q-field--highlighted
+  .q-field__control:after {
+  background: color-mix(
+    in srgb,
+    var(--ml2-amber) 25%,
+    var(--ml2-surface)
+  ) !important;
+  border-color: color-mix(
+    in srgb,
+    var(--ml2-amber) 60%,
+    transparent
+  ) !important;
+}
+/* Plain hover (not focused/highlighted) on an outlined field's :before
+   pseudo-element — same bright-pastel-fill pattern as above, just on
+   hover instead of focus. Swap for a low-opacity accent tint instead of
+   an opaque mint/peach block. */
+[data-theme="ml2"]
+  .erp-table
+  .income-cell
+  .q-field--outlined
+  .q-field__control:hover:before {
+  border-color: color-mix(in srgb, #4ade80 60%, transparent) !important;
+  background: color-mix(in srgb, #4ade80 12%, transparent) !important;
+}
+[data-theme="ml2"]
+  .erp-table
+  .expense-cell
+  .q-field--outlined
+  .q-field__control:hover:before {
+  border-color: color-mix(
+    in srgb,
+    var(--ml2-amber) 60%,
+    transparent
+  ) !important;
+  background: color-mix(in srgb, var(--ml2-amber) 12%, transparent) !important;
+}
+/* Tax Details box (.amountbx) — its background comes from a hardcoded
+   inline `style="background-color: ... !important"` in the .vue template,
+   which no stylesheet rule can win against (an inline !important always
+   beats an external !important, regardless of selector specificity). Can't
+   change that background directly, so cover it with an opaque ::before
+   layer instead — the inline style keeps painting underneath, unseen. */
+[data-theme="ml2"] .charges-color-table .income-cell .amountbx,
+[data-theme="ml2"] .charges-color-table .expense-cell .amountbx {
+  position: relative !important;
+  isolation: isolate;
+}
+[data-theme="ml2"] .charges-color-table .income-cell .amountbx::before,
+[data-theme="ml2"] .charges-color-table .expense-cell .amountbx::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+[data-theme="ml2"] .charges-color-table .income-cell .amountbx::before {
+  background: color-mix(in srgb, #22c55e 16%, var(--ml2-surface-alt));
+}
+[data-theme="ml2"] .charges-color-table .expense-cell .amountbx::before {
+  background: color-mix(in srgb, var(--ml2-amber) 16%, var(--ml2-surface-alt));
+}
+[data-theme="ml2"] .charges-color-table .income-cell .amountbx > *,
+[data-theme="ml2"] .charges-color-table .expense-cell .amountbx > * {
+  position: relative;
+  z-index: 1;
+}
+[data-theme="ml2"] .charges-color-table .income-cell .amountbx {
+  color: #6ee7a8 !important;
+}
+[data-theme="ml2"] .charges-color-table .expense-cell .amountbx {
+  color: #ffcb7a !important;
+}
+/* Charges tab toolbar (Direct/Refer Quote/Template/Charge Setting pills +
+   the settings cog) — ChargesDetailsComponent.vue's own scoped <style>
+   hardcodes a light blue-white shell (#f4fbff) with a matching light
+   border, unthemed, so it rendered as a bright patch on the dark tab. */
+[data-theme="ml2"] .charge-toolbar {
+  background: var(--ml2-surface-alt) !important;
+  border-color: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .q-btn--dense.q-btn--round.charge-toolbar__cog {
+  background: var(--ml2-surface-alt) !important;
+  border-color: var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .charge-toolbar__cog:hover {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 15%,
+    var(--ml2-surface-alt)
+  ) !important;
+}
+/* Segmented pill control (Direct/Template/Charge Setting) inside the
+   toolbar — its own scoped :deep() rules hardcode a white pill shell,
+   dark-grey unchecked label text, and a fixed blue "checked" fill, all
+   unthemed, leaving two bright white segments next to the dark toolbar. */
+[data-theme="ml2"] .charge-segment > div {
+  background: var(--ml2-surface) !important;
+  border-color: var(--ml2-border) !important;
+}
+[data-theme="ml2"] .charge-segment .q-radio__label {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .charge-segment .q-radio[aria-checked="true"] {
+  background: var(--ml2-accent) !important;
+}
+[data-theme="ml2"]
+  .charge-segment
+  .q-radio[aria-checked="true"]
+  .q-radio__label {
+  color: #fff !important;
+}
+/* "No data available" row — cn-style.css hardcodes a bright cyan border
+   (#9edfff) around it, unthemed. */
+[data-theme="ml2"] .q-table__bottom--nodata {
+  border: 1px solid var(--ml2-border) !important;
+  color: var(--ml2-text-dim) !important;
+}
+/* .chckbx-style checkboxes ("round off Vol Wt / Chr Wt") — cn-style.css
+   hardcodes a light mint background (#f0f8fc) with a cyan border, both
+   unthemed, leaving two bright white-ish boxes on the dark panel. */
+[data-theme="ml2"] .q-item.q-item-type.chckbx-style,
+[data-theme="ml2"] .q-item.q-item-type.chckbx-style-2 {
+  background-color: var(--ml2-surface-alt) !important;
+  border: 1px solid var(--ml2-border) !important;
+  border-radius: var(--ml2-radius) !important;
+}
+[data-theme="ml2"] .q-item.q-item-type.chckbx-style:hover,
+[data-theme="ml2"] .q-item.q-item-type.chckbx-style-2:hover {
+  background-color: var(--ml2-accent-soft) !important;
+}
+[data-theme="ml2"]
+  .q-item.q-item-type.chckbx-style
+  .q-item__section
+  .q-item__label,
+[data-theme="ml2"]
+  .q-item.q-item-type.chckbx-style-2
+  .q-item__section
+  .q-item__label {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .q-item.q-item-type.chckbx-style .q-item__section--side {
+  color: var(--ml2-text-dim) !important;
+}
+/* Revenue/Cost Comparison table (#bg-custom2) — cn-style.css colors its
+   header/body cells by column group using the same gradient-shorthand
+   `background: var(--bg-green-white/orange-white/blue-white)` pattern as
+   the main Charges grid: revenue columns green, cost columns orange,
+   "View More" blue, all as ID-selector rules (specificity needs an ID+attr
+   match, not just classes, to beat them) and all unthemed. Same semantic
+   coding, retinted dark. */
+[data-theme="ml2"] #bg-custom2 th {
+  background: color-mix(in srgb, #22c55e 30%, var(--ml2-surface)) !important;
+  color: var(--ml2-text) !important;
+  border-right-color: color-mix(in srgb, #22c55e 40%, transparent) !important;
+}
+[data-theme="ml2"] #bg-custom2 td {
+  background-color: color-mix(
+    in srgb,
+    #22c55e 10%,
+    var(--ml2-surface)
+  ) !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] #bg-custom2 th:nth-child(5),
+[data-theme="ml2"] #bg-custom2 th:nth-child(6),
+[data-theme="ml2"] #bg-custom2 th:nth-child(7),
+[data-theme="ml2"] #bg-custom2 th:nth-child(8) {
+  background: color-mix(
+    in srgb,
+    var(--ml2-amber) 30%,
+    var(--ml2-surface)
+  ) !important;
+  border-right-color: color-mix(
+    in srgb,
+    var(--ml2-amber) 40%,
+    transparent
+  ) !important;
+}
+[data-theme="ml2"] #bg-custom2 td:nth-child(5),
+[data-theme="ml2"] #bg-custom2 td:nth-child(6),
+[data-theme="ml2"] #bg-custom2 td:nth-child(7),
+[data-theme="ml2"] #bg-custom2 td:nth-child(8) {
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-amber) 10%,
+    var(--ml2-surface)
+  ) !important;
+}
+[data-theme="ml2"] #bg-custom2 th:nth-child(9) {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 30%,
+    var(--ml2-surface)
+  ) !important;
+}
+[data-theme="ml2"] #bg-custom2 td:nth-child(9) {
+  background-color: color-mix(
+    in srgb,
+    var(--ml2-accent) 10%,
+    var(--ml2-surface)
+  ) !important;
+  color: var(--ml2-text) !important;
+}
+/* Revenue Tax Details / Cost Tax Details bars (.INC-heading/.EXP-heading)
+   below the comparison table — same green/orange semantic, same gradient-
+   shorthand issue. Also pick up the generic [data-theme="ml2"] h3 rule's
+   letter-spacing: -0.01em, which reads too cramped at this size/weight —
+   and cn-style.css never gave this bar any border-radius, so it looked
+   like a flat sharp-cornered strip next to the rounded tiles around it. */
+[data-theme="ml2"] .INC-heading {
+  background: color-mix(in srgb, #22c55e 30%, var(--ml2-surface)) !important;
+  color: #ffffff !important;
+  border-color: color-mix(in srgb, #22c55e 40%, transparent) !important;
+  letter-spacing: 0.3px !important;
+  border-radius: var(--ml2-radius) !important;
+}
+[data-theme="ml2"] .EXP-heading {
+  background: color-mix(
+    in srgb,
+    var(--ml2-amber) 30%,
+    var(--ml2-surface)
+  ) !important;
+  color: #ffffff !important;
+  border-color: color-mix(
+    in srgb,
+    var(--ml2-amber) 40%,
+    transparent
+  ) !important;
+  letter-spacing: 0.3px !important;
+  border-radius: var(--ml2-radius) !important;
+}
+/* EDocs upload dropzone (eDocsComponent.vue's q-uploader "list" slot) —
+   the cloud icon carries no color class at all (inherits Quasar's default
+   dark icon color) and the "Note: file size..." line is a plain <p> with
+   no class, so neither picked up any theming; both read as near-invisible
+   dark-on-dark. */
+[data-theme="ml2"] .q-uploader__files-area {
+  background-color: var(--ml2-surface-alt) !important;
+  border-color: var(--ml2-border) !important;
+  color: #eee !important;
+}
+[data-theme="ml2"] .q-uploader__files-area .q-icon {
+  color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .q-uploader__files-area p,
+[data-theme="ml2"] .q-uploader__files-area .text-grey-7 {
+  color: #eee !important;
+}
+/* "Reset" buttons app-wide use color="black" (Quasar's .bg-black utility,
+   plain #000, unthemed) — a flat pure-black button reads as an unstyled
+   hole in the dark UI rather than a deliberate secondary-action style.
+   Give it the same neutral surface-alt + accent-tinted border language as
+   other secondary controls (Cancel/Clear) instead. */
+[data-theme="ml2"] .q-btn.bg-black {
+  background: var(--ml2-surface-alt) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+[data-theme="ml2"] .q-btn.bg-black:hover {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 12%,
+    var(--ml2-surface-alt)
+  ) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  color: #ffffff !important;
+}
+[data-theme="ml2"] .q-uploader__files-area .q-btn .q-icon {
+  color: #ffffff !important;
+}
+/* SalesLead.vue's "check the existing company master list..." warning
+   line (.note-text) hardcodes color:#222 at opacity:0.8 — meant to read as
+   a muted note on a white page, it's nearly invisible dark-on-dark here. */
+[data-theme="ml2"] .note-text {
+  color: var(--ml2-text-dim) !important;
+  opacity: 1 !important;
+  background: color-mix(in srgb, var(--ml2-accent) 14%, transparent) !important;
+  border-left: 3px solid var(--ml2-accent) !important;
+  border-radius: var(--ml2-radius-sm) !important;
+}
+/* Collapsible section headers ("Goods Description", "Handling / Accounting
+   Information") — cn-style.css gives these a flat .bg-grey-4 utility
+   background. Our .bg-grey-4 override already retones that to
+   var(--ml2-surface), but a flat surface tone still reads as an unstyled
+   grey chip sitting on the page rather than a themed control. Match the
+   same surface-alt + border + radius treatment used for buttons/cards
+   elsewhere, with an accent-tinted hover/active state. */
+[data-theme="ml2"] .q-expansion-item.exp-btn {
+  background-color: var(--ml2-surface-alt) !important;
+  border: 1px solid var(--ml2-border) !important;
+  border-radius: var(--ml2-radius) !important;
+  overflow: hidden !important;
+}
+[data-theme="ml2"] .q-expansion-item.exp-btn .q-item {
+  background: transparent !important;
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .q-expansion-item.exp-btn:hover .q-item,
+[data-theme="ml2"] .q-expansion-item.exp-btn--expanded .q-item {
+  background: color-mix(in srgb, var(--ml2-accent) 12%, transparent) !important;
+}
+[data-theme="ml2"] .q-expansion-item.exp-btn .q-item-label,
+[data-theme="ml2"] .q-expansion-item.exp-btn .q-expansion-item__toggle-icon {
+  color: var(--ml2-text) !important;
+}
+[data-theme="ml2"] .transshipment-row:hover {
+  border-color: var(--ml2-accent) !important;
+}
+[data-theme="ml2"] .Navtab {
+  background-color: var(--ml2-accent) !important;
+}
+/* EDocs FAB (.edocs-trigger-btn) — cn-style.css hardcodes a fixed
+   blue-to-green diagonal gradient here, unrelated to any theme variable,
+   so it stayed static regardless of accent. Kept the same two-tone
+   diagonal look but built from theme tokens instead. */
+[data-theme="ml2"] .edocs-trigger-btn {
+  background: linear-gradient(
+    314deg,
+    var(--ml2-accent),
+    var(--ml2-teal)
+  ) !important;
+  border: 1px solid var(--ml2-accent) !important;
+}
+
+/* The Copy Job button's background comes from the sibling .bg-dblue-lblue
+   class (re-pointed above via --bg-dblue-lblue), but its border color is
+   set by .CopyJob_Button itself (cn-style.css: "border: 1px solid
+   #00bdda", no !important) — that static cyan border isn't touched by
+   the background variable at all, so it needs its own override here. */
+[data-theme="ml2"] .CopyJob_Button {
+  border-color: var(--ml2-accent) !important;
+}
+/* The settings-gear button next to Copy Job shares its gradient
+   (.bg-dblue-lblue) but isn't a .CopyJob_Button, so the border above
+   never reaches it — give the gradient class itself a border directly,
+   which covers both. Excludes .db-header-actions's own instance, which
+   already gets a deliberately flat/ghost border further up. */
+[data-theme="ml2"] .bg-dblue-lblue {
+  border: 1px solid var(--ml2-accent) !important;
+}
+/* "Raise House" (and any other plain color="primary" q-btn outside the
+   Dashboard header, which already gets its own flat/ghost treatment
+   further down) — give it the same darkened-accent -> accent gradient
+   as "Raise New Shipment" / the Copy Job button instead of Quasar's flat
+   $primary fill, so all the CTA buttons read as one consistent style. */
+[data-theme="ml2"] .q-btn.bg-primary {
+  background: linear-gradient(
+    0deg,
+    color-mix(in srgb, var(--ml2-accent) 55%, black) 0%,
+    var(--ml2-accent) 100%
+  ) !important;
+  border-color: var(--ml2-accent) !important;
+}
+
+/* Native browser focus rings (blue outline on inputs/selects/links) don't
+   match the theme anywhere they show up — swap for a themed accent ring. */
+[data-theme="ml2"] input:focus,
+[data-theme="ml2"] input:focus-visible,
+[data-theme="ml2"] select:focus,
+[data-theme="ml2"] select:focus-visible,
+[data-theme="ml2"] a:focus,
+[data-theme="ml2"] a:focus-visible,
+[data-theme="ml2"] button:focus,
+[data-theme="ml2"] button:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   Quote Approval filter bar (DynamicFilter.vue, and its near-duplicate
+   QuoteApprovalFilter.vue) — every color in that component is hardcoded
+   for a light theme (white/light-blue pills, #fff dropdown popups,
+   light chips), so under ml2 it renders as a bright light-blue bar
+   sitting on the dark page. All rules below are scoped to the
+   component's own class names, not `.tb-app`, so they don't touch the
+   (already-themed) SalesLead-style toolbars.
+
+   These selectors are prefixed with the `html` type selector (instead
+   of the bare `[data-theme="ml2"]` attribute selector used elsewhere in
+   this file) to add one specificity point. DynamicFilter.vue's own
+   scoped style targets several of these same classes via :deep() with
+   !important at equal attr+class specificity — without the extra `html`
+   type selector this block loses that tie on source order (component
+   <style> tags are injected after this stylesheet) and the light colors
+   win back through.
+   ═══════════════════════════════════════════════════════════════ */
+html[data-theme="ml2"] .filter-bar-wrapper {
+  background: var(--ml2-surface-alt) !important;
+  border-color: var(--ml2-border) !important;
+}
+html[data-theme="ml2"] .search-combo-wrapper {
+  background: var(--ml2-surface) !important;
+  border-color: var(--ml2-border) !important;
+}
+html[data-theme="ml2"] .search-by-select .q-field__control {
+  background: var(--ml2-surface) !important;
+}
+html[data-theme="ml2"] .search-by-select .q-field__native {
+  color: var(--ml2-accent) !important;
+}
+html[data-theme="ml2"] .search-by-select .q-field__append .q-icon {
+  color: var(--ml2-accent) !important;
+}
+html[data-theme="ml2"] .search-combo-divider {
+  background: var(--ml2-border) !important;
+}
+html[data-theme="ml2"] .global-search .q-field__control {
+  background: var(--ml2-surface) !important;
+  border-left-color: var(--ml2-border) !important;
+}
+html[data-theme="ml2"] .global-search .q-field__native {
+  color: var(--ml2-text) !important;
+}
+html[data-theme="ml2"] .global-search .q-field__native::placeholder {
+  color: var(--ml2-text-dim) !important;
+}
+
+/* Origin/Destination + Date Range pill buttons */
+html[data-theme="ml2"] .filter-pill .q-btn-dropdown,
+html[data-theme="ml2"] .date-pill .q-btn-dropdown {
+  background: var(--ml2-surface) !important;
+  border-color: var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+}
+html[data-theme="ml2"] .filter-pill.pill-active .q-btn-dropdown {
+  border-color: var(--ml2-accent) !important;
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 14%,
+    var(--ml2-surface)
+  ) !important;
+}
+html[data-theme="ml2"] .filter-pill .q-btn-dropdown .q-btn__content i,
+html[data-theme="ml2"] .date-pill .q-btn-dropdown .q-btn__content i {
+  color: var(--ml2-accent) !important;
+}
+
+/* Dropdown popup content (Origin/Destination + Date Range panels) */
+html[data-theme="ml2"] .dropdown-inner,
+html[data-theme="ml2"] .route-dropdown-inner,
+html[data-theme="ml2"] .date-dropdown-inner {
+  background: var(--ml2-surface) !important;
+}
+html[data-theme="ml2"] .dp-section-label {
+  color: var(--ml2-text-dim) !important;
+}
+html[data-theme="ml2"] .route-select .q-field__control,
+html[data-theme="ml2"] .date-dropdown-inner .q-field__control {
+  background: var(--ml2-surface-alt) !important;
+  border-color: var(--ml2-border) !important;
+}
+
+/* Branch select field — BranchSelectMultiselect.vue has no q-field at
+   all; the visible "Branch ▾" control is actually a q-expansion-item
+   header styled to look like one, and its own scoped style hardcodes
+   a white background (+ the dropdown popup content and each branch
+   row) — override those directly instead of a nonexistent q-field. */
+html[data-theme="ml2"] .branch-select-wrapper .q-field__control {
+  background: var(--ml2-surface) !important;
+  border-color: var(--ml2-border) !important;
+}
+html[data-theme="ml2"] .branch-select-wrapper .q-field__label {
+  color: var(--ml2-text-dim) !important;
+}
+html[data-theme="ml2"]
+  .branch-select-wrapper
+  .branch-filter-card-header
+  .q-expansion-item__container
+  .q-item {
+  background: var(--ml2-surface) !important;
+  border-color: var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+}
+html[data-theme="ml2"]
+  .branch-select-wrapper
+  .branch-filter-card-header
+  .q-expansion-item__container
+  .q-item
+  .q-item__section--side
+  i.q-icon {
+  color: var(--ml2-accent) !important;
+}
+html[data-theme="ml2"] .branch-select-wrapper .branch-expansion-content {
+  background: var(--ml2-surface) !important;
+  border-color: var(--ml2-border) !important;
+}
+html[data-theme="ml2"] .branch-select-wrapper .branch-item {
+  background: var(--ml2-surface-alt) !important;
+  border-color: var(--ml2-border) !important;
+  color: var(--ml2-text) !important;
+}
+html[data-theme="ml2"] .branch-select-wrapper .branch-item:hover {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 14%,
+    var(--ml2-surface-alt)
+  ) !important;
+  border-color: var(--ml2-accent) !important;
+}
+
+/* Active filter chips row */
+html[data-theme="ml2"] .chips-label {
+  color: var(--ml2-text-dim) !important;
+}
+html[data-theme="ml2"] .filter-chip {
+  background: color-mix(
+    in srgb,
+    var(--ml2-accent) 20%,
+    var(--ml2-surface)
+  ) !important;
+  border-color: var(--ml2-accent) !important;
+  color: var(--ml2-text) !important;
+}
+html[data-theme="ml2"] .filter-chip .q-chip__icon--remove {
+  color: var(--ml2-accent) !important;
+}
+html[data-theme="ml2"] .q-btn.clear-all-btn {
+  background: color-mix(
+    in srgb,
+    var(--ml2-coral) 18%,
+    var(--ml2-surface)
+  ) !important;
+  border-color: var(--ml2-coral) !important;
+  color: var(--ml2-coral) !important;
+}
+html[data-theme="ml2"] .q-btn.clear-all-btn:hover {
+  background: color-mix(
+    in srgb,
+    var(--ml2-coral) 32%,
+    var(--ml2-surface)
+  ) !important;
+}
+
+/* Quote Approval status pill tabs (All / In Progress / Approved) */
+[data-theme="ml2"] .q-card .status-tabs {
+  background: var(--ml2-surface-alt) !important;
+}
+[data-theme="ml2"] .q-card .status-tab {
+  color: var(--ml2-text-dim) !important;
+}
+[data-theme="ml2"] .q-card .status-tab.active {
+  background: var(--ml2-accent) !important;
+  color: #ffffff !important;
+}
+[data-theme="ml2"] .q-card .status-tab:hover:not(.active) {
+  background: color-mix(in srgb, var(--ml2-accent) 14%, transparent) !important;
+}

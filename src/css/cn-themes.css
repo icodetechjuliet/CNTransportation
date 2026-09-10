@@ -1,0 +1,537 @@
+/* ============================================================
+   CargoNet — Aurora Theme
+   Applied via: document.documentElement.setAttribute('data-theme', 'cn-aurora')
+   Accent switch: document.documentElement.setAttribute('data-accent', 'violet|emerald|amber|rose|cyan')
+   Default Blue Ocean theme is NOT defined here — it uses changeColor().
+   ============================================================ */
+
+/* global safety net: inherited color + transparent generic containers
+   means anything the rules below do not explicitly touch still ends up
+   light-text-on-dark instead of leftover black-on-white. Anything with
+   an explicit bg or text utility class still wins over this. */
+
+html[data-theme="cn-aurora"] {
+  color-scheme: dark;
+  background-color: var(--aurora-bg);
+  color: var(--aurora-text);
+}
+[data-theme="cn-aurora"] div,
+[data-theme="cn-aurora"] section,
+[data-theme="cn-aurora"] span,
+[data-theme="cn-aurora"] p,
+[data-theme="cn-aurora"] li,
+[data-theme="cn-aurora"] table,
+[data-theme="cn-aurora"] tr,
+[data-theme="cn-aurora"] td,
+[data-theme="cn-aurora"] th {
+  background-color: transparent;
+}
+
+[data-theme="cn-aurora"] {
+  --aurora-accent: #8b5cf6;
+  --aurora-accent-soft: rgba(139, 92, 246, 0.16);
+  --aurora-bg: #12131c;
+  --aurora-surface: #1b1d2b;
+  --aurora-surface-alt: #232540;
+  --aurora-border: #32344c;
+  --aurora-text: #e9e9f5;
+  --aurora-text-dim: #9a9cc0;
+  --aurora-header-from: #181a2b;
+  --aurora-header-to: #20223a;
+  --aurora-radius: 12px;
+}
+
+[data-theme="cn-aurora"][data-accent="violet"] {
+  --aurora-accent: #8b5cf6;
+  --aurora-accent-soft: rgba(139, 92, 246, 0.16);
+}
+[data-theme="cn-aurora"][data-accent="emerald"] {
+  --aurora-accent: #10b981;
+  --aurora-accent-soft: rgba(16, 185, 129, 0.16);
+}
+[data-theme="cn-aurora"][data-accent="amber"] {
+  --aurora-accent: #f59e0b;
+  --aurora-accent-soft: rgba(245, 158, 11, 0.16);
+}
+[data-theme="cn-aurora"][data-accent="rose"] {
+  --aurora-accent: #f43f5e;
+  --aurora-accent-soft: rgba(244, 63, 94, 0.16);
+}
+[data-theme="cn-aurora"][data-accent="cyan"] {
+  --aurora-accent: #06b6d4;
+  --aurora-accent-soft: rgba(6, 182, 212, 0.16);
+}
+
+/* scrollbars */
+[data-theme="cn-aurora"] ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+[data-theme="cn-aurora"] ::-webkit-scrollbar-track {
+  background: var(--aurora-bg);
+}
+[data-theme="cn-aurora"] ::-webkit-scrollbar-thumb {
+  background: var(--aurora-surface-alt);
+  border-radius: 4px;
+}
+[data-theme="cn-aurora"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--aurora-accent);
+}
+
+/* logo — recolor the raster logo image to white for this dark theme */
+[data-theme="cn-aurora"] .item-label .row.fixed img,
+[data-theme="cn-aurora"] .top-bar-logo img,
+[data-theme="cn-aurora"] .mob-menu img {
+  filter: brightness(0) invert(1) !important;
+}
+
+/* header / top bar */
+[data-theme="cn-aurora"] .q-header,
+[data-theme="cn-aurora"] .top-bar {
+  background: linear-gradient(
+    90deg,
+    var(--aurora-header-from),
+    var(--aurora-header-to)
+  ) !important;
+  color: var(--aurora-text) !important;
+  border-bottom: 1px solid var(--aurora-border) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* sidebar / drawer */
+[data-theme="cn-aurora"] .q-drawer,
+[data-theme="cn-aurora"] .custom-drawer {
+  background-color: var(--aurora-surface) !important;
+  border-right: 1px solid var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .left_menu_search .q-field__control {
+  background-color: var(--aurora-surface-alt) !important;
+  border-radius: var(--aurora-radius) !important;
+}
+[data-theme="cn-aurora"] .left_menu_search input,
+[data-theme="cn-aurora"] .left_menu_search .q-field__native {
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .left_menu_search .q-field__control:before {
+  border-color: var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .left_menu_search .q-field__control:after {
+  border-color: var(--aurora-accent) !important;
+}
+
+[data-theme="cn-aurora"] .dropdown-menu {
+  background-color: var(--aurora-surface) !important;
+  border: 1px solid var(--aurora-border) !important;
+  border-radius: var(--aurora-radius) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+}
+[data-theme="cn-aurora"] .menu-link-search {
+  color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .menu-link-search:hover {
+  background-color: var(--aurora-accent-soft) !important;
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .dashboard-menu {
+  background-color: transparent !important;
+  border-color: var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .menu-name {
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .q-expansion-item {
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .q-expansion-item__toggle-icon,
+[data-theme="cn-aurora"] .q-expansion-item__toggle-focus-helper {
+  color: var(--aurora-text-dim) !important;
+}
+[data-theme="cn-aurora"] .active-menu {
+  background: var(--aurora-accent-soft) !important;
+  border-radius: var(--aurora-radius) !important;
+  box-shadow: inset 3px 0 0 var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .active-menu .menu-name {
+  color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .active-menu .q-expansion-item__toggle-icon {
+  color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .menu-item-content.seperator:hover {
+  background-color: var(--aurora-surface-alt) !important;
+  border-radius: var(--aurora-radius) !important;
+}
+
+/* cards */
+[data-theme="cn-aurora"] .q-card {
+  background-color: var(--aurora-surface) !important;
+  color: var(--aurora-text) !important;
+  border: 1px solid var(--aurora-border) !important;
+  border-radius: var(--aurora-radius) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25) !important;
+}
+[data-theme="cn-aurora"] .child-item {
+  background-color: var(--aurora-surface) !important;
+  border-color: var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .child-item:hover {
+  background-color: var(--aurora-surface-alt) !important;
+}
+
+/* links */
+[data-theme="cn-aurora"] .menu-link,
+[data-theme="cn-aurora"] a.menu-link {
+  color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .menu-link:hover {
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .modul-icon,
+[data-theme="cn-aurora"] .fixed-icon {
+  filter: brightness(0) invert(0.85) !important;
+}
+
+/* page + tables */
+[data-theme="cn-aurora"] .q-page-container {
+  background-color: var(--aurora-bg) !important;
+}
+[data-theme="cn-aurora"] .q-table {
+  border: 1px solid var(--aurora-border) !important;
+  background-color: var(--aurora-surface) !important;
+  border-radius: var(--aurora-radius) !important;
+  overflow: hidden !important;
+}
+[data-theme="cn-aurora"] .q-table thead th {
+  background-color: var(--aurora-surface-alt) !important;
+  color: var(--aurora-accent) !important;
+  border-color: var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .q-table tbody td {
+  border-color: var(--aurora-border) !important;
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .gridtable tr:nth-child(even) {
+  background: var(--aurora-surface-alt) !important;
+}
+[data-theme="cn-aurora"] .gridtable tbody tr:hover {
+  background-color: var(--aurora-accent-soft) !important;
+}
+[data-theme="cn-aurora"] .m-table-style .q-table tbody tr:nth-child(even) {
+  background-color: var(--aurora-surface-alt) !important;
+}
+
+/* filter bar (Filters: search combo strip above grids) — hardcoded light
+   blue in cn-style.css's .tb-app block, not covered by generic utility
+   class remaps since it targets custom classes directly. */
+[data-theme="cn-aurora"] .tb-app .filter-bar-wrapper {
+  background: var(--aurora-surface) !important;
+  border: 1px solid var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .tb-app .filter-pill-label {
+  color: var(--aurora-text-dim) !important;
+}
+[data-theme="cn-aurora"] .tb-app .filter-pill .q-btn-dropdown {
+  background: var(--aurora-surface-alt) !important;
+  border: 1px solid var(--aurora-border) !important;
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .tb-app .filter-pill .q-btn-dropdown .q-btn__content i {
+  color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .tb-app .filter-bar-wrapper .search-combo-wrapper {
+  background: var(--aurora-surface-alt) !important;
+  border: 1px solid var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .tb-app .filter-bar-wrapper .search-combo-input {
+  background: var(--aurora-surface-alt) !important;
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .tb-app .filter-bar-wrapper .search-combo-input::placeholder {
+  color: var(--aurora-text-dim) !important;
+}
+[data-theme="cn-aurora"] .tb-app .filter-bar-wrapper .search-combo-icon-btn {
+  background: var(--aurora-accent-soft) !important;
+  border-left: 1px solid var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .tb-app .filter-bar-wrapper .search-combo-icon-btn .q-btn__content .q-icon {
+  color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .tb-app .filter-bar-wrapper .q-btn--dense.q-btn--round.search-combo-clear-btn {
+  background-color: var(--aurora-surface-alt) !important;
+  border: 1px solid var(--aurora-border) !important;
+  color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .sl-app .filter-bar-wrapper {
+  background: var(--aurora-surface) !important;
+  border: 1px solid var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .sl-app .filter-pill-label {
+  color: var(--aurora-text-dim) !important;
+}
+[data-theme="cn-aurora"] .q-table tbody tr:hover td {
+  background-color: var(--aurora-accent-soft) !important;
+}
+
+/* fields — one subtle border by default, accent glow only while focused */
+[data-theme="cn-aurora"] .q-field__control {
+  background-color: var(--aurora-surface-alt) !important;
+  color: var(--aurora-text) !important;
+  border-radius: var(--aurora-radius) !important;
+  border: 1px solid var(--aurora-border) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+[data-theme="cn-aurora"] .q-field__native,
+[data-theme="cn-aurora"] .q-field__input {
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .q-field__label {
+  color: var(--aurora-text-dim) !important;
+}
+[data-theme="cn-aurora"] .q-field__control:before,
+[data-theme="cn-aurora"] .q-field__control:after {
+  border: none !important;
+}
+[data-theme="cn-aurora"] .q-field--focused .q-field__control,
+[data-theme="cn-aurora"] .q-field__control:focus-within {
+  border-color: var(--aurora-accent) !important;
+  box-shadow: 0 0 0 3px var(--aurora-accent-soft) !important;
+}
+
+/* tabs */
+[data-theme="cn-aurora"] .custom-tabs,
+[data-theme="cn-aurora"] .q-tabs {
+  background-color: var(--aurora-surface) !important;
+}
+[data-theme="cn-aurora"] .q-tab__label,
+[data-theme="cn-aurora"] .q-tab {
+  color: var(--aurora-text-dim) !important;
+}
+[data-theme="cn-aurora"] .custom-tabs .q-tab.q-tab--active,
+[data-theme="cn-aurora"] .q-tab--active {
+  background-color: var(--aurora-accent-soft) !important;
+  color: var(--aurora-accent) !important;
+  border-top: 2px solid var(--aurora-accent) !important;
+}
+
+/* misc text/accents */
+[data-theme="cn-aurora"] .text-primary,
+[data-theme="cn-aurora"] .q-field__control .text-blue {
+  color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .Theme-font-color,
+[data-theme="cn-aurora"] .mod-header,
+[data-theme="cn-aurora"] .header_text2 {
+  color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .q-separator {
+  background-color: var(--aurora-border) !important;
+}
+
+/* buttons get a softer, rounder feel in this theme */
+[data-theme="cn-aurora"] .q-btn {
+  border-radius: var(--aurora-radius) !important;
+}
+
+/* page-wide fallback (body / layout shell) */
+[data-theme="cn-aurora"] body,
+[data-theme="cn-aurora"] #q-app,
+[data-theme="cn-aurora"] .q-layout,
+[data-theme="cn-aurora"] .q-page,
+[data-theme="cn-aurora"] .page {
+  background-color: var(--aurora-bg) !important;
+  color: var(--aurora-text) !important;
+}
+
+/* neutral light utility classes used throughout the app markup
+   (bg-white / bg-grey-* / text-black / text-grey-*) — these are plain
+   panel backgrounds, so re-skin them to the dark surface. Deliberately
+   colored utility classes (bg-blue-2, bg-matrix-cn, bg-dblue-lblue,
+   etc.) are left untouched so accent/status cards keep their original
+   color coding. */
+[data-theme="cn-aurora"] .bg-white,
+[data-theme="cn-aurora"] .bg-white-1,
+[data-theme="cn-aurora"] .bg-white-3,
+[data-theme="cn-aurora"] .bg-grey,
+[data-theme="cn-aurora"] .bg-grey-1,
+[data-theme="cn-aurora"] .bg-grey-2,
+[data-theme="cn-aurora"] .bg-grey-3,
+[data-theme="cn-aurora"] .bg-grey-4,
+[data-theme="cn-aurora"] .bg-grey-6,
+[data-theme="cn-aurora"] .bg-grey-8,
+[data-theme="cn-aurora"] .bg-grey-9,
+[data-theme="cn-aurora"] .bg-grey-white,
+[data-theme="cn-aurora"] .bg-gray-50,
+[data-theme="cn-aurora"] .bg-gray-100,
+[data-theme="cn-aurora"] .bg-blue-1,
+[data-theme="cn-aurora"] .bg-blue-white,
+[data-theme="cn-aurora"] .bg-blue-grey-1,
+[data-theme="cn-aurora"] .bg-yellow-white,
+[data-theme="cn-aurora"] .bg-green-white,
+[data-theme="cn-aurora"] .bg-red-white,
+[data-theme="cn-aurora"] .bg-orange-white {
+  background-color: var(--aurora-surface) !important;
+}
+[data-theme="cn-aurora"] .text-black,
+[data-theme="cn-aurora"] .text-black-3,
+[data-theme="cn-aurora"] .text-black-8,
+[data-theme="cn-aurora"] .text-dark,
+[data-theme="cn-aurora"] .text-blue,
+[data-theme="cn-aurora"] .text-blue-8,
+[data-theme="cn-aurora"] .text-dblue,
+[data-theme="cn-aurora"] .text-grey,
+[data-theme="cn-aurora"] .text-grey-4,
+[data-theme="cn-aurora"] .text-grey-5,
+[data-theme="cn-aurora"] .text-grey-6,
+[data-theme="cn-aurora"] .text-grey-7,
+[data-theme="cn-aurora"] .text-grey-8,
+[data-theme="cn-aurora"] .text-grey-9,
+[data-theme="cn-aurora"] .text-gray-600,
+[data-theme="cn-aurora"] .text-gray-700 {
+  color: var(--aurora-text) !important;
+}
+
+/* Quasar's own internal components default to a white look regardless
+   of app markup — menus, popups, dialogs, date/time pickers, tooltips,
+   notifications, selects. Re-skin these so dropdowns/pickers/modals
+   don't flash white. */
+[data-theme="cn-aurora"] .q-menu,
+[data-theme="cn-aurora"] .q-dialog__inner > div,
+[data-theme="cn-aurora"] .q-date,
+[data-theme="cn-aurora"] .q-time,
+[data-theme="cn-aurora"] .q-picker,
+[data-theme="cn-aurora"] .q-tooltip,
+[data-theme="cn-aurora"] .q-notification,
+[data-theme="cn-aurora"] .q-list {
+  background-color: var(--aurora-surface) !important;
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .q-item {
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .q-item:hover,
+[data-theme="cn-aurora"] .q-item--active,
+[data-theme="cn-aurora"] .q-manual-focusable--focused > .q-item {
+  background-color: var(--aurora-accent-soft) !important;
+}
+[data-theme="cn-aurora"] .q-item__label--caption {
+  color: var(--aurora-text-dim) !important;
+}
+[data-theme="cn-aurora"] .q-date__header {
+  background-color: var(--aurora-accent) !important;
+}
+[data-theme="cn-aurora"] .q-date__calendar-item .q-btn,
+[data-theme="cn-aurora"] .q-time__link {
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .q-select__dialog {
+  background-color: var(--aurora-surface) !important;
+}
+[data-theme="cn-aurora"] .q-card-section {
+  color: var(--aurora-text) !important;
+}
+
+/* q-table wrapper variants not caught above */
+[data-theme="cn-aurora"] .q-table__container,
+[data-theme="cn-aurora"] .q-table__top,
+[data-theme="cn-aurora"] .q-table__bottom {
+  background-color: var(--aurora-surface) !important;
+  color: var(--aurora-text) !important;
+}
+
+/* q-tab-panels used by multi-step forms (General/Party/Routing details, etc.) */
+[data-theme="cn-aurora"] .q-tab-panel,
+[data-theme="cn-aurora"] .q-tab-panels {
+  background-color: var(--aurora-bg) !important;
+  color: var(--aurora-text) !important;
+}
+
+/* accent-driven variable remap — recolors the shared cn-style.css
+   tiles/buttons/icons (--bg-lblue, --bg-dblue-lblue, --font-Mblue, etc.)
+   so dashboard tiles and buttons follow the selected accent instead of
+   staying Blue-Ocean blue. Status colors (green/orange/red) are left
+   untouched so success/warning/error still read correctly. */
+html[data-theme="cn-aurora"] {
+  --bg-dblue-lblue: linear-gradient(to bottom, var(--aurora-accent), var(--aurora-surface-alt)) !important;
+  --bg-blue-white: linear-gradient(to bottom, var(--aurora-surface-alt), var(--aurora-accent)) !important;
+  --bg-grey-white: linear-gradient(to bottom, var(--aurora-surface-alt), var(--aurora-surface)) !important;
+  --bg-dark-grey: linear-gradient(to bottom, var(--aurora-border), var(--aurora-bg)) !important;
+  --bg-white: var(--aurora-surface) !important;
+  --bg-grey: var(--aurora-surface-alt) !important;
+  --bg-blue-1: var(--aurora-surface-alt) !important;
+  --bg-blue-2: var(--aurora-accent-soft) !important;
+  --bg-blue-3: var(--aurora-accent-soft) !important;
+  --bg-lblue: var(--aurora-accent) !important;
+  --bg-dblue: var(--aurora-accent) !important;
+  --font-Mblue: var(--aurora-accent) !important;
+  --text-dblue: var(--aurora-text) !important;
+}
+
+/* dashboard KPI tiles (.peach/.Seablue/.Grass1/.PinkRose/etc.) — hardcoded
+   rainbow gradients in cn-style.css that clashed with every dark theme.
+   Recolored using Aurora's own violet/emerald/amber/rose/cyan palette so
+   the dashboard reads as one designed system instead of a random mix. */
+[data-theme="cn-aurora"] .peach {
+  background: linear-gradient(135deg, #f43f5e, #f59e0b) !important;
+}
+[data-theme="cn-aurora"] .Seablue {
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4) !important;
+}
+[data-theme="cn-aurora"] .Grass1 {
+  background: linear-gradient(135deg, #10b981, #0d9488) !important;
+}
+[data-theme="cn-aurora"] .PinkRose {
+  background: linear-gradient(135deg, #f43f5e, #d946ef) !important;
+}
+[data-theme="cn-aurora"] .Ruby {
+  background: linear-gradient(135deg, #f43f5e, #be123c) !important;
+}
+[data-theme="cn-aurora"] .Grass {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+}
+[data-theme="cn-aurora"] .Teal_Light {
+  background: linear-gradient(135deg, #06b6d4, #0891b2) !important;
+}
+[data-theme="cn-aurora"] .gradient-scooter {
+  background: linear-gradient(135deg, #8b5cf6, #06b6d4) !important;
+}
+[data-theme="cn-aurora"] .card-shadow {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* highcharts / chart containers on the dashboard — axis, grid, legend and
+   title text default to dark-on-transparent, invisible on the dark bg. */
+[data-theme="cn-aurora"] .highcharts-background {
+  fill: var(--aurora-surface) !important;
+}
+[data-theme="cn-aurora"] .highcharts-grid-line {
+  stroke: var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .highcharts-axis-line,
+[data-theme="cn-aurora"] .highcharts-tick {
+  stroke: var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .highcharts-title,
+[data-theme="cn-aurora"] .highcharts-subtitle {
+  fill: var(--aurora-text) !important;
+  color: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .highcharts-axis-labels text,
+[data-theme="cn-aurora"] .highcharts-legend-item text,
+[data-theme="cn-aurora"] .highcharts-xaxis-labels text,
+[data-theme="cn-aurora"] .highcharts-yaxis-labels text {
+  fill: var(--aurora-text-dim) !important;
+  color: var(--aurora-text-dim) !important;
+}
+[data-theme="cn-aurora"] .highcharts-tooltip-box {
+  fill: var(--aurora-surface) !important;
+  stroke: var(--aurora-border) !important;
+}
+[data-theme="cn-aurora"] .highcharts-tooltip text {
+  fill: var(--aurora-text) !important;
+}
+[data-theme="cn-aurora"] .highcharts-contextbutton .highcharts-button-box {
+  fill: var(--aurora-surface-alt) !important;
+}
+[data-theme="cn-aurora"] .highcharts-button-symbol {
+  stroke: var(--aurora-text) !important;
+}

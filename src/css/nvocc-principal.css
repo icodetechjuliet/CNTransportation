@@ -1,0 +1,329 @@
+.nvocc-principal-page {
+  --nv-blue: #0178bc;
+  --nv-blue-dark: #096ba3;
+  --nv-line: #9edfff;
+  --nv-line-soft: #d0efff;
+  --nv-pale: #f2f9ff;
+  --nv-muted: #667784;
+  min-height: 100vh;
+  padding: 12px 18px 36px;
+  color: #222;
+  background: #f5fbff;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+}
+
+/* JobCNFormDynamicTab-style title/header strip */
+.crumbs,
+.page-head {
+  background: #fff;
+  box-shadow: 0 1px 5px rgb(146 215 255 / 65%);
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 26px;
+  margin: 0;
+  padding: 7px 18px 0;
+  border-radius: 10px 10px 0 0;
+  color: #505050;
+  font-family: "Rubik", sans-serif;
+  font-size: 12px;
+}
+
+.crumbs span {
+  color: var(--nv-blue);
+  font-weight: 600;
+}
+
+.crumbs :deep(.q-icon) {
+  color: var(--nv-blue);
+  font-size: 18px !important;
+}
+
+.page-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  min-height: 52px;
+  margin: 0 0 12px;
+  padding: 5px 18px 11px;
+  border-radius: 0 0 10px 10px;
+}
+
+.page-head h1 {
+  margin: 0;
+  color: var(--nv-blue);
+  font-family: "Rubik", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.3px;
+}
+
+.sub {
+  margin-top: 2px;
+  color: var(--nv-muted);
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.head-actions,
+.filter-actions,
+.form-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+/* Field sizing/appearance is intentionally NOT overridden here anymore —
+   src/css/nvocc-common.css already gives every .nvocc-form-page /
+   .nvocc-principal-page field a unified 40px-min-height, 8px-radius,
+   #e3f2fd-fill look (!important). The min-height:38px / custom border
+   colors that used to live here fought that shared rule (and the
+   .q-field__native/.q-field__marginal min-height it also set), making this
+   page's inputs render at a visibly different height than every other
+   NVOCC page. Removed so this component matches the rest of the suite. */
+.nvocc-principal-page :deep(.q-field--dense .q-field__label) {
+  color: var(--nv-blue-dark);
+  font-size: 13px;
+  letter-spacing: 0.4px;
+}
+
+.fld {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.fld.full {
+  grid-column: 1 / -1;
+}
+
+.fld label {
+  color: var(--nv-blue-dark);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 15px;
+  letter-spacing: 0.25px;
+}
+
+.content-card,
+.form-card {
+  margin-bottom: 12px;
+  border: 0 !important;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 1px 5px rgb(146 215 255 / 65%);
+}
+
+/* .filter-card is intentionally NOT overridden here anymore — it fought
+   the shared light-blue bordered look every other NVOCC list page's filter
+   card gets from src/css/nvocc-common.css (border:0 !important + white
+   background made this component's filters look flat/plain by comparison). */
+.content-card {
+  padding: 0;
+}
+.content-card > .page-head {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.filter-grid,
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(145px, 1fr));
+  gap: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.field-grid {
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+}
+
+.card-title,
+.section-title {
+  color: var(--nv-blue);
+  font-family: "Rubik", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* CN+ toolbar buttons */
+.nvocc-principal-page :deep(.q-btn) {
+  min-height: 34px;
+  border-radius: 8px;
+  font-size: 12px;
+  letter-spacing: 0.35px;
+  text-transform: capitalize;
+}
+
+.nvocc-principal-page :deep(.q-btn.bg-primary) {
+  border: 1px solid #00a2ff;
+  background: linear-gradient(90deg, #046ca8, #16a8e7) !important;
+}
+
+.nvocc-principal-page :deep(.q-btn--round) {
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  min-height: 30px;
+  border-radius: 6px;
+}
+
+/* Same compact blue grid language as m-table-style */
+.nvocc-principal-page :deep(.q-table__container) {
+  border: 0;
+  border-radius: 8px;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.nvocc-principal-page :deep(.q-table thead) {
+  color: #111;
+  background: linear-gradient(90deg, #dff4ff, #f8fdff);
+}
+
+.nvocc-principal-page :deep(.q-table thead tr) {
+  height: 36px;
+}
+
+.nvocc-principal-page :deep(.q-table th) {
+  padding: 5px 10px !important;
+  border-right: 1px solid #54c7ff;
+  border-bottom: 1px solid #54c7ff;
+  font-family: "Poppins", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.45px;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.nvocc-principal-page :deep(.q-table td) {
+  height: 34px;
+  padding: 4px 10px;
+  border-right: 1px solid var(--nv-line-soft);
+  border-bottom: 1px solid var(--nv-line-soft);
+  font-size: 11.5px;
+}
+
+.nvocc-principal-page :deep(.q-table tbody tr:nth-child(even)) {
+  background: var(--nv-pale);
+}
+.nvocc-principal-page :deep(.q-table tbody tr:hover) {
+  background: #e4f6ff;
+}
+.nvocc-principal-page :deep(.q-table th:last-child),
+.nvocc-principal-page :deep(.q-table td:last-child) {
+  border-right: 0;
+}
+.nvocc-principal-page :deep(.q-table__bottom) {
+  min-height: 38px;
+  border-top: 0;
+}
+.nvocc-principal-page :deep(.mono-cell) {
+  font-family: monospace;
+  font-weight: 600;
+}
+
+.table-total {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 25px;
+  padding: 10px 12px;
+  border-top: 1px solid var(--nv-line);
+  background: #eef9ff;
+  color: #334;
+}
+
+.table-total b {
+  margin-left: 6px;
+  color: var(--nv-blue-dark);
+}
+
+.drawer-card {
+  display: flex;
+  flex-direction: column;
+  width: 720px;
+  max-width: 95vw;
+  height: 100%;
+}
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--nv-line);
+  color: var(--nv-blue);
+}
+
+.drawer-body {
+  flex: 1;
+  padding: 14px 16px;
+  overflow: auto;
+}
+.form-actions {
+  justify-content: flex-end;
+  padding: 11px 16px;
+  border-top: 1px solid var(--nv-line);
+}
+
+/* .kpi-grid / .kpi / .kpi-icon / .kl / .kv are intentionally not defined here
+   anymore — pages in the nvocc-principal-page family that add the shared
+   "nvocc-form-page" class (see NVOCCCRT.vue's dashboard view) pick up the
+   CRT-style KPI tile rules from src/css/nvocc-common.css instead, so both
+   class families don't fight over conflicting declarations. */
+
+@media (max-width: 1300px) {
+  .filter-grid,
+  .field-grid {
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .nvocc-principal-page {
+    padding: 10px;
+  }
+  .page-head {
+    align-items: flex-start;
+  }
+  .head-actions {
+    width: 100%;
+  }
+  .filter-grid,
+  .field-grid {
+    grid-template-columns: repeat(2, minmax(130px, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .nvocc-principal-page {
+    padding: 8px 6px 24px;
+  }
+  .crumbs,
+  .page-head {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .filter-grid,
+  .field-grid {
+    grid-template-columns: 1fr;
+  }
+  .fld.full {
+    grid-column: auto;
+  }
+  .head-actions :deep(.q-btn) {
+    flex: 1 1 auto;
+  }
+}

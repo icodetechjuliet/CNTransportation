@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>CargonetTransportation</title>
+
+    <meta charset="utf-8" />
+    <meta name="description" content="<%= productDescription %>" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta
+      name="viewport"
+      content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>"
+    />
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="128x128"
+      href="icons/favicon-128x128.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="96x96"
+      href="icons/favicon-96x96.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="icons/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="icons/favicon-16x16.png"
+    />
+    <link rel="icon" type="image/ico" href="favicon.ico" />
+
+    <!-- Login screen fonts (Jost/Roboto/Rubik/Rajdhani), loaded from the
+         document head instead of from inside LoginPage.vue/LoginPageMl2.vue's
+         own <style> blocks — starts the fetch immediately, in parallel with
+         the JS bundle, for every entry point, instead of only once that
+         route's own JS chunk has been fetched and parsed.
+
+         display=optional (not swap): with swap, a font that finishes
+         loading AFTER first paint swaps in later — but on this app,
+         Chromium/the WebView was never repainting already-rendered text
+         (especially <input> text) once that late swap happened, leaving it
+         stuck showing the fallback font until the user touched the screen
+         (which forces an unrelated repaint as a side effect). Several JS
+         workarounds to force that repaint directly were tried and none of
+         them reliably fixed it. display=optional sidesteps the whole
+         failure mode instead of fighting it: the browser gives the font a
+         short window (~100ms) to arrive before first paint; if it makes
+         the deadline it's used immediately, and if not the browser commits
+         to the fallback for that entire page view and never attempts a
+         delayed swap later — so there's no late swap left to get stuck
+         un-repainted. Trade-off: on a slow/first-ever load the fallback
+         font may stick for that view instead of the real font eventually
+         swapping in, but preconnect above means it should make the ~100ms
+         budget on any normal connection anyway. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    />
+    <% if (ctx.mode.cordova) { %>
+    <script>
+      // Registered as early as possible, before the app bundle loads.
+      // Cordova's "deviceready" can fire before a multi-MB webpack bundle
+      // finishes parsing on a real device; a listener attached only after
+      // that point never runs, and an unhandled hardware back press falls
+      // through to Cordova's default (history.back() / exitApp()) — which is
+      // what was closing the app instead of navigating back in-app.
+      document.addEventListener(
+        "deviceready",
+        function () {
+          if (!window.cordova) return;
+          document.addEventListener(
+            "backbutton",
+            function (e) {
+              e.preventDefault();
+              window.dispatchEvent(new CustomEvent("app:backbutton"));
+            },
+            false
+          );
+        },
+        false
+      );
+    </script>
+    <% } %>
+  </head>
+  <body>
+    <!-- DO NOT touch the following DIV -->
+    <div id="q-app"></div>
+  </body>
+</html>

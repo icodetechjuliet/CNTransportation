@@ -1,0 +1,264 @@
+//Applicable for all
+.hide-overflow {
+  overflow: hidden;
+  min-height: 00px !important;
+}
+.Top-btn {
+  padding-top: 5px;
+}
+
+.tab-scroll {
+  max-height: 30vh !important;
+  max-height: 60vh !important;
+  overflow-y: auto !important;
+}
+
+//loader
+.loader {
+  border: 0px solid #f3f3f3; /* Light grey */
+  border-top: 0px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 3s linear infinite;
+  margin: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-image: url(src/assets/cargonet-logo.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.loader_txt {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+  font-size: 20px;
+  top: 62%;
+  left: 52%;
+}
+.loader_txt_P {
+  width: auto;
+  height: 100px;
+  position: absolute;
+  font-size: 20px;
+  top: 60%;
+  left: 41.5%;
+}
+
+//Job - chargegrid
+.INC-heading {
+  font-size: 14px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
+  background-image: linear-gradient(
+    to right,
+    rgba(0, 129, 97, 0.904),
+    rgba(118, 255, 209, 0.774)
+  );
+  padding-left: 20px;
+  color: #fff !important;
+  font-weight: bold;
+}
+.EXP-heading {
+  font-size: 14px;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, 0.1);
+  background-image: linear-gradient(
+    to right,
+    rgba(180, 81, 0, 0.815),
+    rgba(255, 173, 118, 0.774)
+  );
+  padding-left: 20px;
+  color: #fff !important;
+  font-weight: bold;
+}
+.charge-green {
+  color: green;
+  font-weight: bold;
+}
+.charge-red {
+  color: red;
+  font-weight: bold;
+}
+.selectmode .q-field__native {
+  color: #ffffff !important;
+  font-weight: bold;
+}
+.selectmode .q-field--standard .q-field__control:after {
+  border-bottom: 0px !important;
+}
+.selectmode .q-field--standard .q-field__control:before {
+  border-bottom: 0px !important;
+}
+.selectmode .q-field__control:before,
+.q-field__control:after {
+  left: -19px;
+}
+.bordered_btn::before {
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #000;
+}
+.Applyto {
+  padding: 15px;
+  font-weight: bold;
+}
+
+//Export report
+.pdf-viewer-container {
+  position: relative;
+  height: 900px; /* Adjust the height as needed */
+  overflow: hidden; /* Hide the scroll bars */
+  width: 700px;
+}
+
+.pdf-viewer-container iframe {
+  width: 100%;
+  height: 100%;
+}
+.pdf-viewer-container .Btn_container {
+  display: flex;
+  position: absolute;
+  bottom: 0px;
+  width: 18%;
+  padding: 8px 12px;
+  background-color: rgb(255, 255, 255);
+  /* color: white; */
+  text-decoration: none;
+  font-weight: bold;
+  justify-content: center;
+  align-items: center;
+}
+.pdf-viewer-container .download-button {
+  /* position: absolute;
+  bottom: 10px;
+  right: 150px; */
+  color: #ffffff;
+
+  font-weight: bold;
+  margin-left: 5px;
+}
+.pdf-viewer-container .download-Excel {
+  /* position: absolute;
+  bottom: 10px;
+  right: 10px; */
+  padding: 8px 12px;
+  background-color: black;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+.custom-icon_rpt {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  position: relative;
+  animation: none !important;
+  margin-top: 7px;
+  filter: invert(100%);
+  border: solid 1px #000;
+  // background-image: linear-gradient(
+  //   to right,
+  //   rgba(201, 90, 0, 0.74),
+  //   rgba(243, 97, 0, 0.774)
+  // );
+  color: #c82a00;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+
+.custom-icon_PDF {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  position: relative;
+  animation: none !important;
+  margin-top: 7px;
+  filter: invert(100%);
+  border: solid 1px #000;
+  // background-image: linear-gradient(
+  //   to right,
+  //   rgba(255, 0, 0, 0.74),
+  //   rgba(255, 0, 0, 0.774)
+  // );
+  background-color: cyan;
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+
+.custom-icon_Excel {
+  width: 50px;
+  height: 50px;
+  display: inline-block;
+  position: relative;
+  animation: none !important;
+  margin-top: 7px;
+  filter: invert(100%);
+  border: solid 1px #000;
+  // background-image: linear-gradient(
+  //   to right,
+  //   rgba(0, 109, 54, 0.74),
+  //   rgba(0, 167, 103, 0.774)
+  // );
+  background-color: #d074e1;
+
+  padding: 3px 5px;
+  border-radius: 5px;
+}
+.child-item {
+  padding-left: 20px;
+  font-weight: normal;
+}
+
+.child-item a {
+  width: 100% !important;
+  height: 100%;
+  display: block;
+  text-decoration: none; /* Remove underline from child menu links */
+  color: inherit; /* Inherit the color from the parent menu item */
+}
+
+.child-item:hover {
+  background-image: linear-gradient(to right, #ffffff, #1976d2);
+  transition: 0.5s;
+  color: #fff;
+}
+.child-item:hover a {
+  text-decoration: none; /* Remove underline on hover */
+  color: inherit; /* Inherit the color from the parent menu item */
+}
+//Dialoge box
+.dialoge-box {
+  top: 100px !important;
+  right: 100px !important;
+  bottom: 100px !important;
+  left: 100px !important;
+  background-color: #fff;
+}
+
+//Responsive - Style
+@media (max-width: 1440px) {
+  .tab-scroll {
+    max-height: 50vh !important;
+    overflow-y: auto !important;
+  }
+  .q-item-section > .q-item-label {
+    font-size: 12px !important;
+  }
+  .q-field {
+    font-size: 12px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .q-item-section > .q-item-label {
+    font-size: 14px !important;
+  }
+}
+
+/* Font size for screens smaller than 400px */
+@media (max-width: 400px) {
+  .q-item-section > .q-item-label {
+    font-size: 12px !important;
+  }
+}
