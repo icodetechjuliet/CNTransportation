@@ -53,6 +53,38 @@ const routes = [
         component: () => import("pages/DMSTruckBooking.vue"),
       },
       {
+        path: "DMSBBookingView",
+        component: () => import("pages/DMSBBookingView.vue"),
+      },
+      // DMS > Trip / Accounting submenus (src/IPConfig/mockData.js's
+      // buildMockChildMenu DMS group) don't have built pages yet, so they
+      // route to the shared "under construction" placeholder, same as the
+      // rest of the not-yet-built Booking menu above.
+      {
+        path: "DMSTripPlanning",
+        component: () => import("pages/UnderConstraction.vue"),
+      },
+      {
+        path: "DMSTripSheet",
+        component: () => import("pages/UnderConstraction.vue"),
+      },
+      {
+        path: "DMSTripClosure",
+        component: () => import("pages/UnderConstraction.vue"),
+      },
+      {
+        path: "DMSAccountingInvoice",
+        component: () => import("pages/UnderConstraction.vue"),
+      },
+      {
+        path: "DMSAccountingReceipt",
+        component: () => import("pages/UnderConstraction.vue"),
+      },
+      {
+        path: "DMSAccountingLedger",
+        component: () => import("pages/UnderConstraction.vue"),
+      },
+      {
         path: "BookingView",
         component: () => import("pages/UnderConstraction.vue"),
       },

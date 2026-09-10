@@ -23,7 +23,12 @@
       </div>
     </main>
 
-    <!-- Footer Tabs Bar -->
+    <!-- Footer Tabs Bar — matches the reference cargonetquasar project's
+         DynamicTab.vue exactly: class="modern-tabs-footer" straight on
+         <q-footer>, plain <ul>/<li> tab list, no scroll-track wrapper or
+         prev/next chevrons (those only exist on the job-form page's own
+         internal tabs, e.g. DMSBBookingView.vue's tab-nav-buttons — not
+         on this outer footer strip). -->
     <q-footer
       class="modern-tabs-footer"
       v-if="openTabs.length && !$q.screen.lt.sm"
