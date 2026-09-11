@@ -56,20 +56,88 @@ const routes = [
         path: "DMSBBookingView",
         component: () => import("pages/DMSBBookingView.vue"),
       },
-      // DMS > Trip / Accounting submenus (src/IPConfig/mockData.js's
-      // buildMockChildMenu DMS group) don't have built pages yet, so they
-      // route to the shared "under construction" placeholder, same as the
-      // rest of the not-yet-built Booking menu above.
+      // DMS > Trip submenu (src/IPConfig/mockData.js's buildMockChildMenu
+      // DMS group), menu item names/order matched 1:1 to the legacy
+      // EagleParcel WinForms app's own "Trip" menu — all 8 items now have
+      // a real built page (see each .vue file's own header comment for
+      // which legacy WinForms screen it mirrors).
       {
-        path: "DMSTripPlanning",
+        path: "DMSTrip",
+        component: () => import("pages/DMSTrip.vue"),
+      },
+      {
+        path: "DMSTripView",
+        component: () => import("pages/DMSTripView.vue"),
+      },
+      {
+        path: "DMSTripStockTransfer",
+        component: () => import("pages/DMSTripStockTransfer.vue"),
+      },
+      {
+        path: "DMSBookingListTripWise",
+        component: () => import("pages/DMSBookingListTripWise.vue"),
+      },
+      {
+        path: "DMSTripPosting",
+        component: () => import("pages/DMSTripPosting.vue"),
+      },
+      {
+        path: "DMSTripListPendingForUnload",
+        component: () => import("pages/DMSTripListPendingForUnload.vue"),
+      },
+      {
+        path: "DMSTripCharge",
+        component: () => import("pages/DMSTripCharge.vue"),
+      },
+      {
+        path: "DMSTripRegisterTransporterWise",
+        component: () => import("pages/DMSTripRegisterTransporterWise.vue"),
+      },
+      {
+        path: "DMSTripIncomeExpense",
+        component: () => import("pages/DMSTripIncomeExpense.vue"),
+      },
+      // DMS > Delivery submenu, item names/order matched 1:1 to the legacy
+      // EagleParcel WinForms app's own "Delivery" menu. "Delivery" and
+      // "Door Delivery" route to the real DMSDelivery.vue/
+      // DMSDoorDelivery.vue (modeled on the EagleParcel-API's
+      // DEL_DeliveryENT/DEL_DoorDeliveryENT); the rest don't have a built
+      // page yet, so they route to the shared "under construction"
+      // placeholder until each one is built out.
+      {
+        path: "DMSDelivery",
+        component: () => import("pages/DMSDelivery.vue"),
+      },
+      {
+        path: "DMSDeliveryView",
+        component: () => import("pages/DMSDeliveryView.vue"),
+      },
+      {
+        path: "DMSDoorDeliveryRegister",
         component: () => import("pages/UnderConstraction.vue"),
       },
       {
-        path: "DMSTripSheet",
+        path: "DMSDoorDelivery",
+        component: () => import("pages/DMSDoorDelivery.vue"),
+      },
+      {
+        path: "DMSDoorDeliveryInvoice",
         component: () => import("pages/UnderConstraction.vue"),
       },
       {
-        path: "DMSTripClosure",
+        path: "DMSDoorDeliveryRate",
+        component: () => import("pages/UnderConstraction.vue"),
+      },
+      {
+        path: "DMSDeliveryAddMultiple",
+        component: () => import("pages/UnderConstraction.vue"),
+      },
+      {
+        path: "DMSDeliveryRegisterScreen",
+        component: () => import("pages/UnderConstraction.vue"),
+      },
+      {
+        path: "DMSDeliveryRegisterScreenPartyCopy",
         component: () => import("pages/UnderConstraction.vue"),
       },
       {
