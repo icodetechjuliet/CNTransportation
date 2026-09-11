@@ -24,7 +24,6 @@
           <!-- ── Grid ── -->
           <q-table
             square
-            dense
             :rows="filteredBookings"
             :columns="tableColumns"
             row-key="BookingId"
@@ -75,8 +74,8 @@
                     flat
                     dense
                     no-caps
-                    label="Raise New Booking"
-                    class="add_new_job m_add_newjob bg-dblue-lblue"
+                    class="add_new_booking m_add_newjob bg-dblue-lblue"
+                    accesskey="n"
                     @click="openAddBooking"
                   />
 
@@ -197,7 +196,7 @@
             </template>
 
             <template v-slot:body-cell-action="props">
-              <q-td :props="props" class="button-container booking-action-td">
+              <q-td :props="props" class="button-container">
                 <q-btn
                   icon="fa-solid fa-eye"
                   color="primary"
@@ -220,81 +219,116 @@
               </q-td>
             </template>
 
-            <!-- ── Mobile card (grid mode) ── -->
+            <!-- ── Mobile card (grid mode) — reuses the global
+                 .mobile-job-card/.mjc-* pattern (cn-style.css) already
+                 established by JobDetailsGrid.vue's own mobile card list
+                 and by DMSBooking.vue, instead of this page's own former
+                 .dms-mobile-card markup/classes. ── -->
             <template v-slot:item="props">
-              <div class="dms-mobile-card">
-                <!-- Header row: Booking No + Status -->
-                <div class="dms-mc-header">
-                  <span class="dms-mc-bno">{{ props.row.BookingNo }}</span>
-                  <q-badge
-                    :color="props.row.Status === 'Delivered' ? 'positive' : 'orange'"
-                    :label="props.row.Status"
-                    class="dms-mc-status"
-                  />
-                </div>
-
-                <!-- Date / Delivery Type / Payment -->
-                <div class="dms-mc-meta">
-                  <span class="dms-mc-chip">{{ props.row.BookingDate }}</span>
-                  <q-badge
-                    v-if="props.row.DeliveryType === 'Door Delivery'"
-                    color="orange-6"
-                    label="Door Delivery"
-                    class="dms-mc-chip"
-                  />
-                  <span v-else class="dms-mc-chip">{{ props.row.DeliveryType }}</span>
-                  <q-badge
-                    :color="paymentColor(props.row.PaymentType)"
-                    :label="props.row.PaymentType"
-                    outline
-                    class="dms-mc-chip"
-                  />
-                </div>
-
-                <!-- Route -->
-                <div class="dms-mc-route">
-                  <q-icon name="place" size="14px" color="primary" />
-                  <span class="dms-mc-city">{{ props.row.FromCity }}</span>
-                  <q-icon name="arrow_forward" size="13px" color="grey-6" class="q-mx-xs" />
-                  <q-icon name="place" size="14px" color="red-6" />
-                  <span class="dms-mc-city">{{ props.row.ToCity }}</span>
-                </div>
-
-                <!-- Parties -->
-                <div class="dms-mc-parties">
-                  <div class="dms-mc-party">
-                    <span class="dms-mc-plabel">From:</span>
-                    <span>{{ maskName(props.row.ConsignorName) }}</span>
+              <div class="mobile-job-card">
+                <div
+                  class="mjc-header"
+                  @click="toggleMobileCard(props.row.BookingId)"
+                >
+                  <div class="mjc-header-left">
+                    <div class="mjc-job-badge">
+                      <q-icon name="local_shipping" size="14px" />
+                    </div>
+                    <div class="mjc-header-info">
+                      <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
+                      <span class="mjc-job-date">{{
+                        props.row.BookingDate
+                      }}</span>
+                    </div>
                   </div>
-                  <div class="dms-mc-party">
-                    <span class="dms-mc-plabel">To:</span>
-                    <span>{{ maskName(props.row.ConsigneeName) }}</span>
+                  <div class="mjc-header-right">
+                    <q-badge
+                      class="mjc-status-badge"
+                      :color="
+                        props.row.Status === 'Delivered' ? 'positive' : 'orange'
+                      "
+                    >
+                      {{ props.row.Status }}
+                    </q-badge>
+                    <q-icon
+                      :name="
+                        expandedMobileCards.includes(props.row.BookingId)
+                          ? 'expand_less'
+                          : 'expand_more'
+                      "
+                      size="20px"
+                      color="grey-6"
+                    />
                   </div>
                 </div>
 
-                <!-- Footer: carrier + actions -->
-                <div class="dms-mc-footer">
-                  <span class="dms-mc-carrier">{{ props.row.LoadCarrier }}</span>
-                  <div class="button-container">
-                    <q-btn
-                      icon="fa-solid fa-eye"
-                      color="primary"
-                      dense
-                      outline
-                      class="edit-icon-style vw"
-                      @click="viewBooking(props.row)"
-                    ><q-tooltip>View</q-tooltip></q-btn>
-                    <q-btn
-                      v-if="canAddEdit"
-                      icon="fa-solid fa-pen-to-square"
-                      color="primary"
-                      dense
-                      outline
-                      class="edit-icon-style mody"
-                      @click="editBooking(props.row)"
-                    ><q-tooltip>Edit</q-tooltip></q-btn>
-                  </div>
+                <div class="mjc-actions">
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-eye"
+                    label="View"
+                    class="mjc-btn mjc-btn-view"
+                    @click="viewBooking(props.row)"
+                  />
+                  <q-btn
+                    v-if="canAddEdit"
+                    dense
+                    unelevated
+                    icon="fa-solid fa-pen-to-square"
+                    label="Edit"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="editBooking(props.row)"
+                  />
                 </div>
+
+                <transition name="mobile-expand">
+                  <div
+                    v-if="expandedMobileCards.includes(props.row.BookingId)"
+                    class="mjc-details"
+                  >
+                    <q-separator class="mjc-divider" />
+                    <div class="mjc-details-grid">
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Delivery Type</span>
+                        <span class="mjc-detail-value">{{
+                          props.row.DeliveryType || "—"
+                        }}</span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Payment</span>
+                        <span class="mjc-detail-value">{{
+                          props.row.PaymentType || "—"
+                        }}</span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Route</span>
+                        <span class="mjc-detail-value"
+                          >{{ props.row.FromCity }} →
+                          {{ props.row.ToCity }}</span
+                        >
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">From</span>
+                        <span class="mjc-detail-value">{{
+                          maskName(props.row.ConsignorName)
+                        }}</span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">To</span>
+                        <span class="mjc-detail-value">{{
+                          maskName(props.row.ConsigneeName)
+                        }}</span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Carrier</span>
+                        <span class="mjc-detail-value">{{
+                          props.row.LoadCarrier || "—"
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </transition>
               </div>
             </template>
           </q-table>
@@ -389,9 +423,7 @@
                         dense
                         outlined
                         bg-color="blue-1"
-                        :readonly="
-                          dialogMode === 'view' || activeMode === 'truck'
-                        "
+                        readonly
                       />
                     </div>
                     <div class="col-2">
@@ -468,6 +500,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -501,6 +534,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -699,13 +733,22 @@
                   <!-- Door Del / DD Amt -->
                   <div class="row q-col-gutter-xs q-mb-xs items-center">
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.IsDoorDelivery"
-                        label="Door Del."
-                        dense
-                        :disable="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.IsDoorDelivery"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                            @update:model-value="calcTotal"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Door Del.</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-8">
                       <span class="field-label">D.D. Amt.</span>
@@ -726,13 +769,22 @@
                   <!-- Door Coll / Collection -->
                   <div class="row q-col-gutter-xs q-mb-xs items-center">
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.IsDoorCollection"
-                        label="Door Coll."
-                        dense
-                        :disable="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.IsDoorCollection"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                            @update:model-value="calcTotal"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Door Coll.</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-8">
                       <span class="field-label">Collection</span>
@@ -753,13 +805,22 @@
                   <!-- Other / Other Amt -->
                   <div class="row q-col-gutter-xs q-mb-xs items-center">
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.HasOther"
-                        label="Other"
-                        dense
-                        :disable="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.HasOther"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                            @update:model-value="calcTotal"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Other</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-8">
                       <span class="field-label">Other Amt.</span>
@@ -942,6 +1003,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -960,6 +1022,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -993,6 +1056,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -1282,20 +1346,38 @@
                   <!-- Cash Credit / Pay. Received / Date -->
                   <div class="row q-col-gutter-xs q-mb-xs items-center">
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.CashCredit"
-                        label="Cash Credit"
-                        dense
-                        :disable="dialogMode === 'view'"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.CashCredit"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Cash Credit</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.PayReceived"
-                        label="Pay. Received"
-                        dense
-                        :disable="dialogMode === 'view'"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.PayReceived"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Pay. Received</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-4">
                       <span class="field-label">Date</span>
@@ -2532,16 +2614,18 @@ export default {
   data() {
     // Fixed — this page is only ever the "BBooking" list now (see the
     // separate DMSBooking.vue / DMSTruckBooking.vue pages for those modes).
-    const mode = "bbooking";
     return {
-      activeMode: mode,
       bookings: [],
       filteredBookings: [],
-      fromDate: this.defaultFromDate(mode),
-      toDate: this.defaultToDate(mode),
+      fromDate: "2026-04-01",
+      toDate: "2027-03-31",
       direction: "All",
       searchText: "",
       pagination: { page: 1, rowsPerPage: 15 },
+      // Tracks which mobile job-cards (global .mobile-job-card/.mjc-*
+      // pattern — see toggleMobileCard()) are expanded, same as
+      // JobDetailsGrid.vue's / DMSBooking.vue's own mobile card list.
+      expandedMobileCards: [],
 
       showBookingDialog: false,
       dialogMode: "view",
@@ -2639,8 +2723,9 @@ export default {
   },
 
   computed: {
+    // BBooking is a permanently read-only list — there is no edit mode.
     canAddEdit() {
-      return this.activeMode !== "bbooking";
+      return false;
     },
 
     tableColumns() {
@@ -2648,7 +2733,7 @@ export default {
     },
 
     dialogCarrierOptions() {
-      return this.activeMode === "truck" ? ["Truck"] : ["Own", "Truck", "Air"];
+      return ["Own", "Truck", "Air"];
     },
 
     columnOptions() {
@@ -2666,20 +2751,25 @@ export default {
   },
 
   methods: {
+    // Same expand/collapse toggle as JobDetailsGrid.vue's / DMSBooking.vue's
+    // mobile card list (the global .mobile-job-card/.mjc-* pattern this
+    // page's mobile view now reuses instead of its own invented
+    // .dms-mobile-card markup).
+    toggleMobileCard(id) {
+      const index = this.expandedMobileCards.indexOf(id);
+      if (index === -1) {
+        this.expandedMobileCards.push(id);
+      } else {
+        this.expandedMobileCards.splice(index, 1);
+      }
+    },
+
     maskName(name) {
       if (!name) return "";
       const words = String(name).trim().split(/\s+/);
       if (words.length <= 1) return words[0];
       if (words.length === 2) return `${words[0]} xxx ${words[1]}`;
       return `${words[0]} xxx ${words[words.length - 1]}`;
-    },
-
-    defaultFromDate(mode) {
-      return mode === "bbooking" ? "2026-04-01" : "2026-04-01";
-    },
-
-    defaultToDate(mode) {
-      return mode === "bbooking" ? "2027-03-31" : "2026-04-01";
     },
 
     clearSearch() {
@@ -2719,13 +2809,11 @@ export default {
     },
 
     async loadBookings() {
-      const carrierFilter = this.activeMode === "truck" ? "truck" : "all";
       const result = await apiGetBookings(
         this.fromDate,
         this.toDate,
         this.direction,
-        this.searchText,
-        carrierFilter
+        this.searchText
       );
       this.filteredBookings = result;
     },
@@ -2746,7 +2834,7 @@ export default {
         BookingId: null,
         BookingType: "Outward",
         BookedFrom: "Greenland",
-        Carrier: this.activeMode === "truck" ? "Truck" : "Own",
+        Carrier: "Own",
         Load: "own",
         BookingNo: "",
         BookingDate: "01/04/2026",
@@ -3306,129 +3394,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* Row height + padding only — no per-cell border-right/border-bottom here.
-   The old version of this block force-added a vertical divider line to
-   EVERY body cell (only :last-child was excluded) plus a duplicate,
-   redundant copy of the header divider that's already in the global
-   ".m-table-style thead th" rule (cn-style.css). Its own comment claimed
-   to be replicating JobDetailsGrid.vue's table styling, but that page
-   (the app's actual reference list-page table) carries no such scoped
-   overrides at all — it relies purely on the global .m-table-style rules,
-   which give the header its divider lines but never touch tbody. That
-   mismatch is what produced the stray vertical lines running down every
-   column in this table's body, not just the Action column. Matching the
-   reference page now means just the layout values, no invented borders. */
-:deep(.m-table-style tbody tr) {
-  height: 38px;
-}
-:deep(.m-table-style tbody td) {
-  height: 38px;
-  padding: 5px 8px !important;
-}
-:deep(.m-table-style tbody td:first-child) {
-  padding: 5px 10px !important;
-}
-/* Action column — sized to its icon buttons instead of a fixed width, and
-   vertically centered rather than sharing the text cells' padding.
-   "width: 1px" is the standard shrink-to-content trick, but it only works
-   under table-layout: auto — this q-table (wrap-cells not set) defaults
-   to table-layout: fixed via Quasar's own ".q-table--no-wrap", which took
-   that 1px literally instead of expanding to fit content. The column
-   rendered at exactly 21px (1px + the 10px+10px padding — confirmed via
-   devtools), clipping the 26px-wide round eye button (.edit-icon-style)
-   and making its cut-off edge read as a stray vertical line. Sized to
-   actually fit the button instead. */
-:deep(.m-table-style tbody td.booking-action-td) {
-  width: 46px;
-  min-width: 46px;
-  white-space: nowrap;
-  padding: 0 10px !important;
-  vertical-align: middle;
-}
-
-.field-label {
-  display: block;
-  font-size: 11px;
-  color: #555;
-  margin-bottom: 2px;
-  font-weight: 500;
-}
-.button-container {
-  white-space: nowrap;
-}
-
-/* ── Mobile card (grid mode) ── */
-.dms-mobile-card {
-  background: #fff;
-  border: 1px solid #e0e8f0;
-  border-radius: 8px;
-  padding: 10px 12px;
-  margin: 6px 8px;
-  box-shadow: 0 1px 4px rgba(1,120,188,.10);
-  width: calc(100% - 16px);
-}
-.dms-mc-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-.dms-mc-bno {
-  font-size: 13px;
-  font-weight: 700;
-  color: #0178bc;
-  letter-spacing: .3px;
-}
-.dms-mc-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 6px;
-}
-.dms-mc-chip {
-  font-size: 11px;
-  color: #444;
-}
-.dms-mc-route {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  margin-bottom: 5px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #222;
-}
-.dms-mc-city { font-size: 12px; }
-.dms-mc-parties {
-  border-top: 1px dashed #d0dce8;
-  padding-top: 5px;
-  margin-bottom: 6px;
-  font-size: 11px;
-  color: #333;
-}
-.dms-mc-party {
-  display: flex;
-  gap: 4px;
-  margin-bottom: 2px;
-}
-.dms-mc-plabel {
-  font-weight: 600;
-  color: #0178bc;
-  min-width: 32px;
-}
-.dms-mc-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid #eef2f7;
-  padding-top: 6px;
-}
-.dms-mc-carrier {
-  font-size: 11px;
-  color: #666;
-  font-style: italic;
-}
-
-</style>

@@ -26,7 +26,6 @@
           <!-- ── Grid ── -->
           <q-table
             square
-            dense
             :rows="filteredBookings"
             :columns="tableColumns"
             row-key="BookingId"
@@ -77,8 +76,8 @@
                     flat
                     dense
                     no-caps
-                    label="Raise New Booking"
-                    class="add_new_job m_add_newjob bg-dblue-lblue"
+                    class="add_new_booking m_add_newjob bg-dblue-lblue"
+                    accesskey="n"
                     @click="openAddBooking"
                   />
 
@@ -223,6 +222,16 @@
                   @click="editBooking(props.row)"
                   ><q-tooltip>Edit</q-tooltip></q-btn
                 >
+                <q-btn
+                  v-if="canAddEdit"
+                  icon="fa-solid fa-trash"
+                  color="negative"
+                  dense
+                  outline
+                  class="edit-icon-style"
+                  @click="confirmDeleteBooking(props.row)"
+                  ><q-tooltip>Delete</q-tooltip></q-btn
+                >
               </q-td>
             </template>
 
@@ -243,7 +252,9 @@
                     </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
-                      <span class="mjc-job-date">{{ props.row.BookingDate }}</span>
+                      <span class="mjc-job-date">{{
+                        props.row.BookingDate
+                      }}</span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
@@ -285,6 +296,15 @@
                     class="mjc-btn mjc-btn-edit"
                     @click="editBooking(props.row)"
                   />
+                  <q-btn
+                    v-if="canAddEdit"
+                    dense
+                    unelevated
+                    icon="fa-solid fa-trash"
+                    label="Delete"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="confirmDeleteBooking(props.row)"
+                  />
                 </div>
 
                 <transition name="mobile-expand">
@@ -309,7 +329,8 @@
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Route</span>
                         <span class="mjc-detail-value"
-                          >{{ props.row.FromCity }} → {{ props.row.ToCity }}</span
+                          >{{ props.row.FromCity }} →
+                          {{ props.row.ToCity }}</span
                         >
                       </div>
                       <div class="mjc-detail-row">
@@ -427,9 +448,7 @@
                         dense
                         outlined
                         bg-color="blue-1"
-                        :readonly="
-                          dialogMode === 'view' || activeMode === 'truck'
-                        "
+                        :readonly="dialogMode === 'view'"
                       />
                     </div>
                     <div class="col-2">
@@ -506,6 +525,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -539,6 +559,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -737,13 +758,22 @@
                   <!-- Door Del / DD Amt -->
                   <div class="row q-col-gutter-xs q-mb-xs items-center">
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.IsDoorDelivery"
-                        label="Door Del."
-                        dense
-                        :disable="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.IsDoorDelivery"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                            @update:model-value="calcTotal"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Door Del.</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-8">
                       <span class="field-label">D.D. Amt.</span>
@@ -764,13 +794,22 @@
                   <!-- Door Coll / Collection -->
                   <div class="row q-col-gutter-xs q-mb-xs items-center">
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.IsDoorCollection"
-                        label="Door Coll."
-                        dense
-                        :disable="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.IsDoorCollection"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                            @update:model-value="calcTotal"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Door Coll.</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-8">
                       <span class="field-label">Collection</span>
@@ -791,13 +830,22 @@
                   <!-- Other / Other Amt -->
                   <div class="row q-col-gutter-xs q-mb-xs items-center">
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.HasOther"
-                        label="Other"
-                        dense
-                        :disable="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.HasOther"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                            @update:model-value="calcTotal"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Other</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-8">
                       <span class="field-label">Other Amt.</span>
@@ -980,6 +1028,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -998,6 +1047,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -1031,6 +1081,7 @@
                         bg-color="blue-1"
                         use-input
                         fill-input
+                        display-value=""
                         input-debounce="0"
                         :readonly="dialogMode === 'view'"
                       />
@@ -1320,20 +1371,38 @@
                   <!-- Cash Credit / Pay. Received / Date -->
                   <div class="row q-col-gutter-xs q-mb-xs items-center">
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.CashCredit"
-                        label="Cash Credit"
-                        dense
-                        :disable="dialogMode === 'view'"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.CashCredit"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Cash Credit</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-4">
-                      <q-checkbox
-                        v-model="form.PayReceived"
-                        label="Pay. Received"
-                        dense
-                        :disable="dialogMode === 'view'"
-                      />
+                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                        <q-item-section avatar>
+                          <q-checkbox
+                            dense
+                            v-model="form.PayReceived"
+                            val="orange"
+                            color="orange"
+                            intermediate-icon="black"
+                            :disable="dialogMode === 'view'"
+                          />
+                        </q-item-section>
+                        <q-item-section>
+                          <q-item-label dense>Pay. Received</q-item-label>
+                        </q-item-section>
+                      </q-item>
                     </div>
                     <div class="col-4">
                       <span class="field-label">Date</span>
@@ -1548,7 +1617,6 @@
 </template>
 
 <script>
-import html2pdf from "html2pdf.js";
 import ictLogoUrl from "src/assets/ICT-logo.png";
 
 // ─────────────────────────────────────────────
@@ -2498,16 +2566,12 @@ function todayStr() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function apiGetBookings(fromDate, toDate, direction, search, carrierFilter) {
+function apiGetBookings(fromDate, toDate, direction, search) {
   return new Promise((resolve) => {
     setTimeout(() => {
       let result = [...MOCK_BOOKINGS];
       if (direction !== "All")
         result = result.filter((b) => b.BookingType === direction);
-      if (carrierFilter === "truck")
-        result = result.filter(
-          (b) => b.LoadCarrier === "Truck" || b.Carrier === "Truck"
-        );
       if (search) {
         const s = search.toLowerCase();
         result = result.filter(
@@ -2556,20 +2620,45 @@ function apiSaveBooking(booking) {
   });
 }
 
+// Mirrors the old app's BUK_BookingDeleteLog — deleting a booking always
+// requires a reason, which is captured here (see confirmDeleteBooking()
+// below) instead of just splicing the record out silently.
+function apiDeleteBooking(id, reason) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const idx = MOCK_BOOKINGS.findIndex((b) => b.BookingId === id);
+      if (idx !== -1) MOCK_BOOKINGS.splice(idx, 1);
+      resolve({ success: true, reason });
+    }, 150);
+  });
+}
+
+// Consumed by DMSBookingView.vue — its own Add/Edit/View full-page tab,
+// opened via openTab() from viewBooking()/editBooking()/openAddBooking()
+// below (same pattern as DMSBBooking.vue → DMSBBookingView.vue).
+export { apiGetBookingById, apiSaveBooking, MOCK_DATA };
+
 // ─────────────────────────────────────────────
 export default {
   name: "DMSBooking",
 
+  // Lets openAddBooking()/viewBooking()/editBooking() open the full-page
+  // Add/Edit/View tab (DMSBookingView.vue) instead of the in-page popup.
+  // `default: null` keeps this page working standalone (outside
+  // DynamicTab.vue) by falling back to the old popup — see
+  // DMSBBooking.vue's identical convention.
+  inject: {
+    openTab: { default: null },
+  },
+
   data() {
     // Fixed — this page is only ever the plain "Booking" list now (see the
     // separate DMSBBooking.vue / DMSTruckBooking.vue pages for those modes).
-    const mode = "booking";
     return {
-      activeMode: mode,
       bookings: [],
       filteredBookings: [],
-      fromDate: this.defaultFromDate(mode),
-      toDate: this.defaultToDate(mode),
+      fromDate: this.defaultFromDate(),
+      toDate: this.defaultToDate(),
       direction: "All",
       searchText: "",
       pagination: { page: 1, rowsPerPage: 15 },
@@ -2584,7 +2673,6 @@ export default {
 
       showPrintDialog: false,
       printBlobUrl: null,
-      printIncludeFreight: false,
 
       mockData: MOCK_DATA,
 
@@ -2674,8 +2762,10 @@ export default {
   },
 
   computed: {
+    // Always true — BBooking (read-only) is its own page now
+    // (DMSBBooking.vue), so this page never runs in that mode.
     canAddEdit() {
-      return this.activeMode !== "bbooking";
+      return true;
     },
 
     tableColumns() {
@@ -2683,7 +2773,7 @@ export default {
     },
 
     dialogCarrierOptions() {
-      return this.activeMode === "truck" ? ["Truck"] : ["Own", "Truck", "Air"];
+      return ["Own", "Truck", "Air"];
     },
 
     columnOptions() {
@@ -2721,12 +2811,12 @@ export default {
       return `${words[0]} xxx ${words[words.length - 1]}`;
     },
 
-    defaultFromDate(mode) {
-      return mode === "bbooking" ? "2026-04-01" : "2026-04-01";
+    defaultFromDate() {
+      return "2026-04-01";
     },
 
-    defaultToDate(mode) {
-      return mode === "bbooking" ? "2027-03-31" : "2026-04-01";
+    defaultToDate() {
+      return "2026-04-01";
     },
 
     clearSearch() {
@@ -2766,13 +2856,11 @@ export default {
     },
 
     async loadBookings() {
-      const carrierFilter = this.activeMode === "truck" ? "truck" : "all";
       const result = await apiGetBookings(
         this.fromDate,
         this.toDate,
         this.direction,
-        this.searchText,
-        carrierFilter
+        this.searchText
       );
       this.filteredBookings = result;
     },
@@ -2793,7 +2881,7 @@ export default {
         BookingId: null,
         BookingType: "Outward",
         BookedFrom: "Greenland",
-        Carrier: this.activeMode === "truck" ? "Truck" : "Own",
+        Carrier: "Own",
         Load: "own",
         BookingNo: "",
         BookingDate: "01/04/2026",
@@ -2909,23 +2997,82 @@ export default {
     },
 
     openAddBooking() {
+      // Full-page add, opened as its own dynamic tab (same pattern as the
+      // rest of the app's job-form pages) instead of the popup dialog.
+      if (this.openTab) {
+        this.openTab("/DMSBookingView?mode=add", "New Booking");
+        return;
+      }
+      // Fallback for when this page is rendered outside the DynamicTab
+      // shell (e.g. direct route access) — keep the old popup behavior.
       this.form = this.emptyForm();
       this.dialogMode = "add";
       this.showBookingDialog = true;
     },
 
-    async viewBooking(row) {
+    viewBooking(row) {
+      if (this.openTab) {
+        this.openTab(
+          `/DMSBookingView?mode=view&bookingId=${row.BookingId}`,
+          `Booking ${row.BookingNo || ""}`.trim()
+        );
+        return;
+      }
+      this.viewBookingInDialog(row);
+    },
+
+    async viewBookingInDialog(row) {
       const data = await apiGetBookingById(row.BookingId);
       this.form = { ...data };
       this.dialogMode = "view";
       this.showBookingDialog = true;
     },
 
-    async editBooking(row) {
+    editBooking(row) {
+      if (this.openTab) {
+        this.openTab(
+          `/DMSBookingView?mode=edit&bookingId=${row.BookingId}`,
+          `Booking ${row.BookingNo || ""}`.trim()
+        );
+        return;
+      }
+      this.editBookingInDialog(row);
+    },
+
+    async editBookingInDialog(row) {
       const data = await apiGetBookingById(row.BookingId);
       this.form = { ...data };
       this.dialogMode = "edit";
       this.showBookingDialog = true;
+    },
+
+    // Mirrors the old app's BUK_BookingDeleteRemarks prompt — deleting a
+    // booking always asks for a reason first, which the old app logged into
+    // BUK_BookingDeleteLog alongside a full snapshot of the record.
+    confirmDeleteBooking(row) {
+      this.$q
+        .dialog({
+          title: "Delete Booking",
+          message: `Delete booking <b>${row.BookingNo}</b>? Please give a reason.`,
+          html: true,
+          prompt: {
+            model: "",
+            type: "text",
+            isValid: (val) => val.trim().length > 0,
+          },
+          cancel: true,
+          persistent: true,
+          color: "negative",
+        })
+        .onOk(async (reason) => {
+          await apiDeleteBooking(row.BookingId, reason);
+          this.$q.notify({
+            message: "Booking deleted",
+            color: "negative",
+            position: "top",
+          });
+          this.loadBookings();
+        });
     },
 
     async saveBooking() {
@@ -2965,7 +3112,6 @@ export default {
     },
 
     async printBooking(includeFreight) {
-      this.printIncludeFreight = includeFreight;
       const logoDataUrl = await this.getLogoDataUrl();
       const html = this.buildReceiptHtml(includeFreight, logoDataUrl);
       const blob = new Blob([html], { type: "text/html" });
@@ -3121,7 +3267,6 @@ export default {
   .net-row td{border-top:2px solid #000;font-weight:700}
 
   /* ── Misc ── */
-  .section-title{font-weight:bold;font-size:8pt;border-bottom:1px solid #ccc;margin-bottom:3px;padding-bottom:1px;color:#333;text-transform:uppercase;letter-spacing:.4px}
   .risk-text{font-size:8pt;font-weight:700;padding:2px 0;border:1px solid #000;margin-bottom:3px;display:block;text-align:center}
   .no-amount-box{text-align:center;padding:20px;font-style:italic;color:#666}
 
@@ -3133,7 +3278,12 @@ export default {
   .footer-band{display:table;width:100%;border-collapse:collapse;border:1px solid #000;border-top:none}
   .footer-cell{display:table-cell;padding:2px 6px;font-size:8pt;border:1px solid #000}
 
-  @media print{body{padding:0;margin:0}}
+  /* ── Print sizing ── */
+  @page{size:A4;margin:10mm}
+  @media print{
+    body{padding:0;margin:0}
+    .top-band,.party-band,.body-band,.eway-band,.sig-band,.footer-band{page-break-inside:avoid}
+  }
 </style>
 </head>
 <body>
@@ -3209,9 +3359,6 @@ export default {
   <div class="party-cell">
     <table class="kv-table">
       <tr><td colspan="3"><b>Consignee :</b> ${f.ConsigneeName || ""}</td></tr>
-      <tr><td class="lbl" style="padding-top:1px">Bill To</td><td class="sep">:</td><td class="val">${
-        f.ConsigneeName || ""
-      }</td></tr>
       <tr><td colspan="3" style="padding:2px 0 4px">${(
         f.ToAddress || ""
       ).replace(/\n/g, "<br>")}</td></tr>
