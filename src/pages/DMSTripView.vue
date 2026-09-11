@@ -2,25 +2,33 @@
   <div>
     <q-page padding class="page hide-overflow">
       <div class="folder">
-        <!-- ── Header — same two-column shape as DMSBBookingView.vue's
-             header: breadcrumb + Save/dropdown/Close actions. Breadcrumb's
-             3rd crumb and the action buttons switch with `mode`, matching
-             the reference app's "View Mode" / "Modify Mode" screens. ── -->
+        <!-- ── Header — same shape as DMSBBookingView.vue's: two-crumb
+             breadcrumb ("Trip > View"/"Modify") + read-only header field
+             boxes + a Save/dropdown pair that's only shown at all in
+             Modify mode. No Close button — matches the reference exactly;
+             the tab strip's own "x" is how a tab gets closed. ── -->
         <div class="row header-style items-center">
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
-              <span class="header_text1">DMS</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
               <span class="header_text1">Trip</span>
               <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
-              <span class="header_text2">{{ isReadonly ? "View Mode" : "Modify Mode" }}</span>
+              <span class="header_text2">{{ isReadonly ? "View" : "Modify" }}</span>
+            </div>
+            <div class="header-field-group">
+              <q-input square dense outlined bg-color="blue-1" readonly label="Trip No." v-model="form.TripNo" />
+            </div>
+            <div class="header-field-group header-field-group-sm">
+              <q-input square dense outlined bg-color="blue-1" readonly label="Date" v-model="form.TripDate" />
+            </div>
+            <div class="header-field-group header-field-group-sm">
+              <q-input square dense outlined bg-color="blue-1" readonly label="Carrier" v-model="form.Carrier" />
             </div>
           </div>
 
           <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
             <div class="row q-col-gutter-x-sm justify-end items-center">
-              <div class="row items-center no-wrap desktop-actions-group">
-                <template v-if="!isReadonly">
+              <template v-if="!isReadonly">
+                <div class="row items-center no-wrap desktop-actions-group">
                   <q-btn
                     dense
                     unelevated
@@ -73,199 +81,205 @@
                       </q-item>
                     </q-list>
                   </q-btn-dropdown>
-                </template>
-                <q-btn
-                  dense
-                  unelevated
-                  no-caps
-                  icon="close"
-                  label="Close"
-                  class="desktop-action-btn bg-blue-300 bdr-blue-2 font-Mblue q-ml-xs"
-                  @click="closeThisTab"
-                />
-              </div>
+                </div>
+              </template>
             </div>
           </div>
         </div>
 
         <q-card class="tabs-container">
-          <q-inner-loading :showing="loading" color="primary" />
+          <q-tabs
+            v-model="activeTab"
+            dense
+            class="text-teal custom-tabs"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            narrow-indicator
+            outside-arrows
+          >
+            <q-tab name="general" label="General Details [1]" accesskey="1" />
+            <q-tab name="bookings" label="Bookings [2]" accesskey="2" />
+          </q-tabs>
+          <q-separator />
 
-          <q-card-section class="q-pa-sm">
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Trip Date</span>
-                <q-input square dense outlined bg-color="blue-1" placeholder="dd-mm-yyyy" v-model="form.TripDate" :readonly="isReadonly">
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
-                      <q-popup-proxy ref="tripDateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.TripDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.tripDateProxy.hide()" />
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Time</span>
-                <q-input square dense outlined bg-color="blue-1" placeholder="hh:mm AM/PM" v-model="form.TripStartTime" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Trip No</span>
-                <q-input square dense outlined bg-color="yellow-1" readonly v-model="form.TripNo" placeholder="(auto)" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">End Date</span>
-                <q-input square dense outlined bg-color="blue-1" placeholder="dd-mm-yyyy" v-model="form.TripEndDate" :readonly="isReadonly">
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
-                      <q-popup-proxy ref="endDateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.TripEndDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.endDateProxy.hide()" />
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
+          <q-tab-panels v-model="activeTab" animated keep-alive>
+            <q-inner-loading :showing="loading" color="primary" />
+
+            <!-- General Details -->
+            <q-tab-panel name="general">
+              <div class="row q-col-gutter-sm">
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Time" placeholder="hh:mm AM/PM" v-model="form.TripStartTime" :readonly="isReadonly" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="End Date" placeholder="dd-mm-yyyy" v-model="form.TripEndDate" :readonly="isReadonly">
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
+                        <q-popup-proxy ref="endDateProxy" transition-show="scale" transition-hide="scale">
+                          <q-date v-model="form.TripEndDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.endDateProxy.hide()" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="From City" v-model="form.FromCity" :readonly="isReadonly" v-if="isReadonly" />
+                  <q-select v-else square dense outlined bg-color="blue-1" label="From City" :options="mockData.cities" use-input fill-input display-value="" input-debounce="0" v-model="form.FromCity" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="To City" v-model="form.ToCity" :readonly="isReadonly" v-if="isReadonly" />
+                  <q-select v-else square dense outlined bg-color="blue-1" label="To City" :options="mockData.cities" use-input fill-input display-value="" input-debounce="0" v-model="form.ToCity" />
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="From B.O." v-model="form.FromBookingOffice" :readonly="isReadonly" v-if="isReadonly" />
+                  <q-select v-else square dense outlined bg-color="blue-1" label="From B.O." :options="mockData.bookingOffices" v-model="form.FromBookingOffice" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="To B.O." v-model="form.ToBookingOffice" :readonly="isReadonly" v-if="isReadonly" />
+                  <q-select v-else square dense outlined bg-color="blue-1" label="To B.O." :options="mockData.bookingOffices" v-model="form.ToBookingOffice" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Transporter" v-model="form.Transporter" :readonly="isReadonly" v-if="isReadonly" />
+                  <q-select v-else square dense outlined bg-color="blue-1" label="Transporter" :options="mockData.transporters" use-input fill-input display-value="" input-debounce="0" v-model="form.Transporter" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Vehicle" v-model="form.Vehicle" :readonly="isReadonly" v-if="isReadonly" />
+                  <q-select v-else square dense outlined bg-color="blue-1" label="Vehicle" :options="mockData.vehicles" use-input fill-input display-value="" input-debounce="0" v-model="form.Vehicle" />
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Vehicle No" v-model="form.VehicleNo" :readonly="isReadonly" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Adv." type="number" v-model="form.AdvanceAmount" :readonly="isReadonly" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Wt." type="number" v-model="form.Weight" :readonly="isReadonly" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Driver" v-model="form.Driver" :readonly="isReadonly" v-if="isReadonly" />
+                  <q-select v-else square dense outlined bg-color="blue-1" label="Driver" :options="mockData.drivers" use-input fill-input display-value="" input-debounce="0" v-model="form.Driver" />
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" :readonly="isReadonly" />
+                </div>
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Carrier</span>
-                <q-select square dense outlined bg-color="blue-1" :options="['own', 'Truck']" v-model="form.Carrier" :readonly="isReadonly" />
+              <!-- Select To City / Fill Booking / Other Details -->
+              <div class="row justify-end q-col-gutter-sm q-mt-xs">
+                <div class="col-auto">
+                  <q-btn
+                    unelevated
+                    no-caps
+                    dense
+                    label="Select To City"
+                    color="primary"
+                    class="m-btn-style"
+                    :disable="isReadonly"
+                    @click="openSelectToCity"
+                  />
+                </div>
+                <div class="col-auto">
+                  <q-btn
+                    unelevated
+                    no-caps
+                    dense
+                    label="Fill Booking"
+                    color="primary"
+                    class="m-btn-style"
+                    :disable="isReadonly"
+                    @click="openFillBooking"
+                  />
+                </div>
+                <div class="col-auto">
+                  <q-btn
+                    unelevated
+                    no-caps
+                    dense
+                    label="Other Details"
+                    color="primary"
+                    class="m-btn-style"
+                    :disable="isReadonly"
+                    @click="openOtherDetails"
+                  />
+                </div>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">From City</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.cities" use-input fill-input display-value="" input-debounce="0" v-model="form.FromCity" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">To City</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.cities" use-input fill-input display-value="" input-debounce="0" v-model="form.ToCity" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">From B.O.</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.bookingOffices" v-model="form.FromBookingOffice" :readonly="isReadonly" />
-              </div>
+            </q-tab-panel>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">To B.O.</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.bookingOffices" v-model="form.ToBookingOffice" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Transporter</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.transporters" use-input fill-input display-value="" input-debounce="0" v-model="form.Transporter" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Vehicle</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.vehicles" use-input fill-input display-value="" input-debounce="0" v-model="form.Vehicle" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Vehicle No</span>
-                <q-input square dense outlined bg-color="blue-1" v-model="form.VehicleNo" :readonly="isReadonly" />
-              </div>
-
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Adv.</span>
-                <q-input square dense outlined bg-color="blue-1" type="number" v-model="form.AdvanceAmount" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Wt.</span>
-                <q-input square dense outlined bg-color="blue-1" type="number" v-model="form.Weight" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Driver</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.drivers" use-input fill-input display-value="" input-debounce="0" v-model="form.Driver" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Remarks</span>
-                <q-input square dense outlined bg-color="blue-1" v-model="form.Remarks" :readonly="isReadonly" />
-              </div>
-            </div>
-
-            <!-- Select To City / Fill Booking / Other Details -->
-            <div class="row justify-end q-col-gutter-sm q-mt-xs">
-              <div class="col-auto">
-                <q-btn
-                  unelevated
-                  no-caps
+            <!-- Bookings -->
+            <q-tab-panel name="bookings">
+              <div class="row items-center q-mb-xs">
+                <q-icon name="local_shipping" size="18px" class="q-mr-xs text-primary" />
+                <span class="text-subtitle2 text-weight-bold">Bookings</span>
+                <q-space />
+                <q-checkbox
+                  v-model="allBookingsChecked"
+                  label="All Booking"
                   dense
-                  label="Select To City"
-                  color="primary"
-                  class="m-btn-style"
                   :disable="isReadonly"
-                  @click="openSelectToCity"
+                  @update:model-value="toggleAllBookings"
                 />
               </div>
-              <div class="col-auto">
-                <q-btn
-                  unelevated
-                  no-caps
-                  dense
-                  label="Fill Booking"
-                  color="primary"
-                  class="m-btn-style"
-                  :disable="isReadonly"
-                  @click="openFillBooking"
-                />
-              </div>
-              <div class="col-auto">
-                <q-btn
-                  unelevated
-                  no-caps
-                  dense
-                  label="Other Details"
-                  color="primary"
-                  class="m-btn-style"
-                  :disable="isReadonly"
-                  @click="openOtherDetails"
-                />
-              </div>
-            </div>
 
-            <!-- ── Bookings sub-grid — the bookings loaded on this trip ── -->
-            <div class="row items-center q-mt-md q-mb-xs">
-              <q-icon name="local_shipping" size="18px" class="q-mr-xs text-primary" />
-              <span class="text-subtitle2 text-weight-bold">Bookings</span>
-              <q-space />
-              <q-checkbox
-                v-model="allBookingsChecked"
-                label="All Booking"
+              <q-table
+                square
                 dense
-                :disable="isReadonly"
-                @update:model-value="toggleAllBookings"
-              />
-            </div>
+                flat
+                bordered
+                :rows="form.Bookings"
+                :columns="bookingColumns"
+                row-key="BookingTranId"
+                :rows-per-page-options="[10, 25, 50]"
+                table-class="text-white-8 m-table-style"
+                table-header-class="text-black"
+              >
+                <template v-slot:body-cell-Load="props">
+                  <q-td :props="props">
+                    <q-checkbox v-model="props.row.Load" dense :disable="isReadonly" />
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-Status="props">
+                  <q-td :props="props">
+                    <q-badge :color="bookingStatusColor(props.value)" :label="props.value" />
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-BookingNo="props">
+                  <q-td :props="props">
+                    <span class="text-primary text-weight-medium">{{ props.value }}</span>
+                  </q-td>
+                </template>
+                <template v-slot:body-cell-Payment="props">
+                  <q-td :props="props">
+                    <q-badge outline :color="paymentColor(props.value)" :label="props.value" />
+                  </q-td>
+                </template>
+              </q-table>
+            </q-tab-panel>
+          </q-tab-panels>
 
-            <q-table
-              square
-              dense
+          <!-- Prev/Next tab nav — same structure/classes as
+               DMSBBookingView.vue's own tab-panel nav. -->
+          <div class="q-pa-xs row justify-between tab-nav-buttons">
+            <q-btn
+              icon="chevron_left"
+              class="Navtab"
+              label=""
               flat
-              bordered
-              :rows="form.Bookings"
-              :columns="bookingColumns"
-              row-key="BookingTranId"
-              :rows-per-page-options="[10, 25, 50]"
-              table-class="text-white-8 m-table-style"
-              table-header-class="text-black"
-            >
-              <template v-slot:body-cell-Load="props">
-                <q-td :props="props">
-                  <q-checkbox v-model="props.row.Load" dense :disable="isReadonly" />
-                </q-td>
-              </template>
-              <template v-slot:body-cell-Status="props">
-                <q-td :props="props">
-                  <q-badge :color="bookingStatusColor(props.value)" :label="props.value" />
-                </q-td>
-              </template>
-              <template v-slot:body-cell-BookingNo="props">
-                <q-td :props="props">
-                  <span class="text-primary text-weight-medium">{{ props.value }}</span>
-                </q-td>
-              </template>
-              <template v-slot:body-cell-Payment="props">
-                <q-td :props="props">
-                  <q-badge outline :color="paymentColor(props.value)" :label="props.value" />
-                </q-td>
-              </template>
-            </q-table>
-          </q-card-section>
+              :disable="tabIndex === 0"
+              @click="goToPreviousTab"
+            />
+            <q-btn
+              label=""
+              icon-right="chevron_right"
+              class="Navtab"
+              flat
+              :disable="tabIndex === tabOrder.length - 1"
+              @click="goToNextTab"
+            />
+          </div>
         </q-card>
       </div>
     </q-page>
@@ -320,8 +334,7 @@
         </q-card-section>
         <q-separator />
         <q-card-section>
-          <span class="field-label">To City</span>
-          <q-select v-model="selectToCityValue" :options="mockData.cities" dense outlined bg-color="blue-1" />
+          <q-select v-model="selectToCityValue" :options="mockData.cities" label="To City" dense outlined bg-color="blue-1" />
           <div class="text-caption text-grey-7 q-mt-sm">
             Applies to every booking row currently checked in the Load column.
           </div>
@@ -348,16 +361,13 @@
         <q-card-section>
           <div class="row q-col-gutter-sm">
             <div class="col-6">
-              <span class="field-label">Insurance No.</span>
-              <q-input v-model="otherDetailsForm.InsuranceNo" dense outlined bg-color="blue-1" :readonly="isReadonly" />
+              <q-input v-model="otherDetailsForm.InsuranceNo" label="Insurance No." dense outlined bg-color="blue-1" :readonly="isReadonly" />
             </div>
             <div class="col-6">
-              <span class="field-label">E-Way Bill Ref No.</span>
-              <q-input v-model="otherDetailsForm.EwayBillRefNo" dense outlined bg-color="blue-1" :readonly="isReadonly" />
+              <q-input v-model="otherDetailsForm.EwayBillRefNo" label="E-Way Bill Ref No." dense outlined bg-color="blue-1" :readonly="isReadonly" />
             </div>
             <div class="col-12">
-              <span class="field-label">Special Instructions</span>
-              <q-input v-model="otherDetailsForm.SpecialInstructions" dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow :readonly="isReadonly" />
+              <q-input v-model="otherDetailsForm.SpecialInstructions" label="Special Instructions" dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow :readonly="isReadonly" />
             </div>
           </div>
         </q-card-section>
@@ -392,11 +402,6 @@ export default {
     },
   },
 
-  inject: {
-    openTab: { default: null },
-    goBackTab: { default: null },
-  },
-
   data() {
     return {
       loading: false,
@@ -404,6 +409,9 @@ export default {
       form: this.emptyForm(),
       savedForm: null,
       mockData: MOCK_DATA,
+
+      activeTab: "general",
+      tabOrder: ["general", "bookings"],
 
       allBookingsChecked: false,
 
@@ -438,6 +446,9 @@ export default {
     isReadonly() {
       return this.mode === "view";
     },
+    tabIndex() {
+      return this.tabOrder.indexOf(this.activeTab);
+    },
   },
 
   created() {
@@ -445,6 +456,17 @@ export default {
   },
 
   methods: {
+    goToPreviousTab() {
+      if (this.tabIndex > 0) {
+        this.activeTab = this.tabOrder[this.tabIndex - 1];
+      }
+    },
+    goToNextTab() {
+      if (this.tabIndex < this.tabOrder.length - 1) {
+        this.activeTab = this.tabOrder[this.tabIndex + 1];
+      }
+    },
+
     emptyForm() {
       return {
         TripId: null,
@@ -605,21 +627,6 @@ export default {
         ? JSON.parse(JSON.stringify(this.savedForm))
         : this.emptyForm();
     },
-
-    closeThisTab() {
-      if (this.goBackTab && this.goBackTab()) return;
-      if (this.openTab) this.openTab("/DMSTrip", "Trip");
-    },
   },
 };
 </script>
-
-<style scoped>
-.field-label {
-  display: block;
-  font-size: 11px;
-  color: #555;
-  margin-bottom: 2px;
-  font-weight: 500;
-}
-</style>

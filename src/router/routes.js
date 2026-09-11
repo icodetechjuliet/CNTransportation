@@ -98,12 +98,10 @@ const routes = [
         component: () => import("pages/DMSTripIncomeExpense.vue"),
       },
       // DMS > Delivery submenu, item names/order matched 1:1 to the legacy
-      // EagleParcel WinForms app's own "Delivery" menu. "Delivery" and
-      // "Door Delivery" route to the real DMSDelivery.vue/
-      // DMSDoorDelivery.vue (modeled on the EagleParcel-API's
-      // DEL_DeliveryENT/DEL_DoorDeliveryENT); the rest don't have a built
-      // page yet, so they route to the shared "under construction"
-      // placeholder until each one is built out.
+      // EagleParcel WinForms app's own "Delivery" menu — every item now has
+      // a real built page (mock-data-backed, see src/data/deliveryData.js;
+      // each .vue file's own header comment notes which EagleParcel-API
+      // shape it mirrors).
       {
         path: "DMSDelivery",
         component: () => import("pages/DMSDelivery.vue"),
@@ -114,7 +112,7 @@ const routes = [
       },
       {
         path: "DMSDoorDeliveryRegister",
-        component: () => import("pages/UnderConstraction.vue"),
+        component: () => import("pages/DMSDoorDeliveryRegister.vue"),
       },
       {
         path: "DMSDoorDelivery",
@@ -122,23 +120,23 @@ const routes = [
       },
       {
         path: "DMSDoorDeliveryInvoice",
-        component: () => import("pages/UnderConstraction.vue"),
+        component: () => import("pages/DMSDoorDeliveryInvoice.vue"),
       },
       {
         path: "DMSDoorDeliveryRate",
-        component: () => import("pages/UnderConstraction.vue"),
+        component: () => import("pages/DMSDoorDeliveryRate.vue"),
       },
       {
         path: "DMSDeliveryAddMultiple",
-        component: () => import("pages/UnderConstraction.vue"),
+        component: () => import("pages/DMSDeliveryAddMultiple.vue"),
       },
       {
         path: "DMSDeliveryRegisterScreen",
-        component: () => import("pages/UnderConstraction.vue"),
+        component: () => import("pages/DMSDeliveryRegisterScreen.vue"),
       },
       {
         path: "DMSDeliveryRegisterScreenPartyCopy",
-        component: () => import("pages/UnderConstraction.vue"),
+        component: () => import("pages/DMSDeliveryRegisterScreenPartyCopy.vue"),
       },
       {
         path: "DMSAccountingInvoice",

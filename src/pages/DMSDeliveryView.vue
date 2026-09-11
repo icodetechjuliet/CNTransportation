@@ -2,23 +2,33 @@
   <div>
     <q-page padding class="page hide-overflow">
       <div class="folder">
-        <!-- ── Header — same shape as DMSTripView.vue's: breadcrumb +
-             Save/dropdown/Close actions, switching with `mode`. ── -->
+        <!-- ── Header — same shape as DMSBBookingView.vue's: two-crumb
+             breadcrumb ("Delivery > View"/"Modify") + read-only header
+             field boxes + a Save/dropdown pair that's only shown at all in
+             Modify mode. No Close button — the tab strip's own "x" is how
+             a tab gets closed. ── -->
         <div class="row header-style items-center">
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
-              <span class="header_text1">DMS</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
               <span class="header_text1">Delivery</span>
               <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
-              <span class="header_text2">{{ isReadonly ? "View Mode" : "Modify Mode" }}</span>
+              <span class="header_text2">{{ isReadonly ? "View" : "Modify" }}</span>
+            </div>
+            <div class="header-field-group">
+              <q-input square dense outlined bg-color="blue-1" readonly label="Delivery No." v-model="form.DeliveryNo" placeholder="(auto)" />
+            </div>
+            <div class="header-field-group header-field-group-sm">
+              <q-input square dense outlined bg-color="blue-1" readonly label="Date" v-model="form.DeliveryDate" />
+            </div>
+            <div class="header-field-group header-field-group-sm">
+              <q-input square dense outlined bg-color="blue-1" readonly label="Booking No." v-model="booking.BookingNo" />
             </div>
           </div>
 
           <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
             <div class="row q-col-gutter-x-sm justify-end items-center">
-              <div class="row items-center no-wrap desktop-actions-group">
-                <template v-if="!isReadonly">
+              <template v-if="!isReadonly">
+                <div class="row items-center no-wrap desktop-actions-group">
                   <q-btn
                     dense
                     unelevated
@@ -55,195 +65,192 @@
                       </q-item>
                     </q-list>
                   </q-btn-dropdown>
-                </template>
-                <q-btn
-                  dense
-                  unelevated
-                  no-caps
-                  icon="close"
-                  label="Close"
-                  class="desktop-action-btn bg-blue-300 bdr-blue-2 font-Mblue q-ml-xs"
-                  @click="closeThisTab"
-                />
-              </div>
+                </div>
+              </template>
             </div>
           </div>
         </div>
 
         <q-card class="tabs-container">
-          <q-inner-loading :showing="loading" color="primary" />
+          <q-tabs
+            v-model="activeTab"
+            dense
+            class="text-teal custom-tabs"
+            active-color="primary"
+            indicator-color="primary"
+            align="justify"
+            narrow-indicator
+            outside-arrows
+          >
+            <q-tab name="booking" label="Booking Details [1]" accesskey="1" />
+            <q-tab name="delivery" label="Delivery Details [2]" accesskey="2" />
+          </q-tabs>
+          <q-separator />
 
-          <q-card-section class="q-pa-sm">
-            <!-- Read-only booking context — pulled from the booking being
-                 delivered, never edited here (matches the reference: a
-                 delivery always links to exactly one existing booking). -->
-            <div class="text-subtitle2 text-weight-bold q-mb-xs">Booking Details</div>
-            <div class="row q-col-gutter-sm q-mb-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Booking No</span>
-                <q-input square dense outlined bg-color="yellow-1" readonly v-model="booking.BookingNo" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Booking Date</span>
-                <q-input square dense outlined bg-color="blue-1" readonly v-model="booking.BookingDate" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Consignor</span>
-                <q-input square dense outlined bg-color="blue-1" readonly v-model="booking.FromPartyName" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Consignee</span>
-                <q-input square dense outlined bg-color="blue-1" readonly v-model="booking.ToPartyName" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Route</span>
-                <q-input square dense outlined bg-color="blue-1" readonly :model-value="`${booking.FromCity || '—'} → ${booking.ToCity || '—'}`" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Item / Qty / Weight</span>
-                <q-input square dense outlined bg-color="blue-1" readonly :model-value="`${booking.ItemName || '—'} · ${booking.Qty || 0} · ${booking.Weight || 0}kg`" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Payment Type</span>
-                <q-input square dense outlined bg-color="blue-1" readonly v-model="booking.PaymentType" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Net Amount (Receivable)</span>
-                <q-input square dense outlined bg-color="yellow-1" readonly v-model="booking.NetAmount" input-class="text-weight-bold" />
-              </div>
-            </div>
+          <q-tab-panels v-model="activeTab" animated keep-alive>
+            <q-inner-loading :showing="loading" color="primary" />
 
-            <q-separator class="q-mb-sm" />
+            <!-- Booking Details — read-only context pulled from the
+                 booking being delivered, never edited here (matches the
+                 reference: a delivery always links to exactly one existing
+                 booking). -->
+            <q-tab-panel name="booking">
+              <div class="row q-col-gutter-sm">
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" readonly label="Consignor" v-model="booking.FromPartyName" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" readonly label="Consignee" v-model="booking.ToPartyName" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" readonly label="Route" :model-value="`${booking.FromCity || '—'} → ${booking.ToCity || '—'}`" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" readonly label="Item / Qty / Weight" :model-value="`${booking.ItemName || '—'} · ${booking.Qty || 0} · ${booking.Weight || 0}kg`" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" readonly label="Payment Type" v-model="booking.PaymentType" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="yellow-1" readonly label="Net Amount (Receivable)" v-model="booking.NetAmount" input-class="text-weight-bold" />
+                </div>
+              </div>
+            </q-tab-panel>
 
-            <div class="text-subtitle2 text-weight-bold q-mb-xs">Delivery Details</div>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Delivery No.</span>
-                <q-input square dense outlined bg-color="yellow-1" readonly v-model="form.DeliveryNo" placeholder="(auto)" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Delivery Date</span>
-                <q-input square dense outlined bg-color="blue-1" placeholder="dd-mm-yyyy" v-model="form.DeliveryDate" :readonly="isReadonly">
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
-                      <q-popup-proxy ref="deliveryDateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.DeliveryDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.deliveryDateProxy.hide()" />
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Receiver Name</span>
-                <q-input square dense outlined bg-color="blue-1" v-model="form.ReceiverName" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Receiver Phone No.</span>
-                <q-input square dense outlined bg-color="blue-1" v-model="form.ReceiverPhoneNo" :readonly="isReadonly" />
-              </div>
+            <!-- Delivery Details -->
+            <q-tab-panel name="delivery">
+              <div class="row q-col-gutter-sm">
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Delivery Date" placeholder="dd-mm-yyyy" v-model="form.DeliveryDate" :readonly="isReadonly">
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
+                        <q-popup-proxy ref="deliveryDateProxy" transition-show="scale" transition-hide="scale">
+                          <q-date v-model="form.DeliveryDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.deliveryDateProxy.hide()" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Receiver Name" v-model="form.ReceiverName" :readonly="isReadonly" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Receiver Phone No." v-model="form.ReceiverPhoneNo" :readonly="isReadonly" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Reference No." v-model="form.ReferenceNo" :readonly="isReadonly" />
+                </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Reference No.</span>
-                <q-input square dense outlined bg-color="blue-1" v-model="form.ReferenceNo" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Reference Date</span>
-                <q-input square dense outlined bg-color="blue-1" placeholder="dd-mm-yyyy" v-model="form.ReferenceDate" :readonly="isReadonly">
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
-                      <q-popup-proxy ref="refDateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.ReferenceDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.refDateProxy.hide()" />
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                  <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsItemDelivered" :disable="isReadonly" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label dense>Item Delivered</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                  <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsCashCredit" :disable="isReadonly" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label dense>Cash Credit</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Reference Date" placeholder="dd-mm-yyyy" v-model="form.ReferenceDate" :readonly="isReadonly">
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
+                        <q-popup-proxy ref="refDateProxy" transition-show="scale" transition-hide="scale">
+                          <q-date v-model="form.ReferenceDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.refDateProxy.hide()" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                    <q-item-section avatar>
+                      <q-checkbox dense v-model="form.IsItemDelivered" :disable="isReadonly" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label dense>Item Delivered</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                    <q-item-section avatar>
+                      <q-checkbox dense v-model="form.IsCashCredit" :disable="isReadonly" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label dense>Cash Credit</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Kasar" type="number" v-model="form.Kasar" :readonly="isReadonly" />
+                </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Kasar</span>
-                <q-input square dense outlined bg-color="blue-1" type="number" v-model="form.Kasar" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Received Amount</span>
-                <q-input square dense outlined bg-color="blue-1" type="number" v-model="form.ReceivedAmount" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                  <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsPaymentReceived" :disable="isReadonly" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label dense>Payment Received</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Received Date</span>
-                <q-input square dense outlined bg-color="blue-1" placeholder="dd-mm-yyyy" v-model="form.ReceivedDate" :readonly="isReadonly">
-                  <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
-                      <q-popup-proxy ref="recvDateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form.ReceivedDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.recvDateProxy.hide()" />
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Received Amount" type="number" v-model="form.ReceivedAmount" :readonly="isReadonly" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                    <q-item-section avatar>
+                      <q-checkbox dense v-model="form.IsPaymentReceived" :disable="isReadonly" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label dense>Payment Received</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Received Date" placeholder="dd-mm-yyyy" v-model="form.ReceivedDate" :readonly="isReadonly">
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
+                        <q-popup-proxy ref="recvDateProxy" transition-show="scale" transition-hide="scale">
+                          <q-date v-model="form.ReceivedDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.recvDateProxy.hide()" />
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-select square dense outlined bg-color="blue-1" label="Payment Mode" :options="mockData.paymentModes" v-model="form.PaymentMode" clearable :readonly="isReadonly" />
+                </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Payment Mode</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.paymentModes" v-model="form.PaymentMode" clearable :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Bank Name</span>
-                <q-input square dense outlined bg-color="blue-1" v-model="form.BankName" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <span class="field-label">Delivered By</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.users" v-model="form.DeliveredBy" :readonly="isReadonly" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                  <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsDoorDelivery" :disable="isReadonly" />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label dense>Door Delivery</q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-input square dense outlined bg-color="blue-1" label="Bank Name" v-model="form.BankName" :readonly="isReadonly" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-select square dense outlined bg-color="blue-1" label="Delivered By" :options="mockData.users" v-model="form.DeliveredBy" :readonly="isReadonly" />
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                    <q-item-section avatar>
+                      <q-checkbox dense v-model="form.IsDoorDelivery" :disable="isReadonly" />
+                    </q-item-section>
+                    <q-item-section>
+                      <q-item-label dense>Door Delivery</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3" v-if="form.IsDoorDelivery">
+                  <q-select square dense outlined bg-color="blue-1" label="Door Delivery Vehicle" :options="mockData.vehicles" v-model="form.DoorDeliveryVehicle" :readonly="isReadonly" />
+                </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3" v-if="form.IsDoorDelivery">
-                <span class="field-label">Door Delivery Vehicle</span>
-                <q-select square dense outlined bg-color="blue-1" :options="mockData.vehicles" v-model="form.DoorDeliveryVehicle" :readonly="isReadonly" />
+                <div class="col-xs-12">
+                  <q-input square dense outlined bg-color="blue-1" label="Narration" type="textarea" :rows="2" autogrow v-model="form.Narration" :readonly="isReadonly" />
+                </div>
               </div>
+            </q-tab-panel>
+          </q-tab-panels>
 
-              <div class="col-xs-12">
-                <span class="field-label">Narration</span>
-                <q-input square dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow v-model="form.Narration" :readonly="isReadonly" />
-              </div>
-            </div>
-          </q-card-section>
+          <!-- Prev/Next tab nav — same structure/classes as
+               DMSBBookingView.vue's own tab-panel nav. -->
+          <div class="q-pa-xs row justify-between tab-nav-buttons">
+            <q-btn
+              icon="chevron_left"
+              class="Navtab"
+              label=""
+              flat
+              :disable="tabIndex === 0"
+              @click="goToPreviousTab"
+            />
+            <q-btn
+              label=""
+              icon-right="chevron_right"
+              class="Navtab"
+              flat
+              :disable="tabIndex === tabOrder.length - 1"
+              @click="goToNextTab"
+            />
+          </div>
         </q-card>
       </div>
     </q-page>
@@ -271,13 +278,10 @@ export default {
     },
   },
 
-  inject: {
-    openTab: { default: null },
-    goBackTab: { default: null },
-  },
-
   data() {
     return {
+      activeTab: "booking",
+      tabOrder: ["booking", "delivery"],
       loading: false,
       mode: this.params && this.params.mode === "edit" ? "edit" : this.params && this.params.mode === "view" ? "view" : "add",
       booking: {},
@@ -291,6 +295,9 @@ export default {
     isReadonly() {
       return this.mode === "view";
     },
+    tabIndex() {
+      return this.tabOrder.indexOf(this.activeTab);
+    },
   },
 
   created() {
@@ -298,6 +305,17 @@ export default {
   },
 
   methods: {
+    goToPreviousTab() {
+      if (this.tabIndex > 0) {
+        this.activeTab = this.tabOrder[this.tabIndex - 1];
+      }
+    },
+    goToNextTab() {
+      if (this.tabIndex < this.tabOrder.length - 1) {
+        this.activeTab = this.tabOrder[this.tabIndex + 1];
+      }
+    },
+
     emptyForm() {
       return {
         DeliveryID: null,
@@ -370,21 +388,6 @@ export default {
         ? JSON.parse(JSON.stringify(this.savedForm))
         : this.emptyForm();
     },
-
-    closeThisTab() {
-      if (this.goBackTab && this.goBackTab()) return;
-      if (this.openTab) this.openTab("/DMSDelivery", "Delivery");
-    },
   },
 };
 </script>
-
-<style scoped>
-.field-label {
-  display: block;
-  font-size: 11px;
-  color: #555;
-  margin-bottom: 2px;
-  font-weight: 500;
-}
-</style>
