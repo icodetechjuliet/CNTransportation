@@ -3236,6 +3236,17 @@ kbd {
 .button-container:empty {
   display: none;
 }
+/* Plain caption above a field in the DMS Booking/BBooking/Truck Booking
+   Add/Edit dialogs (not Quasar's built-in floating label) — was duplicated
+   as an identical scoped rule in each of those three pages; promoted here
+   so they share one definition instead. */
+.field-label {
+  display: block;
+  font-size: 11px;
+  color: #555;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
 .rotate-icon {
   transform: rotate(45deg);
 }
@@ -12099,7 +12110,8 @@ td.align-right {
 .add_new_button,
 .add_new_job,
 .add_new_Master,
-.add_new_delivery {
+.add_new_delivery,
+.add_new_booking {
   display: inline-block;
   position: relative;
   letter-spacing: 0.7px;
@@ -12471,23 +12483,24 @@ option {
   overflow: hidden;
   z-index: 1;
 }
-.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):hover {
+.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):not(.dms-flat-group):hover {
   background-color: rgba(166, 166, 166, 0.1);
   cursor: pointer;
 }
 
 /* .child-item is reused as the wrapper around an entire expandable group
-   (DMS > Booking/Trip/Accounting — see ".child-item.child-group" in
+   (other modules' own submenus — see ".child-item.child-group" in
    MainLayout1.vue), around a nested row inside that group
-   (.child-item--nested), and around a plain single-row leaf link. The
-   sliding fill below was written only for the plain-leaf case: it also
-   matched .child-item--nested rows, and its negative z-index / absolute
-   box ended up painting behind the whole open group instead of just the
-   hovered row. Exclude both .child-group and .child-item--nested here so
-   the fill only ever covers a plain leaf row; the group header gets its
-   own hover treatment, and nested rows get theirs via
-   .child-item--nested:hover below. */
-.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested)::before {
+   (.child-item--nested), around DMS's own flat category group
+   (.dms-flat-group), and around a plain single-row leaf link. The sliding
+   fill below was written only for the plain-leaf case: it also matched
+   .child-item--nested and .dms-flat-group, and its negative z-index /
+   absolute box ended up painting behind the whole group instead of just
+   the hovered row. Exclude all three here so the fill only ever covers a
+   plain leaf row; the group header gets its own hover treatment, nested
+   rows get theirs via .child-item--nested:hover below, and DMS's flat
+   items get theirs via .dms-flat-link:hover. */
+.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):not(.dms-flat-group)::before {
   content: "";
   position: absolute;
   width: 0;
@@ -12499,7 +12512,7 @@ option {
   z-index: -1;
 }
 
-.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):hover::before {
+.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):not(.dms-flat-group):hover::before {
   width: 100%;
 }
 
@@ -12614,6 +12627,65 @@ option {
   font-weight: 700;
 }
 /* ---- End nested group menu ---- */
+
+/* ---- DMS flat submenu (Booking/Trip/Accounting) — bold category label +
+   plain-text sibling items, no icon/expand/tree-line. Matches the existing
+   flat category-list convention already used for NVOCC form section
+   headings (".section-title"/".card-title", nvocc-common.css / #0178bc)
+   instead of the icon+collapsible-tree "child-group" style every other
+   module's own submenu still uses. ---- */
+.q-item.dashboard-menu .dms-flat-group {
+  border-bottom: none;
+  padding: 10px 16px 4px;
+}
+
+/* Neutralize the generic .child-item:hover shift/recolor (meant for plain
+   leaf rows) so hovering anywhere inside a flat group doesn't nudge or
+   recolor the whole block — see the ".dms-flat-group" note in .child-item's
+   own hover/sliding-fill exclusion list above. */
+.q-item.dashboard-menu .dms-flat-group:hover {
+  padding-left: 16px;
+  color: inherit;
+}
+
+.q-item.dashboard-menu .dms-flat-group-title {
+  color: var(--font-Mblue);
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.q-item.dashboard-menu .dms-flat-item {
+  padding: 6px 0 6px 4px;
+}
+
+.q-item.dashboard-menu .dms-flat-link {
+  display: block;
+  color: #444;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+/* Hovering one link bubbles :hover up to the whole ".dms-flat-group", and
+   the generic ".child-item:hover a" rule (cn-style.css, written for plain
+   leaf rows) would then whiten every sibling link in the group, not just
+   the hovered one — same bleed the nested/child-group rows had to guard
+   against. Reset every link in the group first (5 classes)... */
+.q-item.dashboard-menu .dms-flat-group:hover .dms-flat-link {
+  color: #444;
+  text-decoration: none;
+}
+/* ...then recolor only the actually-hovered one. Same specificity (5
+   classes) as the reset above, so source order — this rule coming after —
+   is what makes it win for that one link. */
+.q-item.dashboard-menu .dms-flat-item:hover .dms-flat-link {
+  color: var(--font-Mblue);
+}
+
+.q-item.dashboard-menu .dms-flat-separator {
+  margin-top: 8px;
+}
+/* ---- End DMS flat submenu ---- */
 
 .child-item a {
   font-weight: 500;
@@ -13147,7 +13219,11 @@ option {
 }
 
 .q-table__bottom {
-  border: 0;
+  /* !important needed — Quasar's own default rule is
+     .q-table__bottom:not(.q-table__bottom--nodata), and :not() counts as a
+     class for specificity, so it otherwise beats this plain-class override
+     regardless of source order. */
+  border: 0 !important;
 }
 
 .q-field--auto-height.q-field--dense.q-field--labeled
@@ -14675,7 +14751,21 @@ thead .gridtableborder th:last-child {
 .add_new_button,
 .add_new_job,
 .add_new_Master,
-.add_new_delivery {
+.add_new_delivery,
+.add_new_booking,
+.add_new_WiseCity,
+.add_new_WiseToCity,
+.add_new_WisePayMode,
+.add_new_OfcCommission,
+.add_new_DailyColl,
+.add_new_DebitColl,
+.add_new_RecvColl,
+.add_new_Pod,
+.add_new_Web,
+.add_new_Commission,
+.add_new_OSFreight,
+.add_new_ParcelHC,
+.add_new_CashCredit {
   display: inline-block;
   margin: 0;
   padding: 0;
@@ -14689,7 +14779,21 @@ thead .gridtableborder th:last-child {
 .add_new_button .q-btn__content,
 .add_new_job .q-btn__content,
 .add_new_Master .q-btn__content,
-.add_new_delivery .q-btn__content {
+.add_new_delivery .q-btn__content,
+.add_new_booking .q-btn__content,
+.add_new_WiseCity .q-btn__content,
+.add_new_WiseToCity .q-btn__content,
+.add_new_WisePayMode .q-btn__content,
+.add_new_OfcCommission .q-btn__content,
+.add_new_DailyColl .q-btn__content,
+.add_new_DebitColl .q-btn__content,
+.add_new_RecvColl .q-btn__content,
+.add_new_Pod .q-btn__content,
+.add_new_Web .q-btn__content,
+.add_new_Commission .q-btn__content,
+.add_new_OSFreight .q-btn__content,
+.add_new_ParcelHC .q-btn__content,
+.add_new_CashCredit .q-btn__content {
   display: inline-block;
   position: relative;
   letter-spacing: 0.7px;
@@ -14711,7 +14815,21 @@ thead .gridtableborder th:last-child {
 .add_new_button .q-btn__content:hover,
 .add_new_job .q-btn__content:hover,
 .add_new_Master .q-btn__content:hover,
-.add_new_delivery .q-btn__content:hover {
+.add_new_delivery .q-btn__content:hover,
+.add_new_booking .q-btn__content:hover,
+.add_new_WiseCity .q-btn__content:hover,
+.add_new_WiseToCity .q-btn__content:hover,
+.add_new_WisePayMode .q-btn__content:hover,
+.add_new_OfcCommission .q-btn__content:hover,
+.add_new_DailyColl .q-btn__content:hover,
+.add_new_DebitColl .q-btn__content:hover,
+.add_new_RecvColl .q-btn__content:hover,
+.add_new_Pod .q-btn__content:hover,
+.add_new_Web .q-btn__content:hover,
+.add_new_Commission .q-btn__content:hover,
+.add_new_OSFreight .q-btn__content:hover,
+.add_new_ParcelHC .q-btn__content:hover,
+.add_new_CashCredit .q-btn__content:hover {
   background: linear-gradient(
       -75deg,
       transparent 0%,
@@ -14744,7 +14862,21 @@ thead .gridtableborder th:last-child {
 .add_new_button .q-btn__content::before,
 .add_new_Lead .q-btn__content::before,
 .add_new_Master .q-btn__content::before,
-.add_new_delivery .q-btn__content::before {
+.add_new_delivery .q-btn__content::before,
+.add_new_booking .q-btn__content::before,
+.add_new_WiseCity .q-btn__content::before,
+.add_new_WiseToCity .q-btn__content::before,
+.add_new_WisePayMode .q-btn__content::before,
+.add_new_OfcCommission .q-btn__content::before,
+.add_new_DailyColl .q-btn__content::before,
+.add_new_DebitColl .q-btn__content::before,
+.add_new_RecvColl .q-btn__content::before,
+.add_new_Pod .q-btn__content::before,
+.add_new_Web .q-btn__content::before,
+.add_new_Commission .q-btn__content::before,
+.add_new_OSFreight .q-btn__content::before,
+.add_new_ParcelHC .q-btn__content::before,
+.add_new_CashCredit .q-btn__content::before {
   font-family: "Material Icons";
   content: "\e145";
   display: inline-block;
@@ -14765,7 +14897,21 @@ thead .gridtableborder th:last-child {
 .add_new_button .q-btn__content::after,
 .add_new_Lead .q-btn__content::after,
 .add_new_Master .q-btn__content::after,
-.add_new_delivery .q-btn__content::after {
+.add_new_delivery .q-btn__content::after,
+.add_new_booking .q-btn__content::after,
+.add_new_WiseCity .q-btn__content::after,
+.add_new_WiseToCity .q-btn__content::after,
+.add_new_WisePayMode .q-btn__content::after,
+.add_new_OfcCommission .q-btn__content::after,
+.add_new_DailyColl .q-btn__content::after,
+.add_new_DebitColl .q-btn__content::after,
+.add_new_RecvColl .q-btn__content::after,
+.add_new_Pod .q-btn__content::after,
+.add_new_Web .q-btn__content::after,
+.add_new_Commission .q-btn__content::after,
+.add_new_OSFreight .q-btn__content::after,
+.add_new_ParcelHC .q-btn__content::after,
+.add_new_CashCredit .q-btn__content::after {
   padding-left: 0px;
   padding-right: 10px;
   text-transform: capitalize;
@@ -14775,7 +14921,21 @@ thead .gridtableborder th:last-child {
 .add_new_button:hover .q-btn__content::after,
 .add_new_Lead:hover .q-btn__content::after,
 .add_new_Master:hover .q-btn__content::after,
-.add_new_delivery:hover .q-btn__content::after {
+.add_new_delivery:hover .q-btn__content::after,
+.add_new_booking:hover .q-btn__content::after,
+.add_new_WiseCity:hover .q-btn__content::after,
+.add_new_WiseToCity:hover .q-btn__content::after,
+.add_new_WisePayMode:hover .q-btn__content::after,
+.add_new_OfcCommission:hover .q-btn__content::after,
+.add_new_DailyColl:hover .q-btn__content::after,
+.add_new_DebitColl:hover .q-btn__content::after,
+.add_new_RecvColl:hover .q-btn__content::after,
+.add_new_Pod:hover .q-btn__content::after,
+.add_new_Web:hover .q-btn__content::after,
+.add_new_Commission:hover .q-btn__content::after,
+.add_new_OSFreight:hover .q-btn__content::after,
+.add_new_ParcelHC:hover .q-btn__content::after,
+.add_new_CashCredit:hover .q-btn__content::after {
   text-decoration: underline;
 }
 
@@ -14784,7 +14944,59 @@ thead .gridtableborder th:last-child {
 }
 
 .add_new_Master .q-btn__content::after {
-  content: "Raise New Shipment (n)";
+  content: "Add New Booking Office (n)";
+}
+
+.add_new_WiseCity .q-btn__content::after {
+  content: "Add New City Mapping (n)";
+}
+
+.add_new_WiseToCity .q-btn__content::after {
+  content: "Add New To City Mapping (n)";
+}
+
+.add_new_WisePayMode .q-btn__content::after {
+  content: "Add New Payment Mode Mapping (n)";
+}
+
+.add_new_OfcCommission .q-btn__content::after {
+  content: "Add New Commission Slab (n)";
+}
+
+.add_new_DailyColl .q-btn__content::after {
+  content: "Add New Daily Collection (n)";
+}
+
+.add_new_DebitColl .q-btn__content::after {
+  content: "Add New Debit Collection (n)";
+}
+
+.add_new_RecvColl .q-btn__content::after {
+  content: "Add New Received Collection (n)";
+}
+
+.add_new_Pod .q-btn__content::after {
+  content: "Add New POD (n)";
+}
+
+.add_new_Web .q-btn__content::after {
+  content: "Add New Web Booking (n)";
+}
+
+.add_new_Commission .q-btn__content::after {
+  content: "Add New Commission (n)";
+}
+
+.add_new_OSFreight .q-btn__content::after {
+  content: "Add New Freight Charge (n)";
+}
+
+.add_new_ParcelHC .q-btn__content::after {
+  content: "Add New Handling Charge (n)";
+}
+
+.add_new_CashCredit .q-btn__content::after {
+  content: "Add New Cash Credit (n)";
 }
 
 .add_new_Lead .q-btn__content::after {
@@ -14797,6 +15009,10 @@ thead .gridtableborder th:last-child {
 
 .add_new_delivery .q-btn__content::after {
   content: "Raise New Delivery Order (n)";
+}
+
+.add_new_booking .q-btn__content::after {
+  content: "Raise New Booking (n)";
 }
 
 .q-btn--dense.q-btn--round {
