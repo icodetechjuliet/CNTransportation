@@ -787,78 +787,266 @@
                       </template>
 
                       <q-card>
-                        <div
-                          class="child-item"
-                          :class="{
-                            'Submenu-class': child.MenuDesc === 'Report',
-                            'no-click':
-                              child.Link === '#menu-header' ||
-                              child.MenuDesc === 'Report',
-                          }"
+                        <template
                           v-for="child in parent.children"
                           :key="child.id"
                         >
-                          <q-card-section style="padding: 7px 12px">
-                            <div
-                              v-if="
-                                child.Link === '#menu-header' ||
-                                child.MenuDesc === 'Report'
-                              "
-                              class="menu-section-header"
-                            >
+                          <!-- DMS flat submenu: bold category label (Booking/
+                               Trip/Accounting) followed by its plain-text
+                               items, no icon/expand/tree-line — matches the
+                               flat category-list style used elsewhere in the
+                               app (nvocc-common.css's ".section-title"),
+                               instead of DMS reusing the icon+collapsible
+                               "Group row" tree below (still used by every
+                               other module). Always expanded — no toggle. -->
+                          <div
+                            v-if="
+                              parent.ShortCode === 'DMS' &&
+                              child.children &&
+                              child.children.length
+                            "
+                            class="child-item dms-flat-group"
+                          >
+                            <div class="dms-flat-group-title">
                               {{ child.MenuDesc }}
                             </div>
-                            <!-- NVOCC Page Menu Changes -->
-                            <!-- Child Menu Item -->
-                            <template
-                              v-else-if="
-                                child.Link &&
-                                !child.Link.startsWith('/') &&
-                                !child.Link.startsWith('http') &&
-                                !child.Link.startsWith('#')
-                              "
+                            <div
+                              class="dms-flat-item"
+                              v-for="grandchild in child.children"
+                              :key="grandchild.id"
                             >
-                              <a
-                                class="menu-link tooltip-wrapper"
-                                @click="handleLinkClick(child, parent.MenuName)"
+                              <template
+                                v-if="
+                                  grandchild.Link &&
+                                  !grandchild.Link.startsWith('/') &&
+                                  !grandchild.Link.startsWith('http') &&
+                                  !grandchild.Link.startsWith('#')
+                                "
                               >
-                                {{ child.MenuDesc }}
-                                <q-tooltip class="custom-tooltip">
-                                  {{ child.MenuDesc }}
-                                </q-tooltip>
-                              </a>
-                            </template>
+                                <a
+                                  class="dms-flat-link"
+                                  @click="
+                                    handleLinkClick(grandchild, parent.MenuName)
+                                  "
+                                >
+                                  {{ grandchild.MenuDesc }}
+                                </a>
+                              </template>
+                              <template
+                                v-else-if="
+                                  grandchild.Link &&
+                                  grandchild.Link.startsWith('http')
+                                "
+                              >
+                                <a
+                                  class="dms-flat-link"
+                                  @click="
+                                    handleLinkClick(grandchild, parent.MenuName)
+                                  "
+                                >
+                                  {{ grandchild.MenuDesc }}
+                                </a>
+                              </template>
+                              <template v-else>
+                                <router-link
+                                  :to="grandchild.Link"
+                                  class="dms-flat-link"
+                                  @click="
+                                    handleLinkClick(grandchild, parent.MenuName)
+                                  "
+                                >
+                                  {{ grandchild.MenuDesc }}
+                                </router-link>
+                              </template>
+                            </div>
+                            <q-separator class="dms-flat-separator" />
+                          </div>
 
-                            <!-- ✅ External http link -->
-                            <template
-                              v-else-if="
-                                child.Link && child.Link.startsWith('http')
-                              "
+                          <!-- Group row (e.g. every other module's own
+                               second-level dropdown): its own children stay
+                               collapsed until this row is clicked, so a
+                               module with several ~20-item groups doesn't
+                               dump all of them into the panel at once. -->
+                          <div
+                            v-else-if="child.children && child.children.length"
+                            class="child-item child-group"
+                            :class="{ 'child-group--open': child.expanded }"
+                          >
+                            <q-expansion-item
+                              dense
+                              expand-separator
+                              expand-icon="expand_more"
+                              :icon="child.icon || 'description'"
+                              header-class="child-group-header"
+                              :label="child.MenuDesc"
+                              :model-value="!!child.expanded"
+                              @click.stop="toggleGroup(child)"
                             >
-                              <a
-                                class="menu-link tooltip-wrapper"
-                                @click="handleLinkClick(child, parent.MenuName)"
+                              <div
+                                class="child-item child-item--nested"
+                                :class="{
+                                  'Submenu-class':
+                                    grandchild.MenuDesc === 'Report',
+                                  'no-click':
+                                    grandchild.Link === '#menu-header' ||
+                                    grandchild.MenuDesc === 'Report',
+                                  'child-item--active':
+                                    grandchild.Link === activeChildLink,
+                                }"
+                                v-for="grandchild in child.children"
+                                :key="grandchild.id"
+                              >
+                                <q-card-section style="padding: 7px 12px 7px 24px">
+                                  <div
+                                    v-if="
+                                      grandchild.Link === '#menu-header' ||
+                                      grandchild.MenuDesc === 'Report'
+                                    "
+                                    class="menu-section-header"
+                                  >
+                                    {{ grandchild.MenuDesc }}
+                                  </div>
+                                  <template
+                                    v-else-if="
+                                      grandchild.Link &&
+                                      !grandchild.Link.startsWith('/') &&
+                                      !grandchild.Link.startsWith('http') &&
+                                      !grandchild.Link.startsWith('#')
+                                    "
+                                  >
+                                    <a
+                                      class="menu-link tooltip-wrapper"
+                                      @click="
+                                        handleLinkClick(
+                                          grandchild,
+                                          parent.MenuName
+                                        )
+                                      "
+                                    >
+                                      {{ grandchild.MenuDesc }}
+                                      <q-tooltip class="custom-tooltip">
+                                        {{ grandchild.MenuDesc }}
+                                      </q-tooltip>
+                                    </a>
+                                  </template>
+
+                                  <!-- ✅ External http link -->
+                                  <template
+                                    v-else-if="
+                                      grandchild.Link &&
+                                      grandchild.Link.startsWith('http')
+                                    "
+                                  >
+                                    <a
+                                      class="menu-link tooltip-wrapper"
+                                      @click="
+                                        handleLinkClick(
+                                          grandchild,
+                                          parent.MenuName
+                                        )
+                                      "
+                                    >
+                                      {{ grandchild.MenuDesc }}
+                                      <q-tooltip class="custom-tooltip">
+                                        {{ grandchild.MenuDesc }}
+                                      </q-tooltip>
+                                    </a>
+                                  </template>
+                                  <template v-else>
+                                    <router-link
+                                      :to="grandchild.Link"
+                                      class="menu-link tooltip-wrapper"
+                                      @click="
+                                        handleLinkClick(
+                                          grandchild,
+                                          parent.MenuName
+                                        )
+                                      "
+                                    >
+                                      {{ grandchild.MenuDesc }}
+                                      <q-tooltip class="custom-tooltip">{{
+                                        grandchild.MenuDesc
+                                      }}</q-tooltip>
+                                    </router-link>
+                                  </template>
+                                </q-card-section>
+                              </div>
+                            </q-expansion-item>
+                          </div>
+
+                          <!-- Leaf row: unchanged. -->
+                          <div
+                            v-else
+                            class="child-item"
+                            :class="{
+                              'Submenu-class': child.MenuDesc === 'Report',
+                              'no-click':
+                                child.Link === '#menu-header' ||
+                                child.MenuDesc === 'Report',
+                            }"
+                          >
+                            <q-card-section style="padding: 7px 12px">
+                              <div
+                                v-if="
+                                  child.Link === '#menu-header' ||
+                                  child.MenuDesc === 'Report'
+                                "
+                                class="menu-section-header"
                               >
                                 {{ child.MenuDesc }}
-                                <q-tooltip class="custom-tooltip">
+                              </div>
+                              <!-- NVOCC Page Menu Changes -->
+                              <!-- Child Menu Item -->
+                              <template
+                                v-else-if="
+                                  child.Link &&
+                                  !child.Link.startsWith('/') &&
+                                  !child.Link.startsWith('http') &&
+                                  !child.Link.startsWith('#')
+                                "
+                              >
+                                <a
+                                  class="menu-link tooltip-wrapper"
+                                  @click="handleLinkClick(child, parent.MenuName)"
+                                >
                                   {{ child.MenuDesc }}
-                                </q-tooltip>
-                              </a>
-                            </template>
-                            <template v-else>
-                              <router-link
-                                :to="child.Link"
-                                class="menu-link tooltip-wrapper"
-                                @click="handleLinkClick(child, parent.MenuName)"
+                                  <q-tooltip class="custom-tooltip">
+                                    {{ child.MenuDesc }}
+                                  </q-tooltip>
+                                </a>
+                              </template>
+
+                              <!-- ✅ External http link -->
+                              <template
+                                v-else-if="
+                                  child.Link && child.Link.startsWith('http')
+                                "
                               >
-                                {{ child.MenuDesc }}
-                                <q-tooltip class="custom-tooltip">{{
-                                  child.MenuDesc
-                                }}</q-tooltip>
-                              </router-link>
-                            </template>
-                          </q-card-section>
-                        </div>
+                                <a
+                                  class="menu-link tooltip-wrapper"
+                                  @click="handleLinkClick(child, parent.MenuName)"
+                                >
+                                  {{ child.MenuDesc }}
+                                  <q-tooltip class="custom-tooltip">
+                                    {{ child.MenuDesc }}
+                                  </q-tooltip>
+                                </a>
+                              </template>
+                              <template v-else>
+                                <router-link
+                                  :to="child.Link"
+                                  class="menu-link tooltip-wrapper"
+                                  @click="handleLinkClick(child, parent.MenuName)"
+                                >
+                                  {{ child.MenuDesc }}
+                                  <q-tooltip class="custom-tooltip">{{
+                                    child.MenuDesc
+                                  }}</q-tooltip>
+                                </router-link>
+                              </template>
+                            </q-card-section>
+                          </div>
+                        </template>
                       </q-card>
                     </q-expansion-item>
                   </q-item>
@@ -1201,6 +1389,10 @@ export default defineComponent({
       searchMenu: "",
       selectedMenu: "",
       filterText: "",
+      // Link of the last leaf menu item that was actually opened — drives
+      // the active highlight on a group's sub-items (see toggleGroup()
+      // and the "Group row" template block).
+      activeChildLink: "",
       lastActivityMessage: "",
       isVisible: true,
       classChanged: false,
@@ -1695,6 +1887,18 @@ export default defineComponent({
       if (this.filterText) return true;
       return parent.showDropdown;
     },
+    // A parent's children can be one level deeper for modules like DMS
+    // (Booking/Trip/Accounting sub-menus, each with ~20 of their own
+    // routable items — see src/IPConfig/mockData.js's buildMockChildMenu
+    // DMS group, identified by having its own non-empty `children`).
+    // Rendered as a second, independently collapsible dropdown so all of
+    // a group's items aren't dumped into the panel at once — see the
+    // "Group row" branch in the template. @click.stop on that row keeps
+    // this from also bubbling into the outer q-expansion-item's
+    // @click="toggleDropdown(parent)" and collapsing the whole module.
+    toggleGroup(group) {
+      group.expanded = !group.expanded;
+    },
     async toggleDropdown(parent) {
       const userid = sessionStorage.getItem("APIUserID");
       if (!sessionStorage.getItem("BranchID")) {
@@ -1832,6 +2036,10 @@ export default defineComponent({
         this.AlertMethod();
         return false;
       }
+      // Tracks which leaf link is "currently open" so the sidebar can
+      // highlight it (blue pill + left accent bar) the way the reference
+      // design does for the active item inside an expanded group.
+      this.activeChildLink = child.Link;
       //Metabase
       // ✅ Metabase dashboard
       if (
@@ -2273,25 +2481,35 @@ export default defineComponent({
 
         /* ── SIDEBAR / DRAWER ── */
         .custom-drawer, .q-drawer { background-color: ${t.drawerBg} !important; }
-        .q-item.dashboard-menu .q-expansion-item.active-menu .q-item {
+        .q-item.dashboard-menu .q-expansion-item.active-menu .q-item:not(.child-group-header) {
           background-image: none !important;
           background-color: ${t.activeBg} !important;
           color: ${t.activeText} !important;
         }
-        .q-item.dashboard-menu .q-expansion-item .q-item:hover {
+        .q-item.dashboard-menu .q-expansion-item .q-item:hover:not(.child-group-header) {
           background-image: none !important;
           background-color: ${t.hoverBg} !important;
           color: ${t.hoverText} !important;
         }
         .q-item.dashboard-menu .q-expansion-item__content { background-color: ${t.contentBg} !important; }
+        /* The generic rule above is written for the top-level module panel
+           (e.g. DMS's own panel). Reassert transparent/hover/active colors
+           for the nested "Booking" group afterwards — being later and more
+           specific, these win and keep the group's own scoped look instead
+           of being flooded by the panel's theme color. */
+        .q-item.dashboard-menu .child-group .q-expansion-item__content { background-color: transparent !important; }
+        .q-item.dashboard-menu .child-group-header:hover { background-color: ${t.hoverBg} !important; }
+        .q-item.dashboard-menu .child-item--nested:hover { background-color: ${t.hoverBg} !important; }
+        .q-item.dashboard-menu .child-item--nested.child-item--active { background-color: ${t.activeBg} !important; }
         .q-item.dashboard-menu .q-img.modul-icon .absolute-full:before {
           background: ${t.iconBg} !important; background-image: none !important;
         }
         .modul-icon, .fixed-icon { filter: ${t.iconFilter} !important; }
         .menu-name { color: ${t.menuColor} !important; }
         .q-expansion-item__toggle-icon { color: ${t.menuColor} !important; }
+        .child-group-header .q-expansion-item__toggle-icon { color: ${t.linkColor} !important; }
         .menu-link, a.menu-link { color: ${t.linkColor} !important; }
-        .child-item { background-color: ${t.contentBg} !important; border-color: ${t.cardBorder} !important; }
+        .child-item:not(.child-group):not(.child-item--nested) { background-color: ${t.contentBg} !important; border-color: ${t.cardBorder} !important; }
         .child-item .q-card-section { color: ${t.linkColor} !important; }
         .left_menu_search .q-field__control { background-color: ${t.headerBg} !important; }
         .left_menu_search .q-field__native, .left_menu_search input { color: ${t.menuColor} !important; }
@@ -2704,6 +2922,105 @@ export default defineComponent({
    but switch to white specifically when it's sitting on that overlay. */
 .Submenu-class .menu-section-header {
   color: #ffffff;
+}
+
+/* Group row (e.g. DMS > Booking/Trip/Accounting): a second, independently
+   collapsible dropdown nested inside the module's own dropdown — see the
+   "Group row" branch in the template and toggleGroup(). Collapsed
+   (Trip/Accounting) it's a plain row, same ink color as any other menu
+   label; open (Booking) it gets a light-blue pill and blue ink, exactly
+   like the reference screenshot — DMS one level up is the "fully active"
+   solid-blue bar, this is one step lighter since it's a level deeper. */
+.child-group {
+  padding: 0;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.child-group :deep(.q-item) {
+  min-height: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+.child-group-header,
+.child-group-header :deep(.q-icon) {
+  color: #263238;
+}
+.child-group-header {
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: "Jost", sans-serif;
+}
+.child-group--open :deep(.q-item) {
+  background: #e3f2fd;
+}
+.child-group--open .child-group-header,
+.child-group--open .child-group-header :deep(.q-icon) {
+  color: #0178bc;
+}
+/* Quasar's default toggle-icon rotation is 180deg (down <-> up), built
+   for its default down-arrow icon. We use a right-chevron instead
+   (expand-icon="chevron_right" above) so a collapsed group shows "›"
+   and only needs a 90deg turn to land on "pointing down" once open. */
+.child-group :deep(.q-expansion-item__toggle-icon--rotated) {
+  transform: rotate(90deg);
+}
+.child-group :deep(.q-expansion-item__content) {
+  background: #ffffff;
+  padding: 4px 0;
+}
+
+/* Thin guide line so a group's ~20 items read as nested under its header
+   rather than as more top-level rows, with a small dot marking each item
+   along it (both purely decorative, ::before/::after — no extra markup).
+   ::before also overrides cn-style.css's generic sliding hover-fill
+   (built for a plain single-row leaf, and otherwise still matches these
+   nested rows too) so it doesn't paint a stray partial-width patch
+   behind whichever nested row was last hovered/clicked. */
+.child-item--nested {
+  position: relative;
+  margin-left: 20px;
+  padding-left: 14px;
+  border-left: 2px solid #e0e6ec;
+}
+.child-item--nested::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 16px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #cfd8dc;
+}
+.child-item--nested:hover {
+  background: rgba(1, 120, 188, 0.08);
+  border-radius: 6px;
+  cursor: pointer;
+}
+/* The currently-open leaf (see activeChildLink / handleLinkClick): a
+   light-blue pill + left accent bar, echoing the group's own open-state
+   tint one shade stronger since it's the most specific/active item. */
+.child-item--nested.child-item--active {
+  background: #e3f2fd;
+  border-radius: 6px;
+}
+.child-item--nested.child-item--active::before {
+  background: #0178bc;
+}
+.child-item--nested.child-item--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: 2px;
+  background: #0178bc;
+}
+.child-item--nested.child-item--active :deep(.menu-link) {
+  color: #0178bc;
+  font-weight: 700;
 }
 </style>
 
