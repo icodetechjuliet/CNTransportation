@@ -283,17 +283,59 @@ const routes = [
         path: "DMSDeliveryRegisterScreenPartyCopy",
         component: () => import("pages/DMSDeliveryRegisterScreenPartyCopy.vue"),
       },
+      // DMS > Account menu (src/IPConfig/mockData.js's "dms-account-*"
+      // group) — voucher entry screens, all rendered through
+      // GenericMasterList.vue same as the masters below (see
+      // src/data/mastersData.js's accountvoucher/cashpayment/cashreceipt/
+      // bankpayment/bankreceipt/contravoucher/journalvoucher/
+      // customerwisecity/ledgeraccount entities).
       {
-        path: "DMSAccountingInvoice",
-        component: () => import("pages/UnderConstraction.vue"),
+        path: "DMSAccountVoucher",
+        component: () => import("pages/DMSAccountVoucher.vue"),
       },
       {
-        path: "DMSAccountingReceipt",
-        component: () => import("pages/UnderConstraction.vue"),
+        path: "DMSAccountVoucherRegister",
+        component: () => import("pages/DMSAccountVoucherRegister.vue"),
       },
       {
-        path: "DMSAccountingLedger",
-        component: () => import("pages/UnderConstraction.vue"),
+        path: "DMSCashPayment",
+        component: () => import("pages/DMSCashPayment.vue"),
+      },
+      {
+        path: "DMSCashReceipt",
+        component: () => import("pages/DMSCashReceipt.vue"),
+      },
+      {
+        path: "DMSBankPayment",
+        component: () => import("pages/DMSBankPayment.vue"),
+      },
+      {
+        path: "DMSBankReceipt",
+        component: () => import("pages/DMSBankReceipt.vue"),
+      },
+      {
+        path: "DMSContraVoucher",
+        component: () => import("pages/DMSContraVoucher.vue"),
+      },
+      {
+        path: "DMSJournalVoucher",
+        component: () => import("pages/DMSJournalVoucher.vue"),
+      },
+      {
+        path: "DMSAccountLedger",
+        component: () => import("pages/DMSAccountLedger.vue"),
+      },
+      {
+        path: "DMSCustomerWiseCity",
+        component: () => import("pages/DMSCustomerWiseCity.vue"),
+      },
+      {
+        path: "DMSMasterLedgerAccount",
+        component: () => import("pages/DMSMasterLedgerAccount.vue"),
+      },
+      {
+        path: "DMSAccountParcelHandlingCharge",
+        component: () => import("pages/DMSAccountParcelHandlingCharge.vue"),
       },
 
       // DMS > Booking Office / Sale / Master / Report Screens / Reports
@@ -360,6 +402,10 @@ const routes = [
       {
         path: "DMSSaleSIEmail",
         component: () => import("pages/DMSSaleSIEmail.vue"),
+      },
+      {
+        path: "DMSSaleSIPrint",
+        component: () => import("pages/DMSSaleSIPrint.vue"),
       },
 
       {
@@ -511,6 +557,24 @@ const routes = [
         path: "DMSRSCityWisePeriodWiseCollection",
         component: () => import("pages/DMSRSCityWisePeriodWiseCollection.vue"),
       },
+      {
+        path: "DMSRSBookingInwardOutwardRegister",
+        component: () =>
+          import("pages/DMSRSBookingInwardOutwardRegister.vue"),
+      },
+      {
+        path: "DMSRSDailyCollectionRegister",
+        component: () => import("pages/DMSRSDailyCollectionRegister.vue"),
+      },
+      {
+        path: "DMSRSBookingMPendingForDeliveryM",
+        component: () =>
+          import("pages/DMSRSBookingMPendingForDeliveryM.vue"),
+      },
+      {
+        path: "DMSRSBookingMRegister",
+        component: () => import("pages/DMSRSBookingMRegister.vue"),
+      },
 
       {
         path: "DMSRptCoveringLetter",
@@ -519,6 +583,18 @@ const routes = [
       {
         path: "DMSRptDoorDeliverySummary",
         component: () => import("pages/DMSRptDoorDeliverySummary.vue"),
+      },
+      {
+        path: "DMSRptDeliveryMRegister",
+        component: () => import("pages/DMSRptDeliveryMRegister.vue"),
+      },
+      {
+        path: "DMSRptDoorDeliveryMRegister",
+        component: () => import("pages/DMSRptDoorDeliveryMRegister.vue"),
+      },
+      {
+        path: "DMSRptDoorDeliveryDetail",
+        component: () => import("pages/DMSRptDoorDeliveryDetail.vue"),
       },
       {
         path: "DMSRptSIRegisterAccountServiceTax",
@@ -564,6 +640,16 @@ const routes = [
       {
         path: "DMSRptBookingDeleteLogRegister",
         component: () => import("pages/DMSRptBookingDeleteLogRegister.vue"),
+      },
+      {
+        path: "DMSRptOtherStateFreightChargeRegister",
+        component: () =>
+          import("pages/DMSRptOtherStateFreightChargeRegister.vue"),
+      },
+      {
+        path: "DMSRptOtherStateFreightChargeSummary",
+        component: () =>
+          import("pages/DMSRptOtherStateFreightChargeSummary.vue"),
       },
 
       // Security module — matches the legacy EagleParcel WinForms app's own

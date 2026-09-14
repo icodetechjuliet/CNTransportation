@@ -95,15 +95,15 @@
             <template v-slot:body-cell-action="props">
               <q-td :props="props" class="button-container">
                 <q-btn
-                  unelevated
-                  no-caps
-                  dense
-                  size="sm"
-                  label="Generate Invoice"
+                  icon="receipt_long"
                   color="primary"
-                  class="m-btn-style"
+                  dense
+                  outline
+                  class="edit-icon-style"
                   @click="generateInvoice(props.row)"
-                />
+                >
+                  <q-tooltip>Generate Invoice</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
             <template v-slot:no-data>
@@ -135,6 +135,7 @@ export default {
       pagination: { page: 1, rowsPerPage: 15 },
 
       invoiceColumns: [
+        { name: "action", label: "Action", field: "action" },
         {
           name: "InvoiceNo",
           label: "Invoice No.",
@@ -161,11 +162,23 @@ export default {
           align: "right",
           sortable: true,
         },
+        {
+          name: "TDSAmount",
+          label: "TDS",
+          field: "TDSAmount",
+          align: "right",
+        },
+        {
+          name: "NetAmount",
+          label: "Net Amount",
+          field: "NetAmount",
+          align: "right",
+        },
         { name: "Status", label: "Status", field: "Status", align: "center" },
-        { name: "action", label: "Action", field: "action" },
       ],
 
       pendingColumns: [
+        { name: "action", label: "Action", field: "action" },
         {
           name: "DoorDeliveryNo",
           label: "Door Delivery No.",
@@ -184,7 +197,6 @@ export default {
           field: "VehicleAmount",
           align: "right",
         },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },
@@ -243,6 +255,8 @@ export default {
           <tr><th>Transporter</th><td>${row.Transporter}</td></tr>
           <tr><th>Vehicle</th><td>${row.Vehicle}</td></tr>
           <tr><th>Amount</th><td>${row.Amount}</td></tr>
+          <tr><th>TDS</th><td>${row.TDSAmount || 0}</td></tr>
+          <tr><th>Net Amount</th><td>${row.NetAmount ?? row.Amount}</td></tr>
         </tbody></table>
         </body></html>`;
       const win = window.open("", "_blank");

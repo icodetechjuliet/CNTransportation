@@ -47,6 +47,14 @@ const OPTIONS = {
   // string list here rather than a live cross-reference, same as this
   // file's other OPTIONS lists).
   taxNames: ["GST 5%", "GST 5% (CGST+SGST)", "Exempt"],
+  accountGroups: ["Cash", "Bank", "Sundry Debtor", "Sundry Creditor", "Income", "Expense", "Capital"],
+  balanceTypes: ["Debit", "Credit"],
+  // Matches the "ledgeraccount" entity's own seed row names below (kept as
+  // a plain string list here rather than a live cross-reference, same as
+  // this file's other OPTIONS lists) — used by the Account/Contra/Journal
+  // Voucher entities' Account select fields.
+  ledgerAccounts: ["Cash Account", "Bank Account - HDFC", "Bank Account - SBI", "Sundry Debtors", "Sundry Creditors", "Freight Income", "Commission Income", "Office Expenses"],
+  bankAccounts: ["Bank Account - HDFC", "Bank Account - SBI"],
   // Matches this app's own top-level module groups (the "DMS" child-menu
   // header rows in src/IPConfig/mockData.js) — what a Menu row's own
   // ParentMenu would realistically be one of.
@@ -255,14 +263,20 @@ const ENTITY_DEFS = {
     title: "Company",
     icon: "business",
     idField: "CompanyID",
+    // Address/Tel/Email/Web here double as the letterhead shown on every
+    // printed document's header (see src/data/companyProfile.js) — editing
+    // this row updates every report/receipt/trip-sheet print at once.
     fields: [
       { name: "CompanyName", label: "Company Name", type: "text" },
       { name: "Address", label: "Address", type: "text" },
       { name: "GSTNo", label: "GST No.", type: "text" },
       { name: "PAN", label: "PAN", type: "text" },
+      { name: "Tel", label: "Tel", type: "text" },
+      { name: "Email", label: "Email", type: "text" },
+      { name: "Web", label: "Web", type: "text" },
     ],
     seed: [
-      { CompanyID: 1, CompanyName: "CargoNet Transportation Pvt Ltd", Address: "Rajkot, Gujarat", GSTNo: "24AACCE1234C1Z5", PAN: "AACCE1234C" },
+      { CompanyID: 1, CompanyName: "CargoNet Transportation Pvt Ltd", Address: "Rajkot, Gujarat", GSTNo: "24AACCE1234C1Z5", PAN: "AACCE1234C", Tel: "+91-281-2345678", Email: "info@cargonettransportation.example", Web: "www.cargonettransportation.example" },
     ],
   },
 
@@ -558,6 +572,176 @@ const ENTITY_DEFS = {
     seed: [
       { PatchID: 1, PatchNo: "P-2026-04-001", PatchDate: "01-04-2026", Description: "Booking Office Commission rate fix", AppliedBy: "admin" },
       { PatchID: 2, PatchNo: "P-2026-04-002", PatchDate: "05-04-2026", Description: "E-Way Bill Part B consolidated support", AppliedBy: "admin" },
+    ],
+  },
+
+  // ── Account menu ─────────────────────────────────────────────────────
+  // Chart of Accounts — the "Account" select fields below (Account/Contra/
+  // Journal Voucher) reference this entity's seed row names via
+  // OPTIONS.ledgerAccounts (plain string list, same pattern as taxNames).
+  ledgeraccount: {
+    title: "Ledger Account",
+    icon: "account_balance",
+    idField: "LedgerAccountID",
+    fields: [
+      { name: "AccountName", label: "Account Name", type: "text" },
+      { name: "AccountGroup", label: "Account Group", type: "select", options: OPTIONS.accountGroups },
+      { name: "OpeningBalance", label: "Opening Balance", type: "number" },
+      { name: "OpeningBalanceType", label: "Balance Type", type: "select", options: OPTIONS.balanceTypes },
+    ],
+    seed: [
+      { LedgerAccountID: 1, AccountName: "Cash Account", AccountGroup: "Cash", OpeningBalance: 25000, OpeningBalanceType: "Debit" },
+      { LedgerAccountID: 2, AccountName: "Bank Account - HDFC", AccountGroup: "Bank", OpeningBalance: 185000, OpeningBalanceType: "Debit" },
+      { LedgerAccountID: 3, AccountName: "Bank Account - SBI", AccountGroup: "Bank", OpeningBalance: 92000, OpeningBalanceType: "Debit" },
+      { LedgerAccountID: 4, AccountName: "Sundry Debtors", AccountGroup: "Sundry Debtor", OpeningBalance: 0, OpeningBalanceType: "Debit" },
+      { LedgerAccountID: 5, AccountName: "Sundry Creditors", AccountGroup: "Sundry Creditor", OpeningBalance: 0, OpeningBalanceType: "Credit" },
+      { LedgerAccountID: 6, AccountName: "Freight Income", AccountGroup: "Income", OpeningBalance: 0, OpeningBalanceType: "Credit" },
+      { LedgerAccountID: 7, AccountName: "Commission Income", AccountGroup: "Income", OpeningBalance: 0, OpeningBalanceType: "Credit" },
+      { LedgerAccountID: 8, AccountName: "Office Expenses", AccountGroup: "Expense", OpeningBalance: 0, OpeningBalanceType: "Debit" },
+    ],
+  },
+
+  customerwisecity: {
+    title: "Customer Wise City",
+    icon: "location_city",
+    idField: "CustomerWiseCityID",
+    fields: [
+      { name: "CustomerName", label: "Customer Name", type: "text" },
+      { name: "City", label: "City", type: "select", options: OPTIONS.cities },
+    ],
+    seed: [
+      { CustomerWiseCityID: 1, CustomerName: "Rajsani Polymers", City: "Rajkot-G" },
+      { CustomerWiseCityID: 2, CustomerName: "Varun Casting Co", City: "Chakan" },
+      { CustomerWiseCityID: 3, CustomerName: "Mahindra Heavy Engines Ltd", City: "Vasai" },
+    ],
+  },
+
+  accountvoucher: {
+    title: "Account Voucher",
+    icon: "receipt_long",
+    idField: "AccountVoucherID",
+    // EagleParcel LOCRPT/Account/ACC_AccountVoucher/ACC_AccountVoucher_Print
+    // — printable single-voucher slip. Opts this entity into
+    // GenericMasterList.vue's print-preview dialog (mirrors
+    // GenericReportList.vue's print mechanism). Cash/Bank Payment/Receipt,
+    // Contra and Journal Voucher below set the same flag — same underlying
+    // voucher-slip document, just a different account/party shape.
+    printable: true,
+    fields: [
+      { name: "VoucherNo", label: "Voucher No.", type: "text" },
+      { name: "VoucherDate", label: "Voucher Date", type: "date" },
+      { name: "Account", label: "Account", type: "select", options: OPTIONS.ledgerAccounts },
+      { name: "Amount", label: "Amount", type: "number" },
+      { name: "Narration", label: "Narration", type: "text" },
+    ],
+    seed: [
+      { AccountVoucherID: 1, VoucherNo: "AV-101", VoucherDate: "01-04-2026", Account: "Office Expenses", Amount: 1500, Narration: "Stationery purchase" },
+    ],
+  },
+
+  cashpayment: {
+    title: "Cash Payment",
+    icon: "payments",
+    idField: "CashPaymentID",
+    printable: true,
+    fields: [
+      { name: "VoucherNo", label: "Voucher No.", type: "text" },
+      { name: "VoucherDate", label: "Voucher Date", type: "date" },
+      { name: "PaidTo", label: "Paid To", type: "text" },
+      { name: "Amount", label: "Amount", type: "number" },
+      { name: "Narration", label: "Narration", type: "text" },
+    ],
+    seed: [
+      { CashPaymentID: 1, VoucherNo: "PV-101", VoucherDate: "01-04-2026", PaidTo: "Eagle Tradelinks Pvt Ltd", Amount: 5000, Narration: "Freight advance" },
+    ],
+  },
+
+  cashreceipt: {
+    title: "Cash Receipt",
+    icon: "point_of_sale",
+    idField: "CashReceiptID",
+    printable: true,
+    fields: [
+      { name: "VoucherNo", label: "Voucher No.", type: "text" },
+      { name: "VoucherDate", label: "Voucher Date", type: "date" },
+      { name: "ReceivedFrom", label: "Received From", type: "text" },
+      { name: "Amount", label: "Amount", type: "number" },
+      { name: "Narration", label: "Narration", type: "text" },
+    ],
+    seed: [
+      { CashReceiptID: 1, VoucherNo: "RV-201", VoucherDate: "01-04-2026", ReceivedFrom: "Rajsani Polymers", Amount: 12500, Narration: "SI20260001 collection" },
+    ],
+  },
+
+  bankpayment: {
+    title: "Bank Payment",
+    icon: "account_balance",
+    idField: "BankPaymentID",
+    printable: true,
+    fields: [
+      { name: "VoucherNo", label: "Voucher No.", type: "text" },
+      { name: "VoucherDate", label: "Voucher Date", type: "date" },
+      { name: "BankAccount", label: "Bank Account", type: "select", options: OPTIONS.bankAccounts },
+      { name: "PaidTo", label: "Paid To", type: "text" },
+      { name: "Amount", label: "Amount", type: "number" },
+      { name: "Narration", label: "Narration", type: "text" },
+    ],
+    seed: [
+      { BankPaymentID: 1, VoucherNo: "BP-101", VoucherDate: "02-04-2026", BankAccount: "Bank Account - HDFC", PaidTo: "New Vishal Roadlines", Amount: 18500, Narration: "Vehicle hire settlement" },
+    ],
+  },
+
+  bankreceipt: {
+    title: "Bank Receipt",
+    icon: "account_balance",
+    idField: "BankReceiptID",
+    printable: true,
+    fields: [
+      { name: "VoucherNo", label: "Voucher No.", type: "text" },
+      { name: "VoucherDate", label: "Voucher Date", type: "date" },
+      { name: "BankAccount", label: "Bank Account", type: "select", options: OPTIONS.bankAccounts },
+      { name: "ReceivedFrom", label: "Received From", type: "text" },
+      { name: "Amount", label: "Amount", type: "number" },
+      { name: "Narration", label: "Narration", type: "text" },
+    ],
+    seed: [
+      { BankReceiptID: 1, VoucherNo: "BR-201", VoucherDate: "02-04-2026", BankAccount: "Bank Account - SBI", ReceivedFrom: "Varun Casting Co", Amount: 8400, Narration: "SI20260002 collection" },
+    ],
+  },
+
+  contravoucher: {
+    title: "Contra Voucher",
+    icon: "swap_horiz",
+    idField: "ContraVoucherID",
+    printable: true,
+    fields: [
+      { name: "VoucherNo", label: "Voucher No.", type: "text" },
+      { name: "VoucherDate", label: "Voucher Date", type: "date" },
+      { name: "FromAccount", label: "From Account", type: "select", options: OPTIONS.ledgerAccounts },
+      { name: "ToAccount", label: "To Account", type: "select", options: OPTIONS.ledgerAccounts },
+      { name: "Amount", label: "Amount", type: "number" },
+      { name: "Narration", label: "Narration", type: "text" },
+    ],
+    seed: [
+      { ContraVoucherID: 1, VoucherNo: "CV-101", VoucherDate: "03-04-2026", FromAccount: "Cash Account", ToAccount: "Bank Account - HDFC", Amount: 20000, Narration: "Cash deposited into bank" },
+    ],
+  },
+
+  journalvoucher: {
+    title: "Journal Voucher",
+    icon: "edit_note",
+    idField: "JournalVoucherID",
+    printable: true,
+    fields: [
+      { name: "VoucherNo", label: "Voucher No.", type: "text" },
+      { name: "VoucherDate", label: "Voucher Date", type: "date" },
+      { name: "DebitAccount", label: "Debit Account", type: "select", options: OPTIONS.ledgerAccounts },
+      { name: "CreditAccount", label: "Credit Account", type: "select", options: OPTIONS.ledgerAccounts },
+      { name: "Amount", label: "Amount", type: "number" },
+      { name: "Narration", label: "Narration", type: "text" },
+    ],
+    seed: [
+      { JournalVoucherID: 1, VoucherNo: "JV-51", VoucherDate: "03-04-2026", DebitAccount: "Sundry Debtors", CreditAccount: "Freight Income", Amount: 12500, Narration: "SI20260001 booked" },
     ],
   },
 };

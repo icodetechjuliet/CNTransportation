@@ -100,6 +100,16 @@
                   <q-tooltip>Edit</q-tooltip>
                 </q-btn>
                 <q-btn
+                  icon="print"
+                  color="primary"
+                  dense
+                  outline
+                  class="edit-icon-style prt"
+                  @click="printCommission(props.row)"
+                >
+                  <q-tooltip>Print</q-tooltip>
+                </q-btn>
+                <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
                   dense
@@ -159,6 +169,14 @@
                   <q-btn
                     dense
                     unelevated
+                    icon="print"
+                    label="Print"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="printCommission(props.row)"
+                  />
+                  <q-btn
+                    dense
+                    unelevated
                     icon="fa-solid fa-trash"
                     label="Delete"
                     class="mjc-btn mjc-btn-edit"
@@ -206,6 +224,48 @@
         </q-card>
       </div>
     </q-page>
+
+    <!-- ── Commission voucher print — matches EagleParcel
+         Reports/Booking/BUK_Commission/BUK_CommissionPrint_BookingWise.rdlc.
+         Same windowed blob+iframe dialog shape as every other print-preview
+         in this app (DMSTrip.vue / GenericReportList.vue). ── -->
+    <q-dialog v-model="showPrintDialog" @before-hide="closePrintDialog">
+      <q-card
+        style="
+          display: flex;
+          flex-direction: column;
+          width: 900px;
+          max-width: 95vw;
+          max-height: 92vh;
+          overflow: hidden;
+        "
+      >
+        <q-toolbar class="bg-primary text-white">
+          <q-icon name="percent" size="22px" class="q-mr-sm" />
+          <q-toolbar-title>Commission Print Preview</q-toolbar-title>
+          <q-badge v-if="printCommissionNo" class="q-mr-sm print-preview-badge">
+            {{ printCommissionNo }}
+          </q-badge>
+          <q-btn flat round icon="download" @click="downloadPDF">
+            <q-tooltip>Download</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="print" @click="printFrame">
+            <q-tooltip>Print</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="close" @click="closePrintDialog">
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
+        </q-toolbar>
+        <div style="overflow-y: auto; flex: 1 1 auto">
+          <iframe
+            ref="reportFrame"
+            :src="printBlobUrl"
+            style="border: none; width: 100%; display: block"
+            @load="onPrintFrameLoad"
+          />
+        </div>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -222,6 +282,13 @@ import {
   apiGetCommissionById,
   MOCK_DATA_BK_COMMISSION as MOCK_DATA,
 } from "src/data/bookingData.js";
+import {
+  getCompanyProfile,
+  getCompanyLogoDataUrl,
+  buildPrintHeaderHtml,
+  PRINT_HEADER_CSS,
+} from "src/data/companyProfile.js";
+import { downloadIframeAsPdf } from "src/Utils/downloadIframePdf.js";
 
 export default {
   mixins: [entryNavigation],
@@ -245,6 +312,10 @@ export default {
       form: this.emptyForm(),
 
       mockData: MOCK_DATA,
+
+      showPrintDialog: false,
+      printBlobUrl: null,
+      printCommissionNo: "",
 
       tableColumns: [
         { name: "action", label: "Action", field: "action" },
@@ -336,6 +407,86 @@ export default {
       );
     },
 
+    async printCommission(row) {
+      this.printCommissionNo = row.CommissionNo;
+      const [logoDataUrl, company] = await Promise.all([
+        getCompanyLogoDataUrl(),
+        getCompanyProfile(),
+      ]);
+      const html = this.buildCommissionPrintHtml(row, logoDataUrl, company);
+      const blob = new Blob([html], { type: "text/html" });
+      if (this.printBlobUrl) URL.revokeObjectURL(this.printBlobUrl);
+      this.printBlobUrl = URL.createObjectURL(blob);
+      this.showPrintDialog = true;
+    },
+
+    downloadPDF() {
+      downloadIframeAsPdf(
+        this.$refs.reportFrame,
+        `Commission-${this.printCommissionNo}`
+      );
+    },
+
+    printFrame() {
+      if (!this.$refs.reportFrame) return;
+      this.$refs.reportFrame.contentWindow.focus();
+      this.$refs.reportFrame.contentWindow.print();
+    },
+
+    onPrintFrameLoad() {
+      const frame = this.$refs.reportFrame;
+      if (!frame || !frame.contentDocument) return;
+      const height = frame.contentDocument.documentElement.scrollHeight;
+      frame.style.height = `${height}px`;
+    },
+
+    closePrintDialog() {
+      this.showPrintDialog = false;
+      setTimeout(() => {
+        if (this.printBlobUrl) {
+          URL.revokeObjectURL(this.printBlobUrl);
+          this.printBlobUrl = null;
+        }
+      }, 500);
+    },
+
+    buildCommissionPrintHtml(row, logoDataUrl = "", company = {}) {
+      return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Commission — ${row.CommissionNo}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;font-size:9pt;color:#000;padding:10px 14px;background:#fff}
+  ${PRINT_HEADER_CSS}
+  .title{font-size:12pt;font-weight:bold;border-top:2px solid #0178bc;border-bottom:1px solid #0178bc;padding:4px 0;margin-bottom:8px}
+  table.kv{width:100%;border-collapse:collapse;border:1px solid #000}
+  table.kv td{border:1px solid #000;padding:5px 8px}
+  td.lbl{font-weight:700;width:35%;background:#f2f2f2}
+  .net-row td{font-weight:700}
+  @page{size:A4;margin:10mm}
+  @media print{ body{padding:0;margin:0} }
+</style>
+</head>
+<body>
+${buildPrintHeaderHtml(logoDataUrl, company)}
+
+<div class="title">Commission Voucher &mdash; ${row.CommissionNo}</div>
+
+<table class="kv">
+  <tr><td class="lbl">Commission No.</td><td>${row.CommissionNo || ""}</td></tr>
+  <tr><td class="lbl">Commission Date</td><td>${row.CommissionDate || ""}</td></tr>
+  <tr><td class="lbl">Booking Office</td><td>${row.BookingOfficeName || ""}</td></tr>
+  <tr><td class="lbl">Commission Amount</td><td>${row.CommissionAmount || 0}</td></tr>
+  <tr><td class="lbl">TDS ${row.IsDeductTDS ? `(${row.TDSPCT}%)` : ""}</td><td>${row.TDSAmount || "0.00"}</td></tr>
+  <tr class="net-row"><td class="lbl">Net Payable</td><td>${row.NetPayable || "0.00"}</td></tr>
+  <tr><td class="lbl">Remarks</td><td>${row.Remarks || "—"}</td></tr>
+</table>
+</body>
+</html>`;
+    },
+
     async saveCommission() {
       if (!this.form.CommissionDate || !this.form.BookingOfficeName) {
         this.$q.notify({
@@ -385,3 +536,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.print-preview-badge {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #fff;
+  font-weight: 500;
+}
+</style>

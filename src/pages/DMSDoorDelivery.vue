@@ -145,6 +145,7 @@ export default {
       form: this.emptyForm(),
 
       baseColumns: [
+        { name: "action", label: "Action", field: "action" },
         {
           name: "DoorDeliveryNo",
           label: "Door Delivery No.",
@@ -176,7 +177,6 @@ export default {
           field: "VehicleAmount",
           align: "right",
         },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },

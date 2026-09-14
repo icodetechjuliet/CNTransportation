@@ -1193,29 +1193,41 @@
       </q-card>
     </div>
   </q-page>
-  <q-dialog v-model="showPrintDialog" maximized @before-hide="closePrintDialog">
-    <q-card style="display: flex; flex-direction: column; height: 100%">
+  <q-dialog v-model="showPrintDialog" @before-hide="closePrintDialog">
+    <q-card
+      style="
+        display: flex;
+        flex-direction: column;
+        width: 1200px;
+        max-width: 95vw;
+        max-height: 92vh;
+        overflow: hidden;
+      "
+    >
       <q-toolbar class="bg-primary text-white">
         <q-icon name="receipt_long" size="22px" class="q-mr-sm" />
         <q-toolbar-title>Booking Report Preview</q-toolbar-title>
-        <q-btn
-          unelevated
-          icon="picture_as_pdf"
-          label="Download PDF"
-          color="white"
-          text-color="primary"
-          size="sm"
-          class="q-mr-sm"
-          no-caps
-          @click="downloadPDF"
-        />
-        <q-btn flat round icon="close" @click="closePrintDialog" />
+        <q-badge v-if="form.BookingNo" class="q-mr-sm print-preview-badge">
+          {{ form.BookingNo }}
+        </q-badge>
+        <q-btn flat round icon="download" @click="downloadPDF">
+          <q-tooltip>Download</q-tooltip>
+        </q-btn>
+        <q-btn flat round icon="print" @click="printFrame">
+          <q-tooltip>Print</q-tooltip>
+        </q-btn>
+        <q-btn flat round icon="close" @click="closePrintDialog">
+          <q-tooltip>Close</q-tooltip>
+        </q-btn>
       </q-toolbar>
-      <iframe
-        ref="reportFrame"
-        :src="printBlobUrl"
-        style="flex: 1; border: none; width: 100%; background: #f4f4f4"
-      />
+      <div style="overflow-y: auto; flex: 1 1 auto">
+        <iframe
+          ref="reportFrame"
+          :src="printBlobUrl"
+          style="border: none; width: 100%; display: block"
+          @load="onPrintFrameLoad"
+        />
+      </div>
     </q-card>
   </q-dialog>
 </template>
@@ -1259,6 +1271,21 @@ export default {
     closeDialog() {
       this.backToEntryList("/DMSTruckBooking", "Truck Booking");
     },
+    onPrintFrameLoad() {
+      const frame = this.$refs.reportFrame;
+      if (!frame || !frame.contentDocument) return;
+      const height = frame.contentDocument.documentElement.scrollHeight;
+      frame.style.height = `${height}px`;
+    },
   },
 };
 </script>
+
+<style scoped>
+.print-preview-badge {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #fff;
+  font-weight: 500;
+}
+</style>

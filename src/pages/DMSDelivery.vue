@@ -187,16 +187,15 @@
               <q-td :props="props" class="button-container">
                 <template v-if="!props.row.DeliveryID">
                   <q-btn
-                    unelevated
-                    no-caps
-                    dense
-                    size="sm"
                     icon="local_shipping"
-                    label="Deliver"
                     color="primary"
-                    class="m-btn-style"
+                    dense
+                    outline
+                    class="edit-icon-style"
                     @click="openDeliver(props.row)"
-                  />
+                  >
+                    <q-tooltip>Deliver</q-tooltip>
+                  </q-btn>
                 </template>
                 <template v-else>
                   <q-btn

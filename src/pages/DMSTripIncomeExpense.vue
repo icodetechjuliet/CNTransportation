@@ -336,6 +336,7 @@ export default {
       form: this.emptyForm(),
 
       baseColumns: [
+        { name: "action", label: "Action", field: "action" },
         { name: "TripNo", label: "Trip No.", field: "TripNo", sortable: true },
         {
           name: "EntryType",
@@ -364,7 +365,6 @@ export default {
           sortable: true,
         },
         { name: "Remarks", label: "Remarks", field: "Remarks" },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },

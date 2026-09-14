@@ -67,6 +67,16 @@
                   <q-tooltip>Edit</q-tooltip>
                 </q-btn>
                 <q-btn
+                  icon="print"
+                  color="primary"
+                  dense
+                  outline
+                  class="edit-icon-style prt q-ml-xs"
+                  @click="printSI(props.row)"
+                >
+                  <q-tooltip>Print</q-tooltip>
+                </q-btn>
+                <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
                   dense
@@ -167,6 +177,7 @@ export default {
       form: this.emptyForm(),
 
       baseColumns: [
+        { name: "action", label: "Action", field: "action" },
         { name: "SINo", label: "SI No.", field: "SINo", sortable: true },
         { name: "SIDate", label: "Date", field: "SIDate", sortable: true },
         { name: "InvoiceType", label: "Invoice Type", field: "InvoiceType" },
@@ -195,7 +206,6 @@ export default {
           align: "right",
           sortable: true,
         },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },
@@ -250,6 +260,14 @@ export default {
           "Sale SI"
         );
       }
+    },
+
+    // The full print-preview document (letterhead, line items, GST/Service
+    // Tax breakdown) lives on the dedicated SI Print screen — this list's
+    // own mock rows are a simpler shape, so "Print" hands off to that
+    // screen rather than duplicating the print-document logic here.
+    printSI(row) {
+      this.openEntryPage("/DMSSaleSIPrint", `Print — ${row.SINo}`);
     },
 
     openEdit(row) {

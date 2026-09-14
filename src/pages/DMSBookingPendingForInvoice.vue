@@ -291,8 +291,8 @@ export default {
       selectedIds: [],
 
       tableColumns: [
-        { name: "select", label: "", field: "select" },
         { name: "action", label: "Action", field: "action" },
+        { name: "select", label: "", field: "select" },
         {
           name: "BookingNo",
           label: "Booking No.",

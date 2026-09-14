@@ -437,6 +437,50 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <!-- ── Trip Sheet print preview — blob+iframe dialog with icon-only
+         download/print actions, same shape as
+         DMSEWayBillPartBPrint.vue's showPrintDialog. ── -->
+    <q-dialog v-model="showPrintDialog" @before-hide="closePrintDialog">
+      <q-card
+        style="
+          display: flex;
+          flex-direction: column;
+          width: 1200px;
+          max-width: 95vw;
+          max-height: 92vh;
+          overflow: hidden;
+        "
+      >
+        <q-toolbar class="bg-primary text-white">
+          <q-icon name="local_shipping" size="22px" class="q-mr-sm" />
+          <q-toolbar-title>Trip Sheet Print Preview</q-toolbar-title>
+          <q-badge
+            v-if="printTripNo"
+            class="q-mr-sm print-preview-badge"
+          >
+            {{ printTripNo }}
+          </q-badge>
+          <q-btn flat round icon="download" @click="downloadPDF">
+            <q-tooltip>Download</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="print" @click="printFrame">
+            <q-tooltip>Print</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="close" @click="closePrintDialog">
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
+        </q-toolbar>
+        <div style="overflow-y: auto; flex: 1 1 auto">
+          <iframe
+            ref="reportFrame"
+            :src="printBlobUrl"
+            style="border: none; width: 100%; display: block"
+            @load="onPrintFrameLoad"
+          />
+        </div>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -450,6 +494,13 @@ import {
   apiUpdateTripFields,
   MOCK_DATA,
 } from "src/data/tripData.js";
+import {
+  getCompanyProfile,
+  getCompanyLogoDataUrl,
+  buildPrintHeaderHtml,
+  PRINT_HEADER_CSS,
+} from "src/data/companyProfile.js";
+import { downloadIframeAsPdf } from "src/Utils/downloadIframePdf.js";
 
 // ─────────────────────────────────────────────
 export default {
@@ -475,6 +526,10 @@ export default {
       showVehicleDialog: false,
       vehicleForm: {},
       vehicleTripId: null,
+
+      showPrintDialog: false,
+      printBlobUrl: null,
+      printTripNo: "",
 
       baseColumns: [
         { name: "action", label: "Action", field: "action" },
@@ -646,37 +701,181 @@ export default {
       }
     },
 
-    printTrip(row) {
-      const rowsHtml = (row.Bookings || [])
+    async printTrip(row) {
+      this.printTripNo = row.TripNo;
+      const [logoDataUrl, company] = await Promise.all([
+        getCompanyLogoDataUrl(),
+        getCompanyProfile(),
+      ]);
+      const html = this.buildTripSheetHtml(row, logoDataUrl, company);
+      const blob = new Blob([html], { type: "text/html" });
+      if (this.printBlobUrl) URL.revokeObjectURL(this.printBlobUrl);
+      this.printBlobUrl = URL.createObjectURL(blob);
+      this.showPrintDialog = true;
+    },
+
+    downloadPDF() {
+      downloadIframeAsPdf(this.$refs.reportFrame, `TripSheet-${this.printTripNo}`);
+    },
+
+    printFrame() {
+      if (!this.$refs.reportFrame) return;
+      this.$refs.reportFrame.contentWindow.focus();
+      this.$refs.reportFrame.contentWindow.print();
+    },
+
+    onPrintFrameLoad() {
+      const frame = this.$refs.reportFrame;
+      if (!frame || !frame.contentDocument) return;
+      const height = frame.contentDocument.documentElement.scrollHeight;
+      frame.style.height = `${height}px`;
+    },
+
+    closePrintDialog() {
+      this.showPrintDialog = false;
+      setTimeout(() => {
+        if (this.printBlobUrl) {
+          URL.revokeObjectURL(this.printBlobUrl);
+          this.printBlobUrl = null;
+        }
+      }, 500);
+    },
+
+    buildTripSheetHtml(row, logoDataUrl = "", company = {}) {
+      // Column set matches TRP_Trip_LoadingSheet_Truck_WithHeader.rdlc /
+      // _WithoutHeader.rdlc's per-L.R. table: L.R. No, Date, From City,
+      // To City, Bill No., Item, Qty., Weight, Pay. Type, Freight (=
+      // AssessableAmount), S.T. (=TotalTaxAmount), Total Amt. (=NetAmount),
+      // plus Consignor/Consignee (kept from the existing sheet) and a
+      // footer totals row summing Qty./Weight/S.T./Total Amt. (the RDLC's
+      // table Footer does the same with sum(Fields!...)).
+      const bookings = row.Bookings || [];
+      const fmt2 = (n) =>
+        Number(n || 0).toLocaleString("en-IN", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
+      const rowsHtml = bookings
         .map(
-          (b) =>
-            `<tr><td>${b.BookingNo}</td><td>${b.Date}</td><td>${b.Status}</td><td>${b.Consignee}</td></tr>`
+          (b) => `<tr>
+        <td>${b.BookingNo || ""}</td>
+        <td>${b.Date || ""}</td>
+        <td>${b.FromCity || ""}</td>
+        <td>${b.ToCity || ""}</td>
+        <td>${b.Consignor || ""}</td>
+        <td>${b.Consignee || ""}</td>
+        <td>${b.ItemBillNo || ""}</td>
+        <td>${b.ItemName || ""}</td>
+        <td class="num">${b.Quantity ?? ""}</td>
+        <td class="num">${fmt2(b.Weight)}</td>
+        <td>${b.Payment || ""}</td>
+        <td class="num">${fmt2(b.FreightAmount)}</td>
+        <td class="num">${fmt2(b.TaxAmount)}</td>
+        <td class="num">${fmt2(b.NetAmount)}</td>
+      </tr>`
         )
         .join("");
-      const html = `<!doctype html><html><head><title>${row.TripNo}</title>
-        <style>body{font-family:Arial,sans-serif;font-size:12px;padding:16px}
-        table{width:100%;border-collapse:collapse;margin-top:12px}
-        th,td{border:1px solid #ccc;padding:4px 8px;text-align:left}
-        h2{margin-bottom:4px}</style></head><body>
-        <h2>Trip Sheet — ${row.TripNo}</h2>
-        <div>Date: ${row.TripDate} ${row.TripStartTime} &nbsp; Carrier: ${
-        row.Carrier
-      } &nbsp; Route: ${row.FromCity} → ${row.ToCity}</div>
-        <div>Vehicle: ${row.VehicleNo || "—"} &nbsp; Transporter: ${
-        row.Transporter || "—"
-      }</div>
-        <table><thead><tr><th>Booking No</th><th>Date</th><th>Status</th><th>Consignee</th></tr></thead>
-        <tbody>${
-          rowsHtml || '<tr><td colspan="4">No bookings loaded.</td></tr>'
-        }</tbody></table>
-        </body></html>`;
-      const win = window.open("", "_blank");
-      if (win) {
-        win.document.write(html);
-        win.document.close();
-        win.focus();
-        win.print();
-      }
+      const totals = bookings.reduce(
+        (acc, b) => {
+          acc.qty += Number(b.Quantity || 0);
+          acc.weight += Number(b.Weight || 0);
+          acc.tax += Number(b.TaxAmount || 0);
+          acc.net += Number(b.NetAmount || 0);
+          return acc;
+        },
+        { qty: 0, weight: 0, tax: 0, net: 0 }
+      );
+      const totalsRowHtml = bookings.length
+        ? `<tr class="totals">
+        <td colspan="8">Total</td>
+        <td class="num">${totals.qty}</td>
+        <td class="num">${fmt2(totals.weight)}</td>
+        <td></td>
+        <td></td>
+        <td class="num">${fmt2(totals.tax)}</td>
+        <td class="num">${fmt2(totals.net)}</td>
+      </tr>`
+        : "";
+
+      return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Trip Sheet — ${row.TripNo}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;font-size:9pt;color:#000;padding:10px 14px;background:#fff}
+  ${PRINT_HEADER_CSS}
+  .title{font-size:12pt;font-weight:bold;border-top:2px solid #0178bc;border-bottom:1px solid #0178bc;padding:4px 0;margin-bottom:8px}
+  table.kv{width:100%;border-collapse:collapse;margin-bottom:10px}
+  table.kv td{padding:3px 4px;vertical-align:top}
+  td.lbl{font-weight:700;width:12%}
+  td.sep{width:2%;font-weight:700}
+  table.bookings{width:100%;border-collapse:collapse;border:1px solid #000}
+  table.bookings th,table.bookings td{border:1px solid #000;padding:4px 6px;text-align:left;font-size:8.5pt}
+  table.bookings th{background:#f2f9ff}
+  table.bookings td.num,table.bookings th.num{text-align:right}
+  table.bookings tr.totals td{font-weight:700}
+  @page{size:A4;margin:10mm}
+  @media print{ body{padding:0;margin:0} }
+</style>
+</head>
+<body>
+${buildPrintHeaderHtml(logoDataUrl, company)}
+
+<div class="title">Trip Sheet &mdash; ${row.TripNo}</div>
+
+<table class="kv">
+  <tr>
+    <td class="lbl">Trip Date</td><td class="sep">:</td><td>${
+      row.TripDate || ""
+    } ${row.TripStartTime || ""}</td>
+    <td class="lbl">Route</td><td class="sep">:</td><td>${
+      row.FromCity || ""
+    } &rarr; ${row.ToCity || ""}</td>
+  </tr>
+  <tr>
+    <td class="lbl">Carrier</td><td class="sep">:</td><td>${
+      row.Carrier || ""
+    }</td>
+    <td class="lbl">Vehicle No.</td><td class="sep">:</td><td>${
+      row.VehicleNo || "—"
+    }</td>
+  </tr>
+  <tr>
+    <td class="lbl">Transporter</td><td class="sep">:</td><td>${
+      row.Transporter || "—"
+    }</td>
+    <td class="lbl">Driver</td><td class="sep">:</td><td>${
+      row.Driver || "—"
+    }</td>
+  </tr>
+  ${
+    row.Remarks
+      ? `<tr><td class="lbl">Remarks</td><td class="sep">:</td><td colspan="4">${row.Remarks}</td></tr>`
+      : ""
+  }
+</table>
+
+<table class="bookings">
+  <thead>
+    <tr>
+      <th>L.R. No</th><th>Date</th><th>From City</th><th>To City</th>
+      <th>Consignor</th><th>Consignee</th><th>Bill No.</th><th>Item</th>
+      <th class="num">Qty.</th><th class="num">Weight</th><th>Pay. Type</th>
+      <th class="num">Freight</th><th class="num">S.T.</th><th class="num">Total Amt.</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${
+      rowsHtml ||
+      '<tr><td colspan="14" style="text-align:center">No bookings loaded.</td></tr>'
+    }
+    ${totalsRowHtml}
+  </tbody>
+</table>
+</body>
+</html>`;
     },
 
     openUpdateVehicle(row) {
@@ -722,6 +921,13 @@ export default {
 </script>
 
 <style scoped>
+.print-preview-badge {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #fff;
+  font-weight: 500;
+}
+
 .field-label {
   display: block;
   font-size: 11px;

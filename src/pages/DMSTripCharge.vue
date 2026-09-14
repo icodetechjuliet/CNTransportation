@@ -141,6 +141,16 @@
                   <q-tooltip>Edit</q-tooltip>
                 </q-btn>
                 <q-btn
+                  icon="print"
+                  color="primary"
+                  dense
+                  outline
+                  class="edit-icon-style prt q-ml-xs"
+                  @click="printCharge(props.row)"
+                >
+                  <q-tooltip>Print</q-tooltip>
+                </q-btn>
+                <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
                   dense
@@ -183,6 +193,14 @@
                   <q-btn
                     dense
                     unelevated
+                    icon="print"
+                    label="Print"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="printCharge(props.row)"
+                  />
+                  <q-btn
+                    dense
+                    unelevated
                     icon="fa-solid fa-trash"
                     label="Delete"
                     class="mjc-btn mjc-btn-view"
@@ -211,12 +229,63 @@
         </q-card>
       </div>
     </q-page>
+
+    <!-- ── Trip charge print — matches EagleParcel
+         Reports/Trip/TRP_TripCharge/TRP_TripCharge_Print.rdlc in spirit
+         (this list is a flat per-charge ledger rather than the RDLC's
+         full per-trip transporter settlement, so the print mirrors this
+         page's own fields rather than that fuller layout). Same windowed
+         blob+iframe dialog shape as every other print-preview here. ── -->
+    <q-dialog v-model="showPrintDialog" @before-hide="closePrintDialog">
+      <q-card
+        style="
+          display: flex;
+          flex-direction: column;
+          width: 900px;
+          max-width: 95vw;
+          max-height: 92vh;
+          overflow: hidden;
+        "
+      >
+        <q-toolbar class="bg-primary text-white">
+          <q-icon name="receipt_long" size="22px" class="q-mr-sm" />
+          <q-toolbar-title>Trip Charge Print Preview</q-toolbar-title>
+          <q-badge v-if="printChargeTripNo" class="q-mr-sm print-preview-badge">
+            {{ printChargeTripNo }}
+          </q-badge>
+          <q-btn flat round icon="download" @click="downloadPDF">
+            <q-tooltip>Download</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="print" @click="printFrame">
+            <q-tooltip>Print</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="close" @click="closePrintDialog">
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
+        </q-toolbar>
+        <div style="overflow-y: auto; flex: 1 1 auto">
+          <iframe
+            ref="reportFrame"
+            :src="printBlobUrl"
+            style="border: none; width: 100%; display: block"
+            @load="onPrintFrameLoad"
+          />
+        </div>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import entryNavigation from "src/mixins/entryNavigation.js";
 import { apiGetTrips } from "src/data/tripData.js";
+import {
+  getCompanyProfile,
+  getCompanyLogoDataUrl,
+  buildPrintHeaderHtml,
+  PRINT_HEADER_CSS,
+} from "src/data/companyProfile.js";
+import { downloadIframeAsPdf } from "src/Utils/downloadIframePdf.js";
 
 const MOCK_CHARGES = [
   {
@@ -298,7 +367,12 @@ export default {
       dialogMode: "add",
       form: this.emptyForm(),
 
+      showPrintDialog: false,
+      printBlobUrl: null,
+      printChargeTripNo: "",
+
       baseColumns: [
+        { name: "action", label: "Action", field: "action" },
         { name: "TripNo", label: "Trip No.", field: "TripNo", sortable: true },
         {
           name: "ChargeType",
@@ -320,7 +394,6 @@ export default {
           sortable: true,
         },
         { name: "Remarks", label: "Remarks", field: "Remarks" },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },
@@ -418,6 +491,83 @@ export default {
       }
     },
 
+    async printCharge(row) {
+      this.printChargeTripNo = row.TripNo;
+      const [logoDataUrl, company] = await Promise.all([
+        getCompanyLogoDataUrl(),
+        getCompanyProfile(),
+      ]);
+      const html = this.buildChargePrintHtml(row, logoDataUrl, company);
+      const blob = new Blob([html], { type: "text/html" });
+      if (this.printBlobUrl) URL.revokeObjectURL(this.printBlobUrl);
+      this.printBlobUrl = URL.createObjectURL(blob);
+      this.showPrintDialog = true;
+    },
+
+    downloadPDF() {
+      downloadIframeAsPdf(
+        this.$refs.reportFrame,
+        `TripCharge-${this.printChargeTripNo}`
+      );
+    },
+
+    printFrame() {
+      if (!this.$refs.reportFrame) return;
+      this.$refs.reportFrame.contentWindow.focus();
+      this.$refs.reportFrame.contentWindow.print();
+    },
+
+    onPrintFrameLoad() {
+      const frame = this.$refs.reportFrame;
+      if (!frame || !frame.contentDocument) return;
+      const height = frame.contentDocument.documentElement.scrollHeight;
+      frame.style.height = `${height}px`;
+    },
+
+    closePrintDialog() {
+      this.showPrintDialog = false;
+      setTimeout(() => {
+        if (this.printBlobUrl) {
+          URL.revokeObjectURL(this.printBlobUrl);
+          this.printBlobUrl = null;
+        }
+      }, 500);
+    },
+
+    buildChargePrintHtml(row, logoDataUrl = "", company = {}) {
+      return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Trip Charge — ${row.TripNo}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;font-size:9pt;color:#000;padding:10px 14px;background:#fff}
+  ${PRINT_HEADER_CSS}
+  .title{font-size:12pt;font-weight:bold;border-top:2px solid #0178bc;border-bottom:1px solid #0178bc;padding:4px 0;margin-bottom:8px}
+  table.kv{width:100%;border-collapse:collapse;border:1px solid #000}
+  table.kv td{border:1px solid #000;padding:5px 8px}
+  td.lbl{font-weight:700;width:35%;background:#f2f2f2}
+  @page{size:A4;margin:10mm}
+  @media print{ body{padding:0;margin:0} }
+</style>
+</head>
+<body>
+${buildPrintHeaderHtml(logoDataUrl, company)}
+
+<div class="title">Trip Charge &mdash; ${row.TripNo}</div>
+
+<table class="kv">
+  <tr><td class="lbl">Trip No.</td><td>${row.TripNo || ""}</td></tr>
+  <tr><td class="lbl">Charge Type</td><td>${row.ChargeType || ""}</td></tr>
+  <tr><td class="lbl">Charge Date</td><td>${row.ChargeDate || ""}</td></tr>
+  <tr><td class="lbl">Amount</td><td>${row.Amount || 0}</td></tr>
+  <tr><td class="lbl">Remarks</td><td>${row.Remarks || "—"}</td></tr>
+</table>
+</body>
+</html>`;
+    },
+
     async saveCharge() {
       const res = await apiSaveCharge({ ...this.form });
       if (res.success) {
@@ -454,3 +604,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.print-preview-badge {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #fff;
+  font-weight: 500;
+}
+</style>

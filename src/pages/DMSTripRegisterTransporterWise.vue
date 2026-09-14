@@ -19,6 +19,20 @@
                 <span class="total-stat-label">Total Quantity</span>
               </div>
             </div>
+            <div class="total-stat-tile total-stat-tile--inline q-ml-sm">
+              <q-icon name="payments" size="16px" />
+              <div class="total-stat-text">
+                <span class="total-stat-count">{{ totalNetPayable }}</span>
+                <span class="total-stat-label">Net Payable</span>
+              </div>
+            </div>
+            <div class="total-stat-tile total-stat-tile--inline q-ml-sm">
+              <q-icon name="account_balance_wallet" size="16px" />
+              <div class="total-stat-text">
+                <span class="total-stat-count">{{ totalBalance }}</span>
+                <span class="total-stat-label">Balance Due</span>
+              </div>
+            </div>
           </div>
           <div class="q-py-xs q-px-xs">
             <q-separator class="h-seperator"></q-separator>
@@ -198,6 +212,11 @@ export default {
       searchText: "",
       pagination: { page: 1, rowsPerPage: 15 },
 
+      // Weight/Rate/FreightAmount/HamaliAmount/OtherAmount/ExpenseAmount/
+      // NetPayableAmount/AdvanceAmount/PaidAmount/BalanceAmount match the
+      // transporter settlement columns TRP_Trip_TripRegisterTransporterWise.rdlc
+      // actually prints per trip (grouped by city, with a Count/Total
+      // footer) — tripData.js's SEED_TRIPS carries mock values for these.
       baseColumns: [
         {
           name: "Transporter",
@@ -218,6 +237,63 @@ export default {
           align: "right",
           sortable: true,
         },
+        {
+          name: "Weight",
+          label: "Weight",
+          field: "Weight",
+          align: "right",
+          sortable: true,
+        },
+        { name: "Rate", label: "Rate", field: "Rate", align: "right" },
+        {
+          name: "FreightAmount",
+          label: "Freight",
+          field: "FreightAmount",
+          align: "right",
+        },
+        {
+          name: "HamaliAmount",
+          label: "Hamali",
+          field: "HamaliAmount",
+          align: "right",
+        },
+        {
+          name: "OtherAmount",
+          label: "Other Amt.",
+          field: "OtherAmount",
+          align: "right",
+        },
+        {
+          name: "ExpenseAmount",
+          label: "Expense Amt.",
+          field: "ExpenseAmount",
+          align: "right",
+        },
+        {
+          name: "NetPayableAmount",
+          label: "Net Payable Amt.",
+          field: "NetPayableAmount",
+          align: "right",
+          sortable: true,
+        },
+        {
+          name: "AdvanceAmount",
+          label: "Advance Amt.",
+          field: "AdvanceAmount",
+          align: "right",
+        },
+        {
+          name: "PaidAmount",
+          label: "Paid Amt.",
+          field: "PaidAmount",
+          align: "right",
+        },
+        {
+          name: "BalanceAmount",
+          label: "Balance Amt.",
+          field: "BalanceAmount",
+          align: "right",
+        },
       ],
     };
   },
@@ -231,6 +307,16 @@ export default {
         (sum, t) => sum + (parseFloat(t.Quantity) || 0),
         0
       );
+    },
+    totalNetPayable() {
+      return this.filteredTrips
+        .reduce((sum, t) => sum + (parseFloat(t.NetPayableAmount) || 0), 0)
+        .toFixed(2);
+    },
+    totalBalance() {
+      return this.filteredTrips
+        .reduce((sum, t) => sum + (parseFloat(t.BalanceAmount) || 0), 0)
+        .toFixed(2);
     },
     maxPages() {
       const rows = this.pagination.rowsPerPage || 15;

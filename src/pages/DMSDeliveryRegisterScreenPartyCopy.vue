@@ -166,6 +166,10 @@ export default {
         { name: "ToPartyName", label: "Consignee", field: "ToPartyName" },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
+        { name: "ItemName", label: "Item", field: "ItemName" },
+        { name: "Qty", label: "Qty.", field: "Qty", align: "right" },
+        { name: "Weight", label: "Weight", field: "Weight", align: "right" },
+        { name: "PaymentType", label: "Pay. Type", field: "PaymentType" },
         { name: "ReceiverName", label: "Receiver", field: "ReceiverName" },
       ],
     };
@@ -229,11 +233,16 @@ export default {
         </head><body>
         <div class="stamp">PARTY COPY</div>
         <h2>Delivery Confirmation — ${row.DeliveryNo}</h2>
-        <div>Date: ${row.DeliveryDate} &nbsp; Booking No: ${row.BookingNo}</div>
+        <div>Date: ${row.DeliveryDate} &nbsp; Booking No: ${row.BookingNo} &nbsp; Booking Date: ${row.BookingDate || "—"}</div>
         <table><tbody>
           <tr><th>Consignor</th><td>${row.FromPartyName}</td></tr>
           <tr><th>Consignee</th><td>${row.ToPartyName}</td></tr>
           <tr><th>Route</th><td>${row.FromCity} → ${row.ToCity}</td></tr>
+          <tr><th>Item</th><td>${row.ItemName || "—"}</td></tr>
+          <tr><th>Qty.</th><td>${row.Qty || 0}</td></tr>
+          <tr><th>Weight</th><td>${row.Weight || 0}</td></tr>
+          <tr><th>Pay. Type</th><td>${row.PaymentType || "—"}</td></tr>
+          <tr><th>Total Amt.</th><td>${row.NetAmount || 0}</td></tr>
           <tr><th>Received By</th><td>${row.ReceiverName || "—"}</td></tr>
         </tbody></table>
         </body></html>`;
