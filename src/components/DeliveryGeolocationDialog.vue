@@ -1,5 +1,4 @@
-<template>
-  <q-dialog v-model="visible">
+<template><q-dialog v-model="visible">
     <q-card class="delivery-location-dialog nvocc-dialog-card column no-wrap">
       <q-card-section class="dialog-head row items-center no-wrap">
         <div class="glyph">
@@ -150,8 +149,7 @@
         </div>
       </q-card-section>
     </q-card>
-  </q-dialog>
-</template>
+  </q-dialog></template>
 
 <script>
 import axios from "axios";

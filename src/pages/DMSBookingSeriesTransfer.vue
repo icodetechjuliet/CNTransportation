@@ -16,30 +16,82 @@
 
         <q-card class="notab-container">
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-select square dense outlined bg-color="blue-1" label="Series" v-model="form.SeriesName" :options="mockData.series" />
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-select
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Series"
+                  v-model="form.SeriesName"
+                  :options="mockData.series"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-select square dense outlined bg-color="blue-1" label="From Booking Office" v-model="form.FromBookingOffice" :options="mockData.bookingOffices" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-select
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="From Booking Office"
+                  v-model="form.FromBookingOffice"
+                  :options="mockData.bookingOffices"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-select square dense outlined bg-color="blue-1" label="To Booking Office" v-model="form.ToBookingOffice" :options="mockData.bookingOffices" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-select
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="To Booking Office"
+                  v-model="form.ToBookingOffice"
+                  :options="mockData.bookingOffices"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="From No." v-model="form.FromNo" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="From No."
+                  v-model="form.FromNo"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="To No." v-model="form.ToNo" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="To No."
+                  v-model="form.ToNo"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                />
               </div>
             </div>
 
             <div class="row q-mt-md">
-              <q-btn unelevated no-caps color="positive" icon="fa-solid fa-right-left" label="Transfer" @click="transfer" />
+              <q-btn
+                unelevated
+                no-caps
+                color="positive"
+                icon="fa-solid fa-right-left"
+                label="Transfer"
+                @click="transfer"
+              />
             </div>
 
             <q-separator class="q-my-md" />
@@ -49,7 +101,6 @@
               square
               flat
               bordered
-              dense
               :rows="history"
               :columns="historyColumns"
               row-key="HistoryId"
@@ -64,14 +115,15 @@
 </template>
 
 <script>
-const MOCK_DATA = {
-  bookingOffices: ["Greenland", "Chakan", "Nasik", "Pune"],
-  series: ["RKG-2026", "CHK-2026", "NSK-2026"],
-};
-
-const MOCK_HISTORY = [
-  { HistoryId: 1, SeriesName: "RKG-2026", FromBookingOffice: "Greenland", ToBookingOffice: "Chakan", FromNo: "2200", ToNo: "2250", DoneOn: "25/03/2026 03:15 PM", DoneBy: "Admin" },
-];
+// Booking Series Transfer data/mock-"backend" now lives in its own module,
+// src/data/bookingData.js (localStorage-backed, so the transfer history
+// persists like a real DB) — every Booking-family page imports from there
+// directly instead of from this page.
+import {
+  apiGetSeriesTransferHistory,
+  apiAddSeriesTransfer,
+  MOCK_DATA_SERIES_TRANSFER as MOCK_DATA,
+} from "src/data/bookingData.js";
 
 export default {
   name: "DMSBookingSeriesTransfer",
@@ -79,7 +131,7 @@ export default {
   data() {
     return {
       mockData: MOCK_DATA,
-      history: MOCK_HISTORY,
+      history: [],
       form: {
         SeriesName: "",
         FromBookingOffice: "",
@@ -90,8 +142,16 @@ export default {
       },
       historyColumns: [
         { name: "SeriesName", label: "Series", field: "SeriesName" },
-        { name: "FromBookingOffice", label: "From Office", field: "FromBookingOffice" },
-        { name: "ToBookingOffice", label: "To Office", field: "ToBookingOffice" },
+        {
+          name: "FromBookingOffice",
+          label: "From Office",
+          field: "FromBookingOffice",
+        },
+        {
+          name: "ToBookingOffice",
+          label: "To Office",
+          field: "ToBookingOffice",
+        },
         { name: "FromNo", label: "From No.", field: "FromNo" },
         { name: "ToNo", label: "To No.", field: "ToNo" },
         { name: "DoneOn", label: "Done On", field: "DoneOn" },
@@ -100,31 +160,62 @@ export default {
     };
   },
 
+  mounted() {
+    this.loadHistory();
+  },
+
   methods: {
-    transfer() {
-      if (!this.form.SeriesName || !this.form.FromBookingOffice || !this.form.ToBookingOffice || !this.form.FromNo || !this.form.ToNo) {
-        this.$q.notify({ message: "Series, From/To Booking Office and From/To No. are required", color: "negative", position: "top" });
+    async loadHistory() {
+      this.history = await apiGetSeriesTransferHistory();
+    },
+
+    async transfer() {
+      if (
+        !this.form.SeriesName ||
+        !this.form.FromBookingOffice ||
+        !this.form.ToBookingOffice ||
+        !this.form.FromNo ||
+        !this.form.ToNo
+      ) {
+        this.$q.notify({
+          message:
+            "Series, From/To Booking Office and From/To No. are required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       if (this.form.FromBookingOffice === this.form.ToBookingOffice) {
-        this.$q.notify({ message: "From and To Booking Office must be different", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "From and To Booking Office must be different",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
-      this.history = [
-        {
-          HistoryId: this.history.length + 1,
-          SeriesName: this.form.SeriesName,
-          FromBookingOffice: this.form.FromBookingOffice,
-          ToBookingOffice: this.form.ToBookingOffice,
-          FromNo: this.form.FromNo,
-          ToNo: this.form.ToNo,
-          DoneOn: new Date().toLocaleString(),
-          DoneBy: "CargoNet User",
-        },
-        ...this.history,
-      ];
-      this.$q.notify({ message: "Booking series transferred (mock)", color: "positive", position: "top" });
-      this.form = { SeriesName: "", FromBookingOffice: "", ToBookingOffice: "", FromNo: "", ToNo: "", Remarks: "" };
+      await apiAddSeriesTransfer({
+        SeriesName: this.form.SeriesName,
+        FromBookingOffice: this.form.FromBookingOffice,
+        ToBookingOffice: this.form.ToBookingOffice,
+        FromNo: this.form.FromNo,
+        ToNo: this.form.ToNo,
+        DoneOn: new Date().toLocaleString(),
+        DoneBy: "CargoNet User",
+      });
+      await this.loadHistory();
+      this.$q.notify({
+        message: "Booking series transferred (mock)",
+        color: "positive",
+        position: "top",
+      });
+      this.form = {
+        SeriesName: "",
+        FromBookingOffice: "",
+        ToBookingOffice: "",
+        FromNo: "",
+        ToNo: "",
+        Remarks: "",
+      };
     },
   },
 };

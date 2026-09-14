@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="rptcashsummaryservicetax" />
-</template>
+<template><GenericReportList report-key="rptcashsummaryservicetax" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

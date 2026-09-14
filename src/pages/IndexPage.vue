@@ -1,11 +1,9 @@
-<template>
-  <q-page class="flex flex-center mobile-page">
+<template><q-page class="flex flex-center mobile-page">
     <!-- <div v-if="loading">
       <span class="loader"></span>
     </div> -->
     <!-- <chatbot-feature></chatbot-feature> -->
-  </q-page>
-</template>
+  </q-page></template>
 
 <script>
 import { defineComponent } from "vue";

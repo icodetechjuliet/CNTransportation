@@ -19,7 +19,6 @@
 
           <q-table
             square
-            dense
             :rows="rows"
             :columns="tableColumns"
             row-key="RateID"
@@ -63,8 +62,9 @@
                   outline
                   class="edit-icon-style mody"
                   @click="openEdit(props.row)"
-                  ><q-tooltip>Edit</q-tooltip></q-btn
                 >
+                  <q-tooltip>Edit</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
@@ -72,67 +72,20 @@
                   outline
                   class="edit-icon-style q-ml-xs"
                   @click="deleteRow(props.row)"
-                  ><q-tooltip>Delete</q-tooltip></q-btn
                 >
+                  <q-tooltip>Delete</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
         </q-card>
       </div>
     </q-page>
-
-    <!-- ══════════════════════════════════════
-         Rate Add / Edit Dialog — canonical compact-dialog shape.
-    ══════════════════════════════════════ -->
-    <q-dialog v-model="showDialog">
-      <q-card style="min-width: 480px">
-        <q-card-section class="row items-center">
-          <div class="text-h6">{{ dialogMode === "add" ? "New Rate" : "Edit Rate" }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-separator />
-        <q-card-section>
-          <div class="row q-col-gutter-sm">
-            <div class="col-12">
-              <q-input v-model="form.RateName" label="Rate Name" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <q-select v-model="form.VehicleType" :options="mockData.vehicleTypes" label="Vehicle Type" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <q-select v-model="form.City" :options="mockData.cities" label="City" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" />
-            </div>
-            <div class="col-6">
-              <q-select v-model="form.RateType" :options="mockData.rateTypes" label="Rate Type" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <q-input v-model="form.RateAmount" type="number" label="Rate Amount" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <q-input v-model="form.EffectiveDate" label="Effective Date" placeholder="dd-mm-yyyy" dense outlined bg-color="blue-1">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="effDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="form.EffectiveDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.effDateProxy.hide()" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-          </div>
-        </q-card-section>
-        <q-separator />
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
-          <q-btn label="Cancel" v-close-popup />
-          <q-btn color="primary" class="m-btn-style" label="Save" @click="save" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
+import entryNavigation from "src/mixins/entryNavigation.js";
 import {
   apiGetDoorDeliveryRates,
   apiSaveDoorDeliveryRate,
@@ -141,6 +94,8 @@ import {
 } from "src/data/deliveryData.js";
 
 export default {
+  mixins: [entryNavigation],
+  entryReload: "loadRows",
   name: "DMSDoorDeliveryRate",
 
   data() {
@@ -154,12 +109,28 @@ export default {
       form: this.emptyForm(),
 
       baseColumns: [
-        { name: "RateName", label: "Rate Name", field: "RateName", sortable: true },
+        {
+          name: "RateName",
+          label: "Rate Name",
+          field: "RateName",
+          sortable: true,
+        },
         { name: "VehicleType", label: "Vehicle Type", field: "VehicleType" },
         { name: "City", label: "City", field: "City", sortable: true },
         { name: "RateType", label: "Rate Type", field: "RateType" },
-        { name: "RateAmount", label: "Rate Amount", field: "RateAmount", align: "right", sortable: true },
-        { name: "EffectiveDate", label: "Effective Date", field: "EffectiveDate", sortable: true },
+        {
+          name: "RateAmount",
+          label: "Rate Amount",
+          field: "RateAmount",
+          align: "right",
+          sortable: true,
+        },
+        {
+          name: "EffectiveDate",
+          label: "Effective Date",
+          field: "EffectiveDate",
+          sortable: true,
+        },
         { name: "action", label: "Action", field: "action" },
       ],
     };
@@ -199,20 +170,47 @@ export default {
     openAdd() {
       this.form = this.emptyForm();
       this.dialogMode = "add";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSDoorDeliveryRateForm?mode=${this.dialogMode}&id=${
+            this.form.RateID || ""
+          }`,
+          "Door Delivery Rate"
+        );
+      }
     },
 
     openEdit(row) {
       this.form = { ...row };
       this.dialogMode = "edit";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSDoorDeliveryRateForm?mode=${this.dialogMode}&id=${
+            this.form.RateID || ""
+          }`,
+          "Door Delivery Rate"
+        );
+      }
     },
 
     async save() {
       const res = await apiSaveDoorDeliveryRate({ ...this.form });
       if (res.success) {
-        this.$q.notify({ message: "Rate saved!", color: "positive", position: "top" });
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
+        this.$q.notify({
+          message: "Rate saved!",
+          color: "positive",
+          position: "top",
+        });
         this.showDialog = false;
+        this.notifyEntrySaved();
         await this.loadRows();
       }
     },
@@ -220,7 +218,15 @@ export default {
     async deleteRow(row) {
       const res = await apiDeleteDoorDeliveryRate(row.RateID);
       if (res.success) {
-        this.$q.notify({ message: "Rate deleted.", color: "positive", position: "top" });
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
+        this.$q.notify({
+          message: "Rate deleted.",
+          color: "positive",
+          position: "top",
+        });
         await this.loadRows();
       }
     },

@@ -16,11 +16,20 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Booking Office</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" label="Code" v-model="form.BookingOfficeCode" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                label="Code"
+                v-model="form.BookingOfficeCode"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
               <q-input
@@ -61,14 +70,28 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Booking Office Name" v-model="form.BookingOfficeName" />
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Booking Office Name"
+                  v-model="form.BookingOfficeName"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Print Name" v-model="form.PrintName" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Print Name"
+                  v-model="form.PrintName"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -83,7 +106,7 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -95,7 +118,7 @@
                 />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -110,33 +133,90 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="State" v-model="form.StateName" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="State"
+                  v-model="form.StateName"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Pincode" v-model="form.Pincode" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Pincode"
+                  v-model="form.Pincode"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Email" v-model="form.Email" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Email"
+                  v-model="form.Email"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Phone No." v-model="form.PhoneNo" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Phone No."
+                  v-model="form.PhoneNo"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Mobile No." v-model="form.MobileNo" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Mobile No."
+                  v-model="form.MobileNo"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Contact Person" v-model="form.ContactPersonName" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Contact Person"
+                  v-model="form.ContactPersonName"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Contact Phone" v-model="form.ContactPersonPhoneNo" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Contact Phone"
+                  v-model="form.ContactPersonPhoneNo"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="TDS %" type="number" v-model="form.TDSPCT" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="TDS %"
+                  type="number"
+                  v-model="form.TDSPCT"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -147,36 +227,92 @@
                   v-model="form.DefaultCommission"
                 />
               </div>
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Address" type="textarea" :rows="1" autogrow v-model="form.Address" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Address"
+                  type="textarea"
+                  :rows="1"
+                  autogrow
+                  v-model="form.Address"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-4 col-md-2 col-lg-2">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsActive" val="orange" color="orange" intermediate-icon="black" />
+                    <q-checkbox
+                      dense
+                      v-model="form.IsActive"
+                      val="orange"
+                      color="orange"
+                      intermediate-icon="black"
+                    />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Active</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Active</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
-              <div class="col-xs-12 col-sm-4 col-md-2 col-lg-2">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsAgent" val="orange" color="orange" intermediate-icon="black" />
+                    <q-checkbox
+                      dense
+                      v-model="form.IsAgent"
+                      val="orange"
+                      color="orange"
+                      intermediate-icon="black"
+                    />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Is Agent</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Is Agent</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
-              <div class="col-xs-12 col-sm-4 col-md-2 col-lg-2">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsDeductTDS" val="orange" color="orange" intermediate-icon="black" />
+                    <q-checkbox
+                      dense
+                      v-model="form.IsDeductTDS"
+                      val="orange"
+                      color="orange"
+                      intermediate-icon="black"
+                    />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Deduct TDS</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Deduct TDS</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
             </div>
@@ -188,9 +324,15 @@
 </template>
 
 <script>
-import { apiGetOfficeById, apiSaveOffice, MOCK_DATA } from "./DMSBookingOffice.vue";
+import entryNavigation from "src/mixins/entryNavigation.js";
+import {
+  apiGetOfficeById,
+  apiSaveOffice,
+  MOCK_DATA_BOOKING_OFFICE as MOCK_DATA,
+} from "src/data/bookingOfficeData.js";
 
 export default {
+  mixins: [entryNavigation],
   name: "DMSBookingOfficeView",
 
   // Set by DynamicTab.vue's openTab() from the `?mode=...&officeId=...`
@@ -265,14 +407,23 @@ export default {
 
     async saveOffice() {
       if (!this.form.BookingOfficeName) {
-        this.$q.notify({ message: "Booking Office Name is required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Booking Office Name is required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       const res = await apiSaveOffice({ ...this.form });
       if (res.success) {
+        this.notifyEntrySaved();
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Booking Office saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Booking Office saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },

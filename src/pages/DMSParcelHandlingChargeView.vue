@@ -6,14 +6,32 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Parcel Handling Charge</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Voucher No." v-model="form.VoucherNo" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Voucher No."
+                v-model="form.VoucherNo"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Net Amount" v-model="form.NetAmount" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Net Amount"
+                v-model="form.NetAmount"
+              />
             </div>
           </div>
 
@@ -37,12 +55,23 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Voucher Date" v-model="form.VoucherDate">
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Voucher Date"
+                  v-model="form.VoucherDate"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="voucherDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="voucherDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.VoucherDate"
                           mask="DD/MM/YYYY"
@@ -55,7 +84,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -70,7 +99,7 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -81,15 +110,33 @@
                   :options="mockData.bookingOffices"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Reference No." v-model="form.ReferenceNo" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Reference No."
+                  v-model="form.ReferenceNo"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Reference Date" v-model="form.ReferenceDate">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Reference Date"
+                  v-model="form.ReferenceDate"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="referenceDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="referenceDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.ReferenceDate"
                           mask="DD/MM/YYYY"
@@ -102,7 +149,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -113,7 +160,7 @@
                   :options="['Cash', 'Cheque', 'NEFT']"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -125,33 +172,77 @@
                   @update:model-value="calcTDS"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsBusEntry" val="orange" color="orange" intermediate-icon="black" />
+                    <q-checkbox
+                      dense
+                      v-model="form.IsBusEntry"
+                      val="orange"
+                      color="orange"
+                      intermediate-icon="black"
+                    />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Bus Entry</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Bus Entry</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsTruckEntry" val="orange" color="orange" intermediate-icon="black" />
+                    <q-checkbox
+                      dense
+                      v-model="form.IsTruckEntry"
+                      val="orange"
+                      color="orange"
+                      intermediate-icon="black"
+                    />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Truck Entry</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Truck Entry</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsChargePaid" val="orange" color="orange" intermediate-icon="black" />
+                    <q-checkbox
+                      dense
+                      v-model="form.IsChargePaid"
+                      val="orange"
+                      color="orange"
+                      intermediate-icon="black"
+                    />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Charge Paid</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Charge Paid</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
                     <q-checkbox
                       dense
@@ -162,10 +253,12 @@
                       @update:model-value="calcTDS"
                     />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Deduct TDS</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Deduct TDS</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -179,14 +272,37 @@
                 />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3" v-if="form.IsDeductTDS">
-                <q-input square dense outlined bg-color="blue-1" readonly label="TDS Amount" v-model="form.TDSAmount" />
+              <div class="col-12 col-sm-6 col-md-3" v-if="form.IsDeductTDS">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="TDS Amount"
+                  v-model="form.TDSAmount"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" readonly label="Net Amount" v-model="form.NetAmount" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Net Amount"
+                  v-model="form.NetAmount"
+                />
               </div>
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                />
               </div>
             </div>
           </q-card-section>
@@ -197,9 +313,15 @@
 </template>
 
 <script>
-import { apiGetChargeById, apiSaveCharge, MOCK_DATA } from "./DMSParcelHandlingCharge.vue";
+import entryNavigation from "src/mixins/entryNavigation.js";
+import {
+  apiGetParcelChargeById as apiGetChargeById,
+  apiSaveParcelCharge as apiSaveCharge,
+  MOCK_DATA_PARCEL_CHARGE as MOCK_DATA,
+} from "src/data/bookingData.js";
 
 export default {
+  mixins: [entryNavigation],
   name: "DMSParcelHandlingChargeView",
 
   // Set by DynamicTab.vue's openTab() from the `?mode=...&chargeId=...`
@@ -249,7 +371,9 @@ export default {
     calcTDS() {
       const total = Number(this.form.TotalAmount) || 0;
       const pct = this.form.IsDeductTDS ? Number(this.form.TDSPCT) || 0 : 0;
-      this.form.TDSAmount = this.form.IsDeductTDS ? Math.round((total * pct) / 100) : 0;
+      this.form.TDSAmount = this.form.IsDeductTDS
+        ? Math.round((total * pct) / 100)
+        : 0;
       this.form.NetAmount = total - this.form.TDSAmount;
     },
 
@@ -277,15 +401,24 @@ export default {
 
     async saveCharge() {
       if (!this.form.AccountName) {
-        this.$q.notify({ message: "Account Name is required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Account Name is required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       this.calcTDS();
       const res = await apiSaveCharge({ ...this.form });
       if (res.success) {
+        this.notifyEntrySaved();
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Parcel Handling Charge saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Parcel Handling Charge saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },

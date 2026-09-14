@@ -8,7 +8,9 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="fa-solid fa-money-check" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{ filteredBookings.length }}</span>
+                <span class="total-stat-count">
+                  {{ filteredBookings.length }}
+                </span>
                 <span class="total-stat-label">Total Bookings</span>
               </div>
             </div>
@@ -78,7 +80,10 @@
 
             <template v-slot:body-cell-IsPosted="props">
               <q-td :props="props">
-                <q-badge :color="props.value ? 'positive' : 'orange'" :label="props.value ? 'Posted' : 'Pending'" />
+                <q-badge
+                  :color="props.value ? 'positive' : 'orange'"
+                  :label="props.value ? 'Posted' : 'Pending'"
+                />
               </q-td>
             </template>
 
@@ -92,27 +97,42 @@
                   outline
                   class="edit-icon-style"
                   @click="openPostDialog(props.row)"
-                  ><q-tooltip>Post Cheque</q-tooltip></q-btn
                 >
+                  <q-tooltip>Post Cheque</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
             <template v-slot:item="props">
               <div class="mobile-job-card">
-                <div class="mjc-header" @click="toggleMobileCard(props.row.BookingId)">
+                <div
+                  class="mjc-header"
+                  @click="toggleMobileCard(props.row.BookingId)"
+                >
                   <div class="mjc-header-left">
-                    <div class="mjc-job-badge"><q-icon name="fa-solid fa-money-check" size="14px" /></div>
+                    <div class="mjc-job-badge">
+                      <q-icon name="fa-solid fa-money-check" size="14px" />
+                    </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
-                      <span class="mjc-job-date">{{ props.row.BookingDate }}</span>
+                      <span class="mjc-job-date">
+                        {{ props.row.BookingDate }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge class="mjc-status-badge" :color="props.row.IsPosted ? 'positive' : 'orange'">
+                    <q-badge
+                      class="mjc-status-badge"
+                      :color="props.row.IsPosted ? 'positive' : 'orange'"
+                    >
                       {{ props.row.IsPosted ? "Posted" : "Pending" }}
                     </q-badge>
                     <q-icon
-                      :name="expandedMobileCards.includes(props.row.BookingId) ? 'expand_less' : 'expand_more'"
+                      :name="
+                        expandedMobileCards.includes(props.row.BookingId)
+                          ? 'expand_less'
+                          : 'expand_more'
+                      "
                       size="20px"
                       color="grey-6"
                     />
@@ -132,15 +152,48 @@
                 </div>
 
                 <transition name="mobile-expand">
-                  <div v-if="expandedMobileCards.includes(props.row.BookingId)" class="mjc-details">
+                  <div
+                    v-if="expandedMobileCards.includes(props.row.BookingId)"
+                    class="mjc-details"
+                  >
                     <q-separator class="mjc-divider" />
                     <div class="mjc-details-grid">
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignor</span><span class="mjc-detail-value">{{ props.row.ConsignorName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignee</span><span class="mjc-detail-value">{{ props.row.ConsigneeName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Net Amt.</span><span class="mjc-detail-value">{{ props.row.NetAmt || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Cheque No.</span><span class="mjc-detail-value">{{ props.row.ChequeNo || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Cheque Date</span><span class="mjc-detail-value">{{ props.row.ChequeDate || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Bank Name</span><span class="mjc-detail-value">{{ props.row.BankName || "—" }}</span></div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignor</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsignorName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignee</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsigneeName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Net Amt.</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.NetAmt || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Cheque No.</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ChequeNo || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Cheque Date</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ChequeDate || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Bank Name</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.BankName || "—" }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </transition>
@@ -157,26 +210,52 @@
     ══════════════════════════════════════ -->
     <q-dialog v-model="showPostDialog" persistent>
       <q-card style="min-width: 340px">
-        <q-card-section class="text-subtitle1">Post Cheque — {{ postForm.BookingNo }}</q-card-section>
+        <q-card-section class="text-subtitle1">
+          Post Cheque — {{ postForm.BookingNo }}
+        </q-card-section>
         <q-card-section class="q-pt-none">
-          <div class="row q-col-gutter-sm">
-            <div class="col-12">
-              <span class="field-label">Cheque No.</span>
-              <q-input square dense outlined bg-color="blue-1" v-model="postForm.ChequeNo" />
+          <div class="row q-col-gutter-sm items-start">
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-input
+                label="Cheque No."
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                v-model="postForm.ChequeNo"
+              />
             </div>
-            <div class="col-12">
-              <span class="field-label">Cheque Date</span>
-              <q-input square dense outlined bg-color="blue-1" v-model="postForm.ChequeDate" placeholder="dd/mm/yyyy" />
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-input
+                label="Cheque Date"
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                v-model="postForm.ChequeDate"
+                placeholder="dd/mm/yyyy"
+              />
             </div>
-            <div class="col-12">
-              <span class="field-label">Bank Name</span>
-              <q-input square dense outlined bg-color="blue-1" v-model="postForm.BankName" />
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-input
+                label="Bank Name"
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                v-model="postForm.BankName"
+              />
             </div>
           </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn unelevated color="primary" label="Save" @click="savePostCheque" />
+          <q-btn
+            unelevated
+            color="primary"
+            label="Save"
+            @click="savePostCheque"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -263,17 +342,38 @@ export default {
       expandedMobileCards: [],
 
       showPostDialog: false,
-      postForm: { BookingId: null, BookingNo: "", ChequeNo: "", ChequeDate: "", BankName: "" },
+      postForm: {
+        BookingId: null,
+        BookingNo: "",
+        ChequeNo: "",
+        ChequeDate: "",
+        BankName: "",
+      },
 
       tableColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "BookingNo", label: "Booking No.", field: "BookingNo", sortable: true },
-        { name: "BookingDate", label: "Date", field: "BookingDate", sortable: true },
+        {
+          name: "BookingNo",
+          label: "Booking No.",
+          field: "BookingNo",
+          sortable: true,
+        },
+        {
+          name: "BookingDate",
+          label: "Date",
+          field: "BookingDate",
+          sortable: true,
+        },
         { name: "ConsignorName", label: "Consignor", field: "ConsignorName" },
         { name: "ConsigneeName", label: "Consignee", field: "ConsigneeName" },
         { name: "NetAmt", label: "Net Amt.", field: "NetAmt", align: "right" },
         { name: "ChequeNo", label: "Cheque No.", field: "ChequeNo" },
-        { name: "IsPosted", label: "Status", field: "IsPosted", align: "center" },
+        {
+          name: "IsPosted",
+          label: "Status",
+          field: "IsPosted",
+          align: "center",
+        },
       ],
     };
   },
@@ -310,14 +410,20 @@ export default {
     },
 
     savePostCheque() {
-      const row = MOCK_CHEQUE_BOOKINGS.find((b) => b.BookingId === this.postForm.BookingId);
+      const row = MOCK_CHEQUE_BOOKINGS.find(
+        (b) => b.BookingId === this.postForm.BookingId
+      );
       if (row) {
         row.ChequeNo = this.postForm.ChequeNo;
         row.ChequeDate = this.postForm.ChequeDate;
         row.BankName = this.postForm.BankName;
         row.IsPosted = true;
       }
-      this.$q.notify({ message: "Cheque posted!", color: "positive", position: "top" });
+      this.$q.notify({
+        message: "Cheque posted!",
+        color: "positive",
+        position: "top",
+      });
       this.showPostDialog = false;
       this.loadBookings();
     },

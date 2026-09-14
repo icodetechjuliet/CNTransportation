@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="rsentryeditlist" />
-</template>
+<template><GenericReportList report-key="rsentryeditlist" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

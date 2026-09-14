@@ -1,9 +1,7 @@
-<template>
-  <div v-if="loading" class="loader-container">
+<template><div v-if="loading" class="loader-container">
     <span class="loader"></span>
     <span class="loader_txt">{{ loadingPercentage }}% </span>
-  </div>
-  <div v-else>
+  </div><div v-else>
     <div v-if="Inner_loader">
       <span class="load-container">
         <span class="loader"></span>
@@ -277,8 +275,7 @@
         </q-card>
       </div>
     </q-page>
-  </div>
-</template>
+  </div></template>
 
 <script>
 import { ref } from "vue";

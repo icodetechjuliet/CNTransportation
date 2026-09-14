@@ -1,5 +1,4 @@
-<template>
-  <q-page padding class="page">
+<template><q-page padding class="page">
     <div class="folder">
       <!-- ── DESKTOP Header (original design) ── -->
       <div class="row Dashboard-header" v-if="!$q.screen.lt.sm">
@@ -516,7 +515,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                   row-key="SNO"
                 >
                   <template v-slot:header="props">
@@ -566,7 +565,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                   row-key="SNO"
                 >
                   <template v-slot:header="props">
@@ -611,7 +610,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                   row-key="SNO"
                 >
                   <template v-slot:header="props">
@@ -655,7 +654,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                   row-key="SNO"
                 >
                   <template v-slot:header="props">
@@ -699,7 +698,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                   row-key="SNO"
                 >
                   <template v-slot:header="props">
@@ -743,7 +742,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                   row-key="SNO"
                 >
                   <template v-slot:header="props">
@@ -787,7 +786,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                   row-key="SNO"
                 >
                   <template v-slot:header="props">
@@ -830,7 +829,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                   row-key="SNO"
                 >
                   <template v-slot:header="props">
@@ -932,7 +931,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                 >
                   <template v-slot:header="props">
                     <q-tr :props="props">
@@ -976,7 +975,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                 >
                   <template v-slot:header="props">
                     <q-tr :props="props">
@@ -1020,7 +1019,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                 >
                   <template v-slot:header="props">
                     <q-tr :props="props">
@@ -1063,7 +1062,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                 >
                   <template v-slot:header="props">
                     <q-tr :props="props">
@@ -1106,7 +1105,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                 >
                   <template v-slot:header="props">
                     <q-tr :props="props">
@@ -1149,7 +1148,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                 >
                   <template v-slot:header="props">
                     <q-tr :props="props">
@@ -1192,7 +1191,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                 >
                   <template v-slot:header="props">
                     <q-tr :props="props">
@@ -1235,7 +1234,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                 >
                   <template v-slot:header="props">
                     <q-tr :props="props">
@@ -1277,7 +1276,7 @@
                   virtual-scroll
                   wrap-cells
                   class="scrollable-table"
-                  dense
+                  
                 >
                   <template v-slot:header="props">
                     <q-tr :props="props">
@@ -1429,8 +1428,7 @@
         </div>
       </div> -->
     </div>
-  </q-page>
-</template>
+  </q-page></template>
 
 <script>
 import { ref } from "vue";

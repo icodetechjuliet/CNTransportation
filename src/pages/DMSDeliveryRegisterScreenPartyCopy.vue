@@ -4,7 +4,9 @@
       <div class="folder">
         <q-card class="notab-container-report">
           <div class="row items-center no-wrap q-px-sm">
-            <span class="header_text1">Delivery Register Screen (Party Copy)</span>
+            <span class="header_text1">
+              Delivery Register Screen (Party Copy)
+            </span>
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="fact_check" size="16px" />
               <div class="total-stat-text">
@@ -22,7 +24,6 @@
                office-only figures) instead of the internal one. ── -->
           <q-table
             square
-            dense
             :rows="filteredRows"
             :columns="tableColumns"
             row-key="DeliveryID"
@@ -102,7 +103,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-action="props">
@@ -114,8 +117,9 @@
                   outline
                   class="edit-icon-style"
                   @click="printPartyCopy(props.row)"
-                  ><q-tooltip>Print Party Copy</q-tooltip></q-btn
                 >
+                  <q-tooltip>Print Party Copy</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
@@ -140,9 +144,24 @@ export default {
 
       baseColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "DeliveryNo", label: "Delivery No.", field: "DeliveryNo", sortable: true },
-        { name: "DeliveryDate", label: "Date", field: "DeliveryDate", sortable: true },
-        { name: "BookingNo", label: "Booking No", field: "BookingNo", sortable: true },
+        {
+          name: "DeliveryNo",
+          label: "Delivery No.",
+          field: "DeliveryNo",
+          sortable: true,
+        },
+        {
+          name: "DeliveryDate",
+          label: "Date",
+          field: "DeliveryDate",
+          sortable: true,
+        },
+        {
+          name: "BookingNo",
+          label: "Booking No",
+          field: "BookingNo",
+          sortable: true,
+        },
         { name: "FromPartyName", label: "Consignor", field: "FromPartyName" },
         { name: "ToPartyName", label: "Consignee", field: "ToPartyName" },
         { name: "FromCity", label: "From City", field: "FromCity" },
@@ -199,7 +218,9 @@ export default {
     // Party-facing copy — leaves out office-only figures (received amount,
     // payment status) that the internal register's own print includes.
     printPartyCopy(row) {
-      const html = `<!doctype html><html><head><title>${row.DeliveryNo} - Party Copy</title>
+      const html = `<!doctype html><html><head><title>${
+        row.DeliveryNo
+      } - Party Copy</title>
         <style>body{font-family:Arial,sans-serif;font-size:12px;padding:16px}
         table{width:100%;border-collapse:collapse;margin-top:12px}
         th,td{border:1px solid #ccc;padding:6px 10px;text-align:left}

@@ -8,14 +8,32 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Booking POD</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="POD No." v-model="form.PodNo" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="POD No."
+                v-model="form.PodNo"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Status" v-model="form.Status" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Status"
+                v-model="form.Status"
+              />
             </div>
           </div>
 
@@ -43,8 +61,8 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -56,8 +74,16 @@
                   :readonly="dialogMode === 'view'"
                 >
                   <template v-slot:append>
-                    <q-icon name="event" class="cursor-pointer" v-if="dialogMode !== 'view'">
-                      <q-popup-proxy ref="podDateProxy" transition-show="scale" transition-hide="scale">
+                    <q-icon
+                      name="event"
+                      class="cursor-pointer"
+                      v-if="dialogMode !== 'view'"
+                    >
+                      <q-popup-proxy
+                        ref="podDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.PodDate"
                           mask="DD/MM/YYYY"
@@ -70,7 +96,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -82,14 +108,38 @@
                   :readonly="dialogMode === 'view'"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="yellow-1" readonly label="Booking Count" :model-value="selectedBookingIds.length" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Booking Count"
+                  :model-value="selectedBookingIds.length"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="yellow-1" readonly label="Total Amt." :model-value="totalAmount.toFixed(2)" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Total Amt."
+                  :model-value="totalAmount.toFixed(2)"
+                />
               </div>
-              <div class="col-xs-12">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" :readonly="dialogMode === 'view'" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                  :readonly="dialogMode === 'view'"
+                />
               </div>
             </div>
 
@@ -112,7 +162,9 @@
                 <q-td :props="props">
                   <q-checkbox
                     dense
-                    :model-value="selectedBookingIds.includes(props.row.BookingId)"
+                    :model-value="
+                      selectedBookingIds.includes(props.row.BookingId)
+                    "
                     :disable="dialogMode === 'view'"
                     @update:model-value="toggleBooking(props.row.BookingId)"
                   />
@@ -152,7 +204,11 @@
 </style>
 
 <script>
-import { apiGetPodById, apiSavePod, MOCK_DATA } from "./DMSBookingPOD.vue";
+import {
+  apiGetPodById,
+  apiSavePod,
+  MOCK_DATA_POD as MOCK_DATA,
+} from "src/data/bookingData.js";
 
 export default {
   name: "DMSBookingPODView",
@@ -235,7 +291,11 @@ export default {
 
     async savePod() {
       if (!this.form.BookingOfficeName) {
-        this.$q.notify({ message: "Booking Office is required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Booking Office is required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       const res = await apiSavePod({
@@ -247,7 +307,11 @@ export default {
       if (res.success) {
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "POD saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "POD saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },

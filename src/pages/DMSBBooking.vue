@@ -12,7 +12,9 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="local_shipping" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{ filteredBookings.length }}</span>
+                <span class="total-stat-count">
+                  {{ filteredBookings.length }}
+                </span>
                 <span class="total-stat-label">Total Bookings</span>
               </div>
             </div>
@@ -30,8 +32,8 @@
             :visible-columns="visibleColumns"
             :rows-per-page-options="[15, 25, 50, 100]"
             v-model:pagination="pagination"
-            table-class="text-black m-table-style"
-            table-header-class="text-black m-table-style"
+            table-class="text-white-8 m-table-style"
+            table-header-class="text-black"
             card-class="text-black"
             :grid="$q.screen.lt.sm"
           >
@@ -80,6 +82,7 @@
                   />
 
                   <q-select
+                    square=""
                     v-model="direction"
                     :options="['All', 'Outward', 'Inward']"
                     dense
@@ -140,7 +143,9 @@
 
                   <q-btn
                     flat
-                    :icon="props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'"
+                    :icon="
+                      props.inFullscreen ? 'fullscreen_exit' : 'fullscreen'
+                    "
                     @click="props.toggleFullscreen"
                     class="m-icon-btn-style radius-md bg-blue-300 bdr-blue-2 font-Mblue"
                   />
@@ -161,7 +166,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <!-- ── Desktop column slots ── -->
@@ -204,8 +211,9 @@
                   outline
                   class="edit-icon-style vw"
                   @click="viewBooking(props.row)"
-                  ><q-tooltip>View</q-tooltip></q-btn
                 >
+                  <q-tooltip>View</q-tooltip>
+                </q-btn>
                 <q-btn
                   v-if="canAddEdit"
                   icon="fa-solid fa-pen-to-square"
@@ -214,8 +222,9 @@
                   outline
                   class="edit-icon-style mody"
                   @click="editBooking(props.row)"
-                  ><q-tooltip>Edit</q-tooltip></q-btn
                 >
+                  <q-tooltip>Edit</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
@@ -223,7 +232,7 @@
                  .mobile-job-card/.mjc-* pattern (cn-style.css) already
                  established by JobDetailsGrid.vue's own mobile card list
                  and by DMSBooking.vue, instead of this page's own former
-                 .dms-mobile-card markup/classes. ── -->
+                 .mobile-job-card markup/classes. ── -->
             <template v-slot:item="props">
               <div class="mobile-job-card">
                 <div
@@ -236,9 +245,9 @@
                     </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
-                      <span class="mjc-job-date">{{
-                        props.row.BookingDate
-                      }}</span>
+                      <span class="mjc-job-date">
+                        {{ props.row.BookingDate }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
@@ -291,40 +300,39 @@
                     <div class="mjc-details-grid">
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Delivery Type</span>
-                        <span class="mjc-detail-value">{{
-                          props.row.DeliveryType || "—"
-                        }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.DeliveryType || "—" }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Payment</span>
-                        <span class="mjc-detail-value">{{
-                          props.row.PaymentType || "—"
-                        }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.PaymentType || "—" }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Route</span>
-                        <span class="mjc-detail-value"
-                          >{{ props.row.FromCity }} →
-                          {{ props.row.ToCity }}</span
-                        >
+                        <span class="mjc-detail-value">
+                          {{ props.row.FromCity }} → {{ props.row.ToCity }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">From</span>
-                        <span class="mjc-detail-value">{{
-                          maskName(props.row.ConsignorName)
-                        }}</span>
+                        <span class="mjc-detail-value">
+                          {{ maskName(props.row.ConsignorName) }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">To</span>
-                        <span class="mjc-detail-value">{{
-                          maskName(props.row.ConsigneeName)
-                        }}</span>
+                        <span class="mjc-detail-value">
+                          {{ maskName(props.row.ConsigneeName) }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Carrier</span>
-                        <span class="mjc-detail-value">{{
-                          props.row.LoadCarrier || "—"
-                        }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.LoadCarrier || "—" }}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -335,1224 +343,6 @@
         </q-card>
       </div>
     </q-page>
-
-    <!-- ══════════════════════════════════════
-         Booking Add / Edit / View Dialog
-    ══════════════════════════════════════ -->
-    <q-dialog v-model="showBookingDialog" persistent maximized>
-      <q-card style="display: flex; flex-direction: column; height: 100%">
-        <!-- Toolbar -->
-        <q-toolbar
-          style="
-            background: linear-gradient(to right, #0178bc 0%, #00bdda 100%);
-          "
-          class="text-white"
-        >
-          <q-toolbar-title class="text-body2">
-            <span class="q-mr-md">
-              Booking Type: <b>{{ form.BookingType }}</b>
-            </span>
-            <span class="q-mr-md">
-              Booked From: <b>{{ form.BookedFrom }}</b>
-            </span>
-            <span>
-              Carrier: <b>{{ form.Carrier }}</b>
-            </span>
-            <span v-if="form.BookingNo" class="q-ml-lg text-weight-bold">
-              {{ form.BookingNo }}
-            </span>
-          </q-toolbar-title>
-          <q-space />
-          <template v-if="dialogMode !== 'view'">
-            <q-btn
-              dense
-              flat
-              icon="save"
-              label="Save"
-              class="q-mr-xs"
-              @click="saveBooking"
-            />
-            <q-btn
-              dense
-              flat
-              icon="content_copy"
-              label="Save &amp; Copy"
-              class="q-mr-xs"
-              @click="saveAndCopy"
-            />
-          </template>
-          <q-btn dense flat icon="close" v-close-popup @click="closeDialog" />
-        </q-toolbar>
-
-        <!-- Body -->
-        <q-card-section class="q-pa-sm col" style="overflow-y: auto">
-          <div class="row q-col-gutter-sm">
-            <!-- ── LEFT PANEL ── -->
-            <div class="col-xs-12 col-md-6">
-              <q-card flat bordered>
-                <q-card-section class="q-pa-sm">
-                  <!-- Booking Type / Booked From / Carrier / Load -->
-                  <div class="row q-col-gutter-xs q-mb-xs items-end">
-                    <div class="col-3">
-                      <span class="field-label">Booking Type</span>
-                      <q-select
-                        v-model="form.BookingType"
-                        :options="['Outward', 'Inward']"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Booked From</span>
-                      <q-select
-                        v-model="form.BookedFrom"
-                        :options="mockData.bookingOffices"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-3">
-                      <span class="field-label">Carrier</span>
-                      <q-select
-                        v-model="form.Carrier"
-                        :options="dialogCarrierOptions"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        readonly
-                      />
-                    </div>
-                    <div class="col-2">
-                      <span class="field-label">Load</span>
-                      <q-select
-                        v-model="form.Load"
-                        :options="['own', 'Truck', 'Part']"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Booking No / Date -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-6">
-                      <span class="field-label">Booking No.</span>
-                      <q-input
-                        v-model="form.BookingNo"
-                        dense
-                        outlined
-                        bg-color="yellow-1"
-                        readonly
-                      />
-                    </div>
-                    <div class="col-6">
-                      <span class="field-label">Date</span>
-                      <q-input
-                        v-model="form.BookingDate"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        placeholder="dd/mm/yyyy"
-                        :readonly="dialogMode === 'view'"
-                      >
-                        <template v-slot:append>
-                          <q-icon
-                            name="event"
-                            class="cursor-pointer"
-                            v-if="dialogMode !== 'view'"
-                          >
-                            <q-popup-proxy
-                              ref="bookingDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="form.BookingDate"
-                                mask="DD/MM/YYYY"
-                                minimal
-                                style="width: 280px"
-                                @update:model-value="
-                                  $refs.bookingDateProxy.hide()
-                                "
-                              />
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-                    </div>
-                  </div>
-
-                  <!-- From City -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">From City</span>
-                      <q-select
-                        v-model="form.FromCity"
-                        :options="mockData.cities"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- From Buk. Office -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">From Buk. Office</span>
-                      <q-select
-                        v-model="form.FromBookingOffice"
-                        :options="mockData.bookingOffices"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Consignor A/c -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">Consignor A/c.</span>
-                      <q-select
-                        v-model="form.ConsignorAccount"
-                        :options="mockData.parties"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Consignor Name / Phone -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-7">
-                      <span class="field-label">Consignor Name</span>
-                      <q-input
-                        v-model="form.ConsignorName"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-5">
-                      <span class="field-label">Phone No.</span>
-                      <q-input
-                        v-model="form.ConsignorPhone"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- From Address -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">From Address</span>
-                      <q-input
-                        v-model="form.FromAddress"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="textarea"
-                        :rows="2"
-                        autogrow
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- From GST No -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">From GST No.</span>
-                      <q-input
-                        v-model="form.FromGSTNo"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- E-Way Bill No / Bill No / Value -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-5">
-                      <span class="field-label">E-Way Bill No.</span>
-                      <q-input
-                        v-model="form.EWayBillNo"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-3">
-                      <span class="field-label">Bill No.</span>
-                      <q-input
-                        v-model="form.BillNo"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Value</span>
-                      <q-input
-                        v-model="form.BillValue"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Item / Part No -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-6">
-                      <span class="field-label">Item</span>
-                      <q-select
-                        v-model="form.Item"
-                        :options="[
-                          'Box',
-                          'Parcel',
-                          'Pallet',
-                          'Crate',
-                          'Drum',
-                          'Kp',
-                          'pallate',
-                        ]"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-6">
-                      <span class="field-label">Part No.</span>
-                      <q-input
-                        v-model="form.PartNo"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Quantity / Weight / R button -->
-                  <div class="row q-col-gutter-xs q-mb-xs items-end">
-                    <div class="col-4">
-                      <span class="field-label">Quantity</span>
-                      <q-input
-                        v-model="form.Quantity"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Weight</span>
-                      <q-input
-                        v-model="form.Weight"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
-                    </div>
-                    <div class="col-4" style="padding-bottom: 2px">
-                      <q-btn
-                        v-if="dialogMode !== 'view'"
-                        dense
-                        unelevated
-                        color="primary"
-                        label="R"
-                        style="width: 100%"
-                        @click="calcFreight"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Rate / Freight -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-6">
-                      <span class="field-label">Rate</span>
-                      <q-input
-                        v-model="form.Rate"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
-                    </div>
-                    <div class="col-6">
-                      <span class="field-label">Freight</span>
-                      <q-input
-                        v-model="form.FreightAmount"
-                        dense
-                        outlined
-                        bg-color="yellow-1"
-                        type="number"
-                        readonly
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Door Del / DD Amt -->
-                  <div class="row q-col-gutter-xs q-mb-xs items-center">
-                    <div class="col-4">
-                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                        <q-item-section avatar>
-                          <q-checkbox
-                            dense
-                            v-model="form.IsDoorDelivery"
-                            val="orange"
-                            color="orange"
-                            intermediate-icon="black"
-                            :disable="dialogMode === 'view'"
-                            @update:model-value="calcTotal"
-                          />
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label dense>Door Del.</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </div>
-                    <div class="col-8">
-                      <span class="field-label">D.D. Amt.</span>
-                      <q-input
-                        v-model="form.DoorDeliveryAmt"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="
-                          dialogMode === 'view' || !form.IsDoorDelivery
-                        "
-                        @update:model-value="calcTotal"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Door Coll / Collection -->
-                  <div class="row q-col-gutter-xs q-mb-xs items-center">
-                    <div class="col-4">
-                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                        <q-item-section avatar>
-                          <q-checkbox
-                            dense
-                            v-model="form.IsDoorCollection"
-                            val="orange"
-                            color="orange"
-                            intermediate-icon="black"
-                            :disable="dialogMode === 'view'"
-                            @update:model-value="calcTotal"
-                          />
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label dense>Door Coll.</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </div>
-                    <div class="col-8">
-                      <span class="field-label">Collection</span>
-                      <q-input
-                        v-model="form.DoorCollectionAmt"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="
-                          dialogMode === 'view' || !form.IsDoorCollection
-                        "
-                        @update:model-value="calcTotal"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Other / Other Amt -->
-                  <div class="row q-col-gutter-xs q-mb-xs items-center">
-                    <div class="col-4">
-                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                        <q-item-section avatar>
-                          <q-checkbox
-                            dense
-                            v-model="form.HasOther"
-                            val="orange"
-                            color="orange"
-                            intermediate-icon="black"
-                            :disable="dialogMode === 'view'"
-                            @update:model-value="calcTotal"
-                          />
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label dense>Other</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </div>
-                    <div class="col-8">
-                      <span class="field-label">Other Amt.</span>
-                      <q-input
-                        v-model="form.OtherAmt"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view' || !form.HasOther"
-                        @update:model-value="calcTotal"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- S.T. By -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">S.T. By</span>
-                      <q-select
-                        v-model="form.STBy"
-                        :options="['NoST', 'Consignor', 'Consignee', 'Agent']"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Discount Type / Discount -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-5">
-                      <span class="field-label">Discount Type</span>
-                      <q-select
-                        v-model="form.DiscountType"
-                        :options="['Select Value', '%', 'Fixed']"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-7">
-                      <span class="field-label">Discount</span>
-                      <q-input
-                        v-model="form.DiscountLeft"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Kasar / Other Frgt -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-5">
-                      <span class="field-label">Kasar</span>
-                      <q-input
-                        v-model="form.Kasar"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-7">
-                      <span class="field-label">Other Frgt.</span>
-                      <q-input
-                        v-model="form.OtherFreight"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Other Frgt A/c -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">Other Frgt. A/c.</span>
-                      <q-select
-                        v-model="form.OtherFreightAc"
-                        :options="['Select Account', ...mockData.parties]"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Remarks -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">Remarks</span>
-                      <q-input
-                        v-model="form.Remarks"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Display Remarks -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">Display Remarks</span>
-                      <q-input
-                        v-model="form.DisplayRemarks"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-
-            <!-- ── RIGHT PANEL ── -->
-            <div class="col-xs-12 col-md-6">
-              <q-card flat bordered>
-                <q-card-section class="q-pa-sm">
-                  <!-- Payment Type / Mode -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-7">
-                      <span class="field-label">Payment Type</span>
-                      <q-select
-                        v-model="form.PaymentType"
-                        :options="[
-                          'TBBS (Paid Debit)',
-                          'ToPay',
-                          'Paid',
-                          'TBBR',
-                          'Cash',
-                        ]"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-5">
-                      <span class="field-label">Mode</span>
-                      <q-select
-                        v-model="form.PaymentMode"
-                        :options="[
-                          'Select Payment',
-                          'Cash',
-                          'Cheque',
-                          'NEFT',
-                          'UPI',
-                        ]"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- To City -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">To City</span>
-                      <q-select
-                        v-model="form.ToCity"
-                        :options="mockData.cities"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Delivery City -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">Delivery City</span>
-                      <q-select
-                        v-model="form.DeliveryCity"
-                        :options="mockData.cities"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- To Buk. Office -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">To Buk. Office</span>
-                      <q-select
-                        v-model="form.ToBookingOffice"
-                        :options="mockData.bookingOffices"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Consignee A/c -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">Consignee A/c.</span>
-                      <q-select
-                        v-model="form.ConsigneeAccount"
-                        :options="mockData.parties"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Consignee Name / Phone -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-7">
-                      <span class="field-label">Consignee Name</span>
-                      <q-input
-                        v-model="form.ConsigneeName"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-5">
-                      <span class="field-label">Phone No.</span>
-                      <q-input
-                        v-model="form.ConsigneePhone"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- To Address -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">To Address</span>
-                      <q-input
-                        v-model="form.ToAddress"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="textarea"
-                        :rows="2"
-                        autogrow
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- To GST No -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">To GST No.</span>
-                      <q-input
-                        v-model="form.ToGSTNo"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Total Amt / Lock Dt -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-6">
-                      <span class="field-label">Total Amt.</span>
-                      <q-input
-                        v-model="form.TotalAmt"
-                        dense
-                        outlined
-                        bg-color="yellow-1"
-                        readonly
-                        input-class="text-negative text-weight-bold"
-                      />
-                    </div>
-                    <div class="col-3">
-                      <span class="field-label">Lock Dt.</span>
-                      <q-input
-                        v-model="form.LockDate"
-                        dense
-                        outlined
-                        bg-color="grey-2"
-                        readonly
-                        input-class="text-red text-weight-bold"
-                      />
-                    </div>
-                    <div class="col-3">
-                      <span class="field-label">Lock By</span>
-                      <q-input
-                        v-model="form.LockBy"
-                        dense
-                        outlined
-                        bg-color="grey-2"
-                        readonly
-                        input-class="text-red"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Tax Type toggle (edit/add only) -->
-                  <div
-                    v-if="dialogMode !== 'view' && canAddEdit"
-                    class="row items-center q-mb-xs"
-                  >
-                    <span class="field-label q-mr-sm" style="display: inline"
-                      >Tax Type:</span
-                    >
-                    <q-btn-toggle
-                      v-model="form.taxType"
-                      dense
-                      unelevated
-                      size="xs"
-                      toggle-color="primary"
-                      color="white"
-                      text-color="primary"
-                      :options="[
-                        { label: 'CGST + SGST', value: 'CGST_SGST' },
-                        { label: 'IGST', value: 'IGST' },
-                      ]"
-                      style="border: 1px solid #ddd; border-radius: 4px"
-                      @update:model-value="calcTotal"
-                    />
-                  </div>
-
-                  <!-- CGST / SGST fields -->
-                  <template v-if="form.taxType === 'CGST_SGST'">
-                    <div class="row q-col-gutter-xs q-mb-xs">
-                      <div class="col-4">
-                        <span class="field-label">CGST %</span>
-                        <q-input
-                          v-model="form.CGSTRate"
-                          dense
-                          outlined
-                          bg-color="blue-1"
-                          type="number"
-                          :readonly="dialogMode === 'view'"
-                          @update:model-value="calcTotal"
-                        />
-                      </div>
-                      <div class="col-4">
-                        <span class="field-label">CGST Amt.</span>
-                        <q-input
-                          v-model="form.CGSTAmt"
-                          dense
-                          outlined
-                          bg-color="yellow-1"
-                          readonly
-                        />
-                      </div>
-                      <div class="col-4">
-                        <span class="field-label">Service Tax</span>
-                        <q-input
-                          v-model="form.ServiceTax"
-                          dense
-                          outlined
-                          bg-color="blue-1"
-                          type="number"
-                          :readonly="dialogMode === 'view'"
-                        />
-                      </div>
-                    </div>
-                    <div class="row q-col-gutter-xs q-mb-xs">
-                      <div class="col-4">
-                        <span class="field-label">SGST %</span>
-                        <q-input
-                          v-model="form.SGSTRate"
-                          dense
-                          outlined
-                          bg-color="blue-1"
-                          type="number"
-                          :readonly="dialogMode === 'view'"
-                          @update:model-value="calcTotal"
-                        />
-                      </div>
-                      <div class="col-4">
-                        <span class="field-label">SGST Amt.</span>
-                        <q-input
-                          v-model="form.SGSTAmt"
-                          dense
-                          outlined
-                          bg-color="yellow-1"
-                          readonly
-                        />
-                      </div>
-                    </div>
-                  </template>
-
-                  <!-- IGST fields -->
-                  <template v-else>
-                    <div class="row q-col-gutter-xs q-mb-xs">
-                      <div class="col-4">
-                        <span class="field-label">IGST %</span>
-                        <q-input
-                          v-model="form.IGSTRate"
-                          dense
-                          outlined
-                          bg-color="blue-1"
-                          type="number"
-                          :readonly="dialogMode === 'view'"
-                          @update:model-value="calcTotal"
-                        />
-                      </div>
-                      <div class="col-4">
-                        <span class="field-label">IGST Amt.</span>
-                        <q-input
-                          v-model="form.IGSTAmt"
-                          dense
-                          outlined
-                          bg-color="yellow-1"
-                          readonly
-                        />
-                      </div>
-                    </div>
-                  </template>
-
-                  <!-- Total Tax / Discount / Net Amt -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-4">
-                      <span class="field-label">Total Tax</span>
-                      <q-input
-                        v-model="form.TotalTax"
-                        dense
-                        outlined
-                        bg-color="yellow-1"
-                        readonly
-                      />
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Discount</span>
-                      <q-input
-                        v-model="form.Discount"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Net Amt.</span>
-                      <q-input
-                        v-model="form.NetAmt"
-                        dense
-                        outlined
-                        bg-color="yellow-1"
-                        readonly
-                        input-class="text-negative text-weight-bold"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Received / Time / Ref -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-5">
-                      <span class="field-label">Received</span>
-                      <q-input
-                        v-model="form.Received"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="number"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Time</span>
-                      <q-input
-                        v-model="form.BookingTime"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-3">
-                      <span class="field-label">Ref.</span>
-                      <q-input
-                        v-model="form.RefUser"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Cash Credit / Pay. Received / Date -->
-                  <div class="row q-col-gutter-xs q-mb-xs items-center">
-                    <div class="col-4">
-                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                        <q-item-section avatar>
-                          <q-checkbox
-                            dense
-                            v-model="form.CashCredit"
-                            val="orange"
-                            color="orange"
-                            intermediate-icon="black"
-                            :disable="dialogMode === 'view'"
-                          />
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label dense>Cash Credit</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </div>
-                    <div class="col-4">
-                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                        <q-item-section avatar>
-                          <q-checkbox
-                            dense
-                            v-model="form.PayReceived"
-                            val="orange"
-                            color="orange"
-                            intermediate-icon="black"
-                            :disable="dialogMode === 'view'"
-                          />
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label dense>Pay. Received</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Date</span>
-                      <q-input
-                        v-model="form.PayReceivedDate"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        placeholder="dd/mm/yyyy"
-                        :readonly="dialogMode === 'view' || !form.PayReceived"
-                      >
-                        <template v-slot:append>
-                          <q-icon
-                            name="event"
-                            class="cursor-pointer"
-                            v-if="dialogMode !== 'view' && form.PayReceived"
-                          >
-                            <q-popup-proxy
-                              ref="payDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="form.PayReceivedDate"
-                                mask="DD/MM/YYYY"
-                                minimal
-                                style="width: 280px"
-                                @update:model-value="$refs.payDateProxy.hide()"
-                              />
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-                    </div>
-                  </div>
-
-                  <!-- Reference No / Date -->
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-7">
-                      <span class="field-label">Reference No.</span>
-                      <q-input
-                        v-model="form.ReferenceNo"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-5">
-                      <span class="field-label">Date</span>
-                      <q-input
-                        v-model="form.ReferenceDate"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        placeholder="dd/mm/yyyy"
-                        :readonly="dialogMode === 'view'"
-                      >
-                        <template v-slot:append>
-                          <q-icon
-                            name="event"
-                            class="cursor-pointer"
-                            v-if="dialogMode !== 'view'"
-                          >
-                            <q-popup-proxy
-                              ref="refDateProxy"
-                              transition-show="scale"
-                              transition-hide="scale"
-                            >
-                              <q-date
-                                v-model="form.ReferenceDate"
-                                mask="DD/MM/YYYY"
-                                minimal
-                                style="width: 280px"
-                                @update:model-value="$refs.refDateProxy.hide()"
-                              />
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-                    </div>
-                  </div>
-
-                  <!-- Invoice No -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">Invoice No.</span>
-                      <q-input
-                        v-model="form.InvoiceNo"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Bank Name -->
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">Bank Name</span>
-                      <q-input
-                        v-model="form.BankName"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-          </div>
-        </q-card-section>
-
-        <!-- Footer bar -->
-        <q-separator />
-        <q-card-section class="q-pa-sm bg-grey-2">
-          <div class="column" style="gap:6px">
-            <!-- Print info row -->
-            <div class="text-caption text-grey-7 row q-gutter-x-md wrap">
-              <span>Print Dt.: <b>{{ form.PrintDate }}</b></span>
-              <span>Count: <b>{{ form.Count }}</b></span>
-              <span>Print By: <b>{{ form.PrintBy }}</b></span>
-            </div>
-            <!-- Action buttons — wrap on mobile -->
-            <div class="row q-gutter-xs wrap">
-              <template v-if="dialogMode !== 'view'">
-                <q-btn
-                  unelevated
-                  color="positive"
-                  label="Save"
-                  size="sm"
-                  @click="saveBooking"
-                />
-                <q-btn
-                  unelevated
-                  color="blue-7"
-                  label="Save &amp; Copy"
-                  size="sm"
-                  @click="saveAndCopy"
-                />
-                <q-btn
-                  unelevated
-                  color="blue-8"
-                  label="Save &amp; Print"
-                  size="sm"
-                  @click="saveAndPrint(false)"
-                />
-                <q-btn
-                  unelevated
-                  color="purple-7"
-                  label="Save &amp; Print with Freight"
-                  size="sm"
-                  @click="saveAndPrint(true)"
-                />
-              </template>
-              <q-btn
-                unelevated
-                color="negative"
-                label="Cancel"
-                size="sm"
-                v-close-popup
-                @click="closeDialog"
-              />
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
-
-    <!-- ══════════════════════════════════════
-         Print / PDF Preview Dialog
-    ══════════════════════════════════════ -->
     <q-dialog
       v-model="showPrintDialog"
       maximized
@@ -1586,1021 +376,26 @@
 </template>
 
 <script>
+import entryNavigation from "src/mixins/entryNavigation.js";
 import html2pdf from "html2pdf.js";
 import ictLogoUrl from "src/assets/ICT-logo.png";
 
-// ─────────────────────────────────────────────
-//  Mock data — replace with real axios calls
-// ─────────────────────────────────────────────
-const MOCK_BOOKINGS = [
-  {
-    BookingId: 1,
-    BookingType: "Outward",
-    DeliveryType: "Ware House",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040001",
-    BookingDate: "01/04/2026",
-    BookingTime: "10:33 AM",
-    LoadCarrier: "own",
-    Carrier: "Own",
-    ToCity: "Chakan",
-    DeliveryCity: "",
-    ConsigneeName: "Galaxy xxx Tooling",
-    ConsignorName: "Balaji xxx Co.",
-    FromCity: "Rajkot-G",
-    PaymentType: "TBBS",
-    Status: "Delivered",
-    BookedFrom: "Greenland",
-    Load: "own",
-    FromBookingOffice: "Greenland",
-    ToBookingOffice: "Chakan",
-    ConsignorAccount: "Balaji xxx Co.",
-    ConsigneeAccount: "Select Party",
-    ConsignorPhone: "",
-    ConsigneePhone: "",
-    FromGSTNo: "24BUHPS2708D1ZT",
-    ToGSTNo: "27ATJPB8586E1ZF",
-    EWayBillNo: "601284646429",
-    BillNo: "92",
-    BillValue: 5520,
-    Item: "Box",
-    PartNo: "",
-    Quantity: 1,
-    Weight: null,
-    Rate: null,
-    FreightAmount: 200,
-    IsDoorDelivery: false,
-    DoorDeliveryAmt: 0,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: true,
-    OtherAmt: 50,
-    STBy: "NoST",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "Select Payment",
-    taxType: "CGST_SGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "6.25",
-    SGSTRate: 2.5,
-    SGSTAmt: "6.25",
-    IGSTRate: 5,
-    IGSTAmt: "0",
-    ServiceTax: 0,
-    TotalAmt: "250.00",
-    TotalTax: "12.50",
-    Discount: 0,
-    NetAmt: "262.50",
-    Received: 0,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: false,
-    PayReceivedDate: "",
-    ReferenceNo: "",
-    ReferenceDate: "",
-    InvoiceNo: "",
-    BankName: "",
-    ToAddress: "Chakan-Maharashtra-27",
-    FromAddress: "Rajkot-G – Gujarat\nState Code:24",
-    Remarks: "",
-    DisplayRemarks: "",
-    LockDate: "",
-    LockBy: "",
-    PrintDate: "02/04/2026 12:48 PM",
-    PrintBy: "Ketan",
-    Count: 2,
-    BookingDate_raw: "2026-04-01",
-  },
-  {
-    BookingId: 2,
-    BookingType: "Outward",
-    DeliveryType: "Ware House",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040002",
-    BookingDate: "01/04/2026",
-    BookingTime: "11:47 AM",
-    LoadCarrier: "own",
-    Carrier: "Own",
-    ToCity: "Nasik",
-    DeliveryCity: "",
-    ConsigneeName: "Ring xxx Ltd",
-    ConsignorName: "Rajsani xxx Polymers",
-    FromCity: "Rajkot-G",
-    PaymentType: "TBBS",
-    Status: "Delivered",
-    BookedFrom: "Greenland",
-    Load: "own",
-    FromBookingOffice: "Greenland",
-    ToBookingOffice: "Nasik",
-    ConsignorAccount: "Rajsani xxx Polymers",
-    ConsigneeAccount: "Ring xxx Aqua",
-    ConsignorPhone: "",
-    ConsigneePhone: "",
-    FromGSTNo: "24XYZAA1234B1ZT",
-    ToGSTNo: "27RING1234B1ZF",
-    EWayBillNo: "701284646430",
-    BillNo: "93",
-    BillValue: 3200,
-    Item: "Parcel",
-    PartNo: "",
-    Quantity: 2,
-    Weight: 15,
-    Rate: null,
-    FreightAmount: 300,
-    IsDoorDelivery: false,
-    DoorDeliveryAmt: 0,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: false,
-    OtherAmt: 0,
-    STBy: "NoST",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "Cash",
-    taxType: "CGST_SGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "7.50",
-    SGSTRate: 2.5,
-    SGSTAmt: "7.50",
-    IGSTRate: 5,
-    IGSTAmt: "0",
-    ServiceTax: 0,
-    TotalAmt: "300.00",
-    TotalTax: "15.00",
-    Discount: 0,
-    NetAmt: "315.00",
-    Received: 0,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: false,
-    PayReceivedDate: "",
-    ReferenceNo: "",
-    ReferenceDate: "",
-    InvoiceNo: "",
-    BankName: "",
-    ToAddress: "Nasik-Maharashtra",
-    FromAddress: "Rajkot-G – Gujarat",
-    Remarks: "",
-    DisplayRemarks: "",
-    LockDate: "",
-    LockBy: "",
-    PrintDate: "02/04/2026 11:00 AM",
-    PrintBy: "Ketan",
-    Count: 1,
-    BookingDate_raw: "2026-04-01",
-  },
-  {
-    BookingId: 3,
-    BookingType: "Outward",
-    DeliveryType: "Ware House",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040003",
-    BookingDate: "01/04/2026",
-    BookingTime: "11:52 AM",
-    LoadCarrier: "Truck",
-    Carrier: "Truck",
-    ToCity: "Hyderabad",
-    DeliveryCity: "",
-    ConsigneeName: "Bhavya xxx Distributors",
-    ConsignorName: "Vansh xxx Llp",
-    FromCity: "Rajkot-G",
-    PaymentType: "ToPay",
-    Status: "Delivered",
-    BookedFrom: "Greenland",
-    Load: "Truck",
-    FromBookingOffice: "Greenland",
-    ToBookingOffice: "Hyderabad",
-    ConsignorAccount: "Vansh xxx Llp",
-    ConsigneeAccount: "Bhavya xxx Distributors",
-    ConsignorPhone: "",
-    ConsigneePhone: "",
-    FromGSTNo: "24VAN1234D1ZT",
-    ToGSTNo: "36BHV8586E1ZF",
-    EWayBillNo: "501234646431",
-    BillNo: "94",
-    BillValue: 8400,
-    Item: "Pallet",
-    PartNo: "",
-    Quantity: 5,
-    Weight: 120,
-    Rate: 3.8,
-    FreightAmount: 456,
-    IsDoorDelivery: true,
-    DoorDeliveryAmt: 80,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: true,
-    OtherAmt: 50,
-    STBy: "Consignor",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "NEFT",
-    taxType: "IGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "0",
-    SGSTRate: 2.5,
-    SGSTAmt: "0",
-    IGSTRate: 5,
-    IGSTAmt: "29.30",
-    ServiceTax: 0,
-    TotalAmt: "586.00",
-    TotalTax: "29.30",
-    Discount: 0,
-    NetAmt: "615.30",
-    Received: 0,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: false,
-    PayReceivedDate: "",
-    ReferenceNo: "REF2021-03",
-    ReferenceDate: "",
-    InvoiceNo: "",
-    BankName: "",
-    ToAddress: "Hyderabad - Telangana",
-    FromAddress: "Rajkot-G – Gujarat",
-    Remarks: "Fragile items",
-    DisplayRemarks: "",
-    LockDate: "03/04/2026",
-    LockBy: "pratik",
-    PrintDate: "02/04/2026 12:00 PM",
-    PrintBy: "Ketan",
-    Count: 1,
-    BookingDate_raw: "2026-04-01",
-  },
-  {
-    BookingId: 4,
-    BookingType: "Outward",
-    DeliveryType: "Door Delivery",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040004",
-    BookingDate: "01/04/2026",
-    BookingTime: "04:17 PM",
-    LoadCarrier: "Truck",
-    Carrier: "Truck",
-    ToCity: "Chakan",
-    DeliveryCity: "",
-    ConsigneeName: "Sumit xxx Fasteners",
-    ConsignorName: "Mona xxx Llp",
-    FromCity: "Rajkot-G",
-    PaymentType: "TBBR",
-    Status: "Delivered",
-    BookedFrom: "Greenland",
-    Load: "Truck",
-    FromBookingOffice: "Greenland",
-    ToBookingOffice: "Chakan",
-    ConsignorAccount: "Mona xxx Llp",
-    ConsigneeAccount: "Sumit xxx Fasteners",
-    ConsignorPhone: "",
-    ConsigneePhone: "",
-    FromGSTNo: "24MON1234A1ZT",
-    ToGSTNo: "27SUM8586E1ZF",
-    EWayBillNo: "401234646432",
-    BillNo: "95",
-    BillValue: 1200,
-    Item: "Box",
-    PartNo: "",
-    Quantity: 3,
-    Weight: 18,
-    Rate: 3.5,
-    FreightAmount: 63,
-    IsDoorDelivery: true,
-    DoorDeliveryAmt: 40,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: true,
-    OtherAmt: 50,
-    STBy: "Consignee",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 430,
-    OtherFreightAc: "Shree Ram Tempo Service",
-    PaymentMode: "Cash",
-    taxType: "IGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "0",
-    SGSTRate: 2.5,
-    SGSTAmt: "0",
-    IGSTRate: 5,
-    IGSTAmt: "7.65",
-    ServiceTax: 0,
-    TotalAmt: "153.00",
-    TotalTax: "7.65",
-    Discount: 0,
-    NetAmt: "160.65",
-    Received: 0,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: false,
-    PayReceivedDate: "",
-    ReferenceNo: "",
-    ReferenceDate: "",
-    InvoiceNo: "",
-    BankName: "",
-    ToAddress: "Chakan-Maharashtra",
-    FromAddress: "Rajkot-G – Gujarat",
-    Remarks: "",
-    DisplayRemarks: "",
-    LockDate: "03/04/2026",
-    LockBy: "Ketan",
-    PrintDate: "02/04/2026 04:20 PM",
-    PrintBy: "Ketan",
-    Count: 3,
-    BookingDate_raw: "2026-04-01",
-  },
-  {
-    BookingId: 5,
-    BookingType: "Outward",
-    DeliveryType: "Door Delivery",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040005",
-    BookingDate: "01/04/2026",
-    BookingTime: "05:15 PM",
-    LoadCarrier: "Truck",
-    Carrier: "Truck",
-    ToCity: "Vasai",
-    DeliveryCity: "",
-    ConsigneeName: "Krishna xxx Wire...",
-    ConsignorName: "Nepolion xxx Packaging",
-    FromCity: "Rajkot-G",
-    PaymentType: "Paid",
-    Status: "Delivered",
-    BookedFrom: "Greenland",
-    Load: "Truck",
-    FromBookingOffice: "Greenland",
-    ToBookingOffice: "Vasai",
-    ConsignorAccount: "Nepolion xxx Packaging",
-    ConsigneeAccount: "Krishna xxx Engineering",
-    ConsignorPhone: "",
-    ConsigneePhone: "",
-    FromGSTNo: "24NEP1234B1ZT",
-    ToGSTNo: "27KRS8586E1ZF",
-    EWayBillNo: "301234646433",
-    BillNo: "96",
-    BillValue: 6700,
-    Item: "Box",
-    PartNo: "",
-    Quantity: 4,
-    Weight: 45,
-    Rate: 4.0,
-    FreightAmount: 180,
-    IsDoorDelivery: false,
-    DoorDeliveryAmt: 0,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: false,
-    OtherAmt: 0,
-    STBy: "NoST",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "NEFT",
-    taxType: "IGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "0",
-    SGSTRate: 2.5,
-    SGSTAmt: "0",
-    IGSTRate: 5,
-    IGSTAmt: "9.00",
-    ServiceTax: 0,
-    TotalAmt: "180.00",
-    TotalTax: "9.00",
-    Discount: 0,
-    NetAmt: "189.00",
-    Received: 180,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: true,
-    PayReceivedDate: "2026-04-05",
-    ReferenceNo: "REF2021-05",
-    ReferenceDate: "",
-    InvoiceNo: "",
-    BankName: "",
-    ToAddress: "Vasai-Maharashtra",
-    FromAddress: "Rajkot-G – Gujarat",
-    Remarks: "",
-    DisplayRemarks: "",
-    LockDate: "",
-    LockBy: "",
-    PrintDate: "02/04/2026 05:18 PM",
-    PrintBy: "Ketan",
-    Count: 1,
-    BookingDate_raw: "2026-04-01",
-  },
-  {
-    BookingId: 6,
-    BookingType: "Outward",
-    DeliveryType: "Ware House",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040006",
-    BookingDate: "01/04/2026",
-    BookingTime: "06:00 PM",
-    LoadCarrier: "own",
-    Carrier: "Own",
-    ToCity: "Pune",
-    DeliveryCity: "",
-    ConsigneeName: "Carver xxx Ltd",
-    ConsignorName: "Carver xxx Ltd",
-    FromCity: "Rajkot-G",
-    PaymentType: "Paid",
-    Status: "Delivered",
-    BookedFrom: "Greenland",
-    Load: "own",
-    FromBookingOffice: "Greenland",
-    ToBookingOffice: "Pune",
-    ConsignorAccount: "Carver xxx Ltd",
-    ConsigneeAccount: "Carver xxx Ltd",
-    ConsignorPhone: "",
-    ConsigneePhone: "",
-    FromGSTNo: "24CAR1234C1ZT",
-    ToGSTNo: "27CAR8586E1ZF",
-    EWayBillNo: "201234646434",
-    BillNo: "97",
-    BillValue: 9900,
-    Item: "Crate",
-    PartNo: "",
-    Quantity: 2,
-    Weight: 80,
-    Rate: null,
-    FreightAmount: 550,
-    IsDoorDelivery: false,
-    DoorDeliveryAmt: 0,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: false,
-    OtherAmt: 0,
-    STBy: "NoST",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "Cheque",
-    taxType: "CGST_SGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "13.75",
-    SGSTRate: 2.5,
-    SGSTAmt: "13.75",
-    IGSTRate: 5,
-    IGSTAmt: "0",
-    ServiceTax: 0,
-    TotalAmt: "550.00",
-    TotalTax: "27.50",
-    Discount: 0,
-    NetAmt: "577.50",
-    Received: 550,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: true,
-    PayReceivedDate: "2026-04-03",
-    ReferenceNo: "CHQ-00123",
-    ReferenceDate: "",
-    InvoiceNo: "",
-    BankName: "HDFC Bank",
-    ToAddress: "Pune-Maharashtra",
-    FromAddress: "Rajkot-G – Gujarat",
-    Remarks: "",
-    DisplayRemarks: "",
-    LockDate: "",
-    LockBy: "",
-    PrintDate: "02/04/2026 06:05 PM",
-    PrintBy: "Ketan",
-    Count: 2,
-    BookingDate_raw: "2026-04-01",
-  },
-  {
-    BookingId: 7,
-    BookingType: "Outward",
-    DeliveryType: "Door Delivery",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040007",
-    BookingDate: "01/04/2026",
-    BookingTime: "08:15 PM",
-    LoadCarrier: "Truck",
-    Carrier: "Truck",
-    ToCity: "Mumbai",
-    DeliveryCity: "",
-    ConsigneeName: "Mahindra xxx Ltd",
-    ConsignorName: "Varun xxx Co",
-    FromCity: "Rajkot-G",
-    PaymentType: "TBBS",
-    Status: "Delivered",
-    BookedFrom: "Greenland",
-    Load: "Truck",
-    FromBookingOffice: "Greenland",
-    ToBookingOffice: "Mumbai",
-    ConsignorAccount: "Varun xxx Co",
-    ConsigneeAccount: "Mahindra xxx Ltd",
-    ConsignorPhone: "9876543210",
-    ConsigneePhone: "9988776655",
-    FromGSTNo: "24AAMFV5464H1ZT",
-    ToGSTNo: "27AAFCM0476N1Z2",
-    EWayBillNo: "691284754071",
-    BillNo: "G1",
-    BillValue: 245384,
-    Item: "pallate",
-    PartNo: "",
-    Quantity: 1,
-    Weight: 1140,
-    Rate: 3.8,
-    FreightAmount: 4332,
-    IsDoorDelivery: true,
-    DoorDeliveryAmt: 0,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: true,
-    OtherAmt: 50,
-    STBy: "Consignor",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "Select Payment",
-    taxType: "CGST_SGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "109.55",
-    SGSTRate: 2.5,
-    SGSTAmt: "109.55",
-    IGSTRate: 5,
-    IGSTAmt: "0",
-    ServiceTax: 0,
-    TotalAmt: "4382.00",
-    TotalTax: "219.10",
-    Discount: 0,
-    NetAmt: "4382.00",
-    Received: 0,
-    RefUser: "deepak",
-    CashCredit: false,
-    PayReceived: false,
-    PayReceivedDate: "",
-    ReferenceNo: "",
-    ReferenceDate: "",
-    InvoiceNo: "",
-    BankName: "",
-    ToAddress: "Chakan – Maharashtra\nState Code:27",
-    FromAddress:
-      "NH 8B, GONDAL ROAD, SURVEY NO.150, VILLAGE-PADAVALA, TAL-KOTADA SANGANI, Rajkot-",
-    Remarks: "",
-    DisplayRemarks: "",
-    LockDate: "08/04/2026",
-    LockBy: "pratik",
-    PrintDate: "02/04/2026 10:33 AM",
-    PrintBy: "pratik",
-    Count: 1,
-    BookingDate_raw: "2026-04-01",
-  },
-  {
-    BookingId: 8,
-    BookingType: "Outward",
-    DeliveryType: "Ware House",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040008",
-    BookingDate: "01/04/2026",
-    BookingTime: "11:24 PM",
-    LoadCarrier: "Truck",
-    Carrier: "Truck",
-    ToCity: "Nasik",
-    DeliveryCity: "",
-    ConsigneeName: "Mahindra xxx Ltd",
-    ConsignorName: "Amul xxx Ltd",
-    FromCity: "Rajkot-G",
-    PaymentType: "TBBS",
-    Status: "Delivered",
-    BookedFrom: "Greenland",
-    Load: "Truck",
-    FromBookingOffice: "Greenland",
-    ToBookingOffice: "Nasik",
-    ConsignorAccount: "Amul xxx Ltd",
-    ConsigneeAccount: "Mahindra xxx Ltd",
-    ConsignorPhone: "",
-    ConsigneePhone: "",
-    FromGSTNo: "24AMU1234A1ZT",
-    ToGSTNo: "27MAH8586E1ZF",
-    EWayBillNo: "891234646435",
-    BillNo: "A5",
-    BillValue: 18000,
-    Item: "Box",
-    PartNo: "",
-    Quantity: 6,
-    Weight: 200,
-    Rate: 3.2,
-    FreightAmount: 640,
-    IsDoorDelivery: false,
-    DoorDeliveryAmt: 0,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: false,
-    OtherAmt: 0,
-    STBy: "NoST",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "Select Payment",
-    taxType: "IGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "0",
-    SGSTRate: 2.5,
-    SGSTAmt: "0",
-    IGSTRate: 5,
-    IGSTAmt: "32.00",
-    ServiceTax: 0,
-    TotalAmt: "640.00",
-    TotalTax: "32.00",
-    Discount: 0,
-    NetAmt: "672.00",
-    Received: 0,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: false,
-    PayReceivedDate: "",
-    ReferenceNo: "",
-    ReferenceDate: "",
-    InvoiceNo: "",
-    BankName: "",
-    ToAddress: "Nasik-Maharashtra",
-    FromAddress: "Rajkot-G – Gujarat",
-    Remarks: "",
-    DisplayRemarks: "",
-    LockDate: "",
-    LockBy: "",
-    PrintDate: "02/04/2026 11:30 PM",
-    PrintBy: "Ketan",
-    Count: 1,
-    BookingDate_raw: "2026-04-01",
-  },
-  // ── Inward records ──
-  {
-    BookingId: 9,
-    BookingType: "Inward",
-    DeliveryType: "Ware House",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040009",
-    BookingDate: "01/04/2026",
-    BookingTime: "09:15 AM",
-    LoadCarrier: "own",
-    Carrier: "Own",
-    ToCity: "Rajkot-G",
-    DeliveryCity: "",
-    ConsigneeName: "Balaji xxx Co.",
-    ConsignorName: "Paras xxx Exports",
-    FromCity: "Mumbai",
-    PaymentType: "TBBS",
-    Status: "Delivered",
-    BookedFrom: "Mumbai",
-    Load: "own",
-    FromBookingOffice: "Mumbai",
-    ToBookingOffice: "Greenland",
-    ConsignorAccount: "Paras xxx Exports",
-    ConsigneeAccount: "Balaji xxx Co.",
-    ConsignorPhone: "9876500001",
-    ConsigneePhone: "9876500002",
-    FromGSTNo: "27PAR1234A1ZT",
-    ToGSTNo: "24BAL8586E1ZF",
-    EWayBillNo: "110284646501",
-    BillNo: "B11",
-    BillValue: 12000,
-    Item: "Box",
-    PartNo: "",
-    Quantity: 3,
-    Weight: 60,
-    Rate: 4.0,
-    FreightAmount: 240,
-    IsDoorDelivery: false,
-    DoorDeliveryAmt: 0,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: false,
-    OtherAmt: 0,
-    STBy: "NoST",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "NEFT",
-    taxType: "CGST_SGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "6.00",
-    SGSTRate: 2.5,
-    SGSTAmt: "6.00",
-    IGSTRate: 5,
-    IGSTAmt: "0",
-    ServiceTax: 0,
-    TotalAmt: "240.00",
-    TotalTax: "12.00",
-    Discount: 0,
-    NetAmt: "252.00",
-    Received: 240,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: true,
-    PayReceivedDate: "2026-04-03",
-    ReferenceNo: "INW-001",
-    ReferenceDate: "",
-    InvoiceNo: "INV-B11",
-    BankName: "ICICI Bank",
-    ToAddress: "Rajkot-G – Gujarat\nState Code:24",
-    FromAddress: "Mumbai – Maharashtra\nState Code:27",
-    Remarks: "",
-    DisplayRemarks: "",
-    LockDate: "",
-    LockBy: "",
-    PrintDate: "02/04/2026 09:20 AM",
-    PrintBy: "Ketan",
-    Count: 1,
-    BookingDate_raw: "2026-04-01",
-  },
-  {
-    BookingId: 10,
-    BookingType: "Inward",
-    DeliveryType: "Door Delivery",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040010",
-    BookingDate: "01/04/2026",
-    BookingTime: "12:30 PM",
-    LoadCarrier: "Truck",
-    Carrier: "Truck",
-    ToCity: "Rajkot-G",
-    DeliveryCity: "Rajkot-G",
-    ConsigneeName: "Vansh xxx Llp",
-    ConsignorName: "Pioneer xxx Ltd.",
-    FromCity: "Pune",
-    PaymentType: "ToPay",
-    Status: "Delivered",
-    BookedFrom: "Pune",
-    Load: "Truck",
-    FromBookingOffice: "Pune",
-    ToBookingOffice: "Greenland",
-    ConsignorAccount: "Pioneer xxx Ltd.",
-    ConsigneeAccount: "Vansh xxx Llp",
-    ConsignorPhone: "9876500003",
-    ConsigneePhone: "9876500004",
-    FromGSTNo: "27PIO1234B1ZT",
-    ToGSTNo: "24VAN8586E1ZF",
-    EWayBillNo: "220284646502",
-    BillNo: "C22",
-    BillValue: 7800,
-    Item: "Parcel",
-    PartNo: "",
-    Quantity: 5,
-    Weight: 90,
-    Rate: 3.5,
-    FreightAmount: 315,
-    IsDoorDelivery: true,
-    DoorDeliveryAmt: 50,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: true,
-    OtherAmt: 30,
-    STBy: "Consignee",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "Cash",
-    taxType: "IGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "0",
-    SGSTRate: 2.5,
-    SGSTAmt: "0",
-    IGSTRate: 5,
-    IGSTAmt: "19.75",
-    ServiceTax: 0,
-    TotalAmt: "395.00",
-    TotalTax: "19.75",
-    Discount: 0,
-    NetAmt: "414.75",
-    Received: 0,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: false,
-    PayReceivedDate: "",
-    ReferenceNo: "INW-002",
-    ReferenceDate: "",
-    InvoiceNo: "",
-    BankName: "",
-    ToAddress: "Rajkot-G – Gujarat\nState Code:24",
-    FromAddress: "Pune – Maharashtra\nState Code:27",
-    Remarks: "Handle with care",
-    DisplayRemarks: "",
-    LockDate: "04/04/2026",
-    LockBy: "Ketan",
-    PrintDate: "02/04/2026 12:35 PM",
-    PrintBy: "Ketan",
-    Count: 2,
-    BookingDate_raw: "2026-04-01",
-  },
-  {
-    BookingId: 11,
-    BookingType: "Inward",
-    DeliveryType: "Ware House",
-    BookingMadeBy: "CargoNet User",
-    BookingNo: "RKG21040011",
-    BookingDate: "01/04/2026",
-    BookingTime: "03:45 PM",
-    LoadCarrier: "own",
-    Carrier: "Own",
-    ToCity: "Rajkot-G",
-    DeliveryCity: "",
-    ConsigneeName: "Rajsani xxx Polymers",
-    ConsignorName: "Mayur xxx Marketing",
-    FromCity: "Bangalore",
-    PaymentType: "Paid",
-    Status: "Delivered",
-    BookedFrom: "Bangalore",
-    Load: "own",
-    FromBookingOffice: "Bangalore",
-    ToBookingOffice: "Greenland",
-    ConsignorAccount: "Mayur xxx Marketing",
-    ConsigneeAccount: "Rajsani xxx Polymers",
-    ConsignorPhone: "",
-    ConsigneePhone: "9876500005",
-    FromGSTNo: "29MAY1234C1ZT",
-    ToGSTNo: "24RAJ8586E1ZF",
-    EWayBillNo: "330284646503",
-    BillNo: "D33",
-    BillValue: 18500,
-    Item: "Drum",
-    PartNo: "",
-    Quantity: 8,
-    Weight: 280,
-    Rate: 3.2,
-    FreightAmount: 896,
-    IsDoorDelivery: false,
-    DoorDeliveryAmt: 0,
-    IsDoorCollection: false,
-    DoorCollectionAmt: 0,
-    HasOther: false,
-    OtherAmt: 0,
-    STBy: "NoST",
-    DiscountType: "Select Value",
-    DiscountLeft: 0,
-    Kasar: 0,
-    OtherFreight: 0,
-    OtherFreightAc: "Select Account",
-    PaymentMode: "Cheque",
-    taxType: "IGST",
-    CGSTRate: 2.5,
-    CGSTAmt: "0",
-    SGSTRate: 2.5,
-    SGSTAmt: "0",
-    IGSTRate: 5,
-    IGSTAmt: "44.80",
-    ServiceTax: 0,
-    TotalAmt: "896.00",
-    TotalTax: "44.80",
-    Discount: 0,
-    NetAmt: "940.80",
-    Received: 896,
-    RefUser: "",
-    CashCredit: false,
-    PayReceived: true,
-    PayReceivedDate: "2026-04-04",
-    ReferenceNo: "INW-003",
-    ReferenceDate: "",
-    InvoiceNo: "INV-D33",
-    BankName: "Axis Bank",
-    ToAddress: "Rajkot-G – Gujarat\nState Code:24",
-    FromAddress: "Bangalore – Karnataka\nState Code:29",
-    Remarks: "",
-    DisplayRemarks: "",
-    LockDate: "",
-    LockBy: "",
-    PrintDate: "02/04/2026 03:50 PM",
-    PrintBy: "Ketan",
-    Count: 1,
-    BookingDate_raw: "2026-04-01",
-  },
-];
+import {
+  apiGetBookings,
+  apiGetBookingById,
+  apiSaveBooking,
+  MOCK_DATA_BOOKING as MOCK_DATA,
+} from "src/data/bookingData.js";
 
-const MOCK_DATA = {
-  cities: [
-    "Rajkot-G – Gujarat",
-    "Chakan – Maharashtra",
-    "Nasik – Maharashtra",
-    "Hyderabad – Telangana",
-    "Pune – Maharashtra",
-    "Mumbai – Maharashtra",
-    "Bangalore – Karnataka",
-    "Vasai – Maharashtra",
-    "Boriwali – Maharashtra",
-  ],
-  parties: [
-    "Balaji Tools Co.",
-    "Galaxy Cutting Tooling",
-    "Rajsani Polymers",
-    "Ring Plus Aqua Ltd",
-    "Vansh Laminate Llp",
-    "Bhavya Distributors",
-    "Mona Metal Foam Llp",
-    "Sumit Precision Fasteners",
-    "Nepolion Packaging",
-    "Krishna Engineering",
-    "Carver Welding Pvt. Ltd",
-    "Paras Exports",
-    "Paresh Plastic Pvt Ltd",
-    "PARAS INDUSTRIES",
-    "Varun Casting Co",
-    "Mahindra Heavy Engines Ltd",
-    "Amul Industries Pvt Ltd",
-    "Mahindra & Mahindra Ltd",
-    "Shree Ram Tempo Service",
-  ],
-  bookingOffices: [
-    "Greenland",
-    "Chakan",
-    "Nasik",
-    "Hyderabad",
-    "Pune",
-    "Vasai",
-    "Mumbai",
-  ],
-};
-
-function todayStr() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function apiGetBookings(fromDate, toDate, direction, search, carrierFilter) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      let result = [...MOCK_BOOKINGS];
-      if (direction !== "All")
-        result = result.filter((b) => b.BookingType === direction);
-      if (carrierFilter === "truck")
-        result = result.filter(
-          (b) => b.LoadCarrier === "Truck" || b.Carrier === "Truck"
-        );
-      if (search) {
-        const s = search.toLowerCase();
-        result = result.filter(
-          (b) =>
-            b.BookingNo.toLowerCase().includes(s) ||
-            b.ConsigneeName.toLowerCase().includes(s) ||
-            b.ConsignorName.toLowerCase().includes(s) ||
-            b.ToCity.toLowerCase().includes(s)
-        );
-      }
-      resolve(result);
-    }, 150);
-  });
-}
-
-function apiGetBookingById(id) {
-  return new Promise((resolve) => {
-    setTimeout(
-      () => resolve(MOCK_BOOKINGS.find((b) => b.BookingId === id) || null),
-      100
-    );
-  });
-}
-
-// Shared with DMSBBookingView.vue (the full-page "view" tab opened from the
-// eye icon below) so both read the same mock booking record by id instead of
-// duplicating MOCK_BOOKINGS.
-export { apiGetBookingById };
-
-function apiSaveBooking(booking) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (booking.BookingId) {
-        const idx = MOCK_BOOKINGS.findIndex(
-          (b) => b.BookingId === booking.BookingId
-        );
-        if (idx !== -1) MOCK_BOOKINGS[idx] = { ...booking };
-      } else {
-        booking.BookingId = MOCK_BOOKINGS.length + 1;
-        booking.BookingNo =
-          "RKG2104" + String(booking.BookingId).padStart(4, "0");
-        booking.Status = "Pending";
-        booking.BookingMadeBy = "CargoNet User";
-        booking.PrintDate = new Date().toLocaleString();
-        booking.PrintBy = "Admin";
-        booking.Count = 1;
-        MOCK_BOOKINGS.push(booking);
-      }
-      resolve({ success: true, data: booking });
-    }, 250);
-  });
-}
+// Booking data/mock-"backend" now lives in its own module,
+// src/data/bookingData.js (localStorage-backed, so add/edit/delete persist
+// like a real DB) — every Booking-family page imports from there directly
+// instead of from this page.
 
 // ─────────────────────────────────────────────
 export default {
+  mixins: [entryNavigation],
+  entryReload: "loadBookings",
   name: "DMSBBooking",
 
   // Lets the eye icon open the read-only booking view as a new full-page
@@ -2952,7 +747,16 @@ export default {
     openAddBooking() {
       this.form = this.emptyForm();
       this.dialogMode = "add";
-      this.showBookingDialog = true;
+      if (this.entryPage) {
+        this.showBookingDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSBBookingForm?mode=${this.dialogMode}&id=${
+            this.form.BookingId || ""
+          }`,
+          "BBooking"
+        );
+      }
     },
 
     viewBooking(row) {
@@ -2974,26 +778,49 @@ export default {
       const data = await apiGetBookingById(row.BookingId);
       this.form = { ...data };
       this.dialogMode = "view";
-      this.showBookingDialog = true;
+      if (this.entryPage) {
+        this.showBookingDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSBBookingForm?mode=${this.dialogMode}&id=${
+            this.form.BookingId || ""
+          }`,
+          "BBooking"
+        );
+      }
     },
 
     async editBooking(row) {
       const data = await apiGetBookingById(row.BookingId);
       this.form = { ...data };
       this.dialogMode = "edit";
-      this.showBookingDialog = true;
+      if (this.entryPage) {
+        this.showBookingDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSBBookingForm?mode=${this.dialogMode}&id=${
+            this.form.BookingId || ""
+          }`,
+          "BBooking"
+        );
+      }
     },
 
     async saveBooking() {
       this.calcTotal();
       const res = await apiSaveBooking({ ...this.form });
       if (res.success) {
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
         this.$q.notify({
           message: "Booking saved!",
           color: "positive",
           position: "top",
         });
         this.showBookingDialog = false;
+        this.notifyEntrySaved();
         await this.loadBookings();
       }
     },
@@ -3003,7 +830,16 @@ export default {
       const copy = { ...this.form, BookingId: null, BookingNo: "" };
       this.form = copy;
       this.dialogMode = "add";
-      this.showBookingDialog = true;
+      if (this.entryPage) {
+        this.showBookingDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSBBookingForm?mode=${this.dialogMode}&id=${
+            this.form.BookingId || ""
+          }`,
+          "BBooking"
+        );
+      }
     },
 
     async saveAndPrint(includeFreight = false) {
@@ -3198,7 +1034,11 @@ export default {
 <table class="hdr">
   <tr>
     <td class="hdr-logo">
-      ${logoDataUrl ? `<img src="${logoDataUrl}" alt="iCode Technologies" />` : ""}
+      ${
+        logoDataUrl
+          ? `<img src="${logoDataUrl}" alt="iCode Technologies" />`
+          : ""
+      }
     </td>
     <td class="hdr-info">
       <div class="hdr-company">I CODE TECHNOLOGIES PVT LTD</div>

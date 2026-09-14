@@ -13,17 +13,43 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Truck Booking</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Booking No." v-model="form.BookingNo" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Booking No."
+                v-model="form.BookingNo"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Date" v-model="form.BookingDate" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Date"
+                v-model="form.BookingDate"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Carrier" v-model="form.Carrier" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Carrier"
+                v-model="form.Carrier"
+              />
             </div>
           </div>
 
@@ -59,9 +85,13 @@
                       @click="saveAndCopy"
                     >
                       <q-item-section avatar>
-                        <div class="action-icon-badge bg-export"><q-icon name="content_copy" color="white" /></div>
+                        <div class="action-icon-badge bg-export">
+                          <q-icon name="content_copy" color="white" />
+                        </div>
                       </q-item-section>
-                      <q-item-section><q-item-label>Save &amp; Copy</q-item-label></q-item-section>
+                      <q-item-section>
+                        <q-item-label>Save &amp; Copy</q-item-label>
+                      </q-item-section>
                     </q-item>
                     <q-item
                       v-if="dialogMode !== 'view'"
@@ -71,9 +101,13 @@
                       @click="saveAndPrint(false)"
                     >
                       <q-item-section avatar>
-                        <div class="action-icon-badge bg-export"><q-icon name="print" color="white" /></div>
+                        <div class="action-icon-badge bg-export">
+                          <q-icon name="print" color="white" />
+                        </div>
                       </q-item-section>
-                      <q-item-section><q-item-label>Save &amp; Print</q-item-label></q-item-section>
+                      <q-item-section>
+                        <q-item-label>Save &amp; Print</q-item-label>
+                      </q-item-section>
                     </q-item>
                     <q-item
                       v-if="dialogMode !== 'view'"
@@ -83,9 +117,15 @@
                       @click="saveAndPrint(true)"
                     >
                       <q-item-section avatar>
-                        <div class="action-icon-badge bg-export"><q-icon name="receipt_long" color="white" /></div>
+                        <div class="action-icon-badge bg-export">
+                          <q-icon name="receipt_long" color="white" />
+                        </div>
                       </q-item-section>
-                      <q-item-section><q-item-label>Save &amp; Print with Freight</q-item-label></q-item-section>
+                      <q-item-section>
+                        <q-item-label>
+                          Save &amp; Print with Freight
+                        </q-item-label>
+                      </q-item-section>
                     </q-item>
                     <q-item
                       clickable
@@ -94,9 +134,13 @@
                       @click="printBooking(false)"
                     >
                       <q-item-section avatar>
-                        <div class="action-icon-badge bg-export"><q-icon name="print" color="white" /></div>
+                        <div class="action-icon-badge bg-export">
+                          <q-icon name="print" color="white" />
+                        </div>
                       </q-item-section>
-                      <q-item-section><q-item-label>Print</q-item-label></q-item-section>
+                      <q-item-section>
+                        <q-item-label>Print</q-item-label>
+                      </q-item-section>
                     </q-item>
                   </q-list>
                 </q-btn-dropdown>
@@ -128,117 +172,344 @@
 
             <!-- General Details -->
             <q-tab-panel name="general">
-              <div class="row q-col-gutter-sm">
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Booking Type</span>
-                  <q-select v-model="form.BookingType" :options="['Outward', 'Inward']" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+              <div class="row q-col-gutter-sm items-start">
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="Booking Type"
+                    v-model="form.BookingType"
+                    :options="['Outward', 'Inward']"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Booked From</span>
-                  <q-select v-model="form.BookedFrom" :options="mockData.bookingOffices" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="Booked From"
+                    v-model="form.BookedFrom"
+                    :options="mockData.bookingOffices"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Carrier</span>
-                  <q-select v-model="form.Carrier" :options="['Truck']" dense outlined bg-color="blue-1" readonly />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="Carrier"
+                    v-model="form.Carrier"
+                    :options="['Truck']"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Load</span>
-                  <q-select v-model="form.Load" :options="['own', 'Truck', 'Part']" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="Load"
+                    v-model="form.Load"
+                    :options="['own', 'Truck', 'Part']"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Booking No.</span>
-                  <q-input v-model="form.BookingNo" dense outlined bg-color="yellow-1" readonly />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square=""
+                    label="Booking No."
+                    v-model="form.BookingNo"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Date</span>
-                  <q-input v-model="form.BookingDate" dense outlined bg-color="blue-1" placeholder="dd/mm/yyyy" :readonly="dialogMode === 'view'">
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square=""
+                    label="Date"
+                    v-model="form.BookingDate"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    placeholder="dd/mm/yyyy"
+                    :readonly="dialogMode === 'view'"
+                  >
                     <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer" v-if="dialogMode !== 'view'">
-                        <q-popup-proxy ref="bookingDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="form.BookingDate" mask="DD/MM/YYYY" minimal style="width: 280px" @update:model-value="$refs.bookingDateProxy.hide()" />
+                      <q-icon
+                        name="event"
+                        class="cursor-pointer"
+                        v-if="dialogMode !== 'view'"
+                      >
+                        <q-popup-proxy
+                          ref="bookingDateProxy"
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="form.BookingDate"
+                            mask="DD/MM/YYYY"
+                            minimal
+                            style="width: 280px"
+                            @update:model-value="$refs.bookingDateProxy.hide()"
+                          />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
                   </q-input>
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Payment Type</span>
-                  <q-select v-model="form.PaymentType" :options="['TBBS (Paid Debit)', 'ToPay', 'Paid', 'TBBR', 'Cash']" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="Payment Type"
+                    v-model="form.PaymentType"
+                    :options="[
+                      'TBBS (Paid Debit)',
+                      'ToPay',
+                      'Paid',
+                      'TBBR',
+                      'Cash',
+                    ]"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Mode</span>
-                  <q-select v-model="form.PaymentMode" :options="['Select Payment', 'Cash', 'Cheque', 'NEFT', 'UPI']" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="Mode"
+                    v-model="form.PaymentMode"
+                    :options="[
+                      'Select Payment',
+                      'Cash',
+                      'Cheque',
+                      'NEFT',
+                      'UPI',
+                    ]"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">From City</span>
-                  <q-select v-model="form.FromCity" :options="mockData.cities" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="From City"
+                    v-model="form.FromCity"
+                    :options="mockData.cities"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">To City</span>
-                  <q-select v-model="form.ToCity" :options="mockData.cities" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="To City"
+                    v-model="form.ToCity"
+                    :options="mockData.cities"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Delivery City</span>
-                  <q-select v-model="form.DeliveryCity" :options="mockData.cities" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="Delivery City"
+                    v-model="form.DeliveryCity"
+                    :options="mockData.cities"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">From Buk. Office</span>
-                  <q-select v-model="form.FromBookingOffice" :options="mockData.bookingOffices" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="From Buk. Office"
+                    v-model="form.FromBookingOffice"
+                    :options="mockData.bookingOffices"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">To Buk. Office</span>
-                  <q-select v-model="form.ToBookingOffice" :options="mockData.bookingOffices" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="To Buk. Office"
+                    v-model="form.ToBookingOffice"
+                    :options="mockData.bookingOffices"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
               </div>
             </q-tab-panel>
 
             <!-- Party Details -->
             <q-tab-panel name="party">
-              <div class="row q-col-gutter-sm">
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Consignor A/c.</span>
-                  <q-select v-model="form.ConsignorAccount" :options="mockData.parties" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" :readonly="dialogMode === 'view'" />
+              <div class="row q-col-gutter-sm items-start">
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="Consignor A/c."
+                    v-model="form.ConsignorAccount"
+                    :options="mockData.parties"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Consignor Name</span>
-                  <q-input v-model="form.ConsignorName" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square=""
+                    label="Consignor Name"
+                    v-model="form.ConsignorName"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Phone No.</span>
-                  <q-input v-model="form.ConsignorPhone" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square=""
+                    label="Phone No."
+                    v-model="form.ConsignorPhone"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">From GST No.</span>
-                  <q-input v-model="form.FromGSTNo" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square=""
+                    label="From GST No."
+                    v-model="form.FromGSTNo"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <span class="field-label">From Address</span>
-                  <q-input v-model="form.FromAddress" dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-6">
+                  <q-input
+                    square=""
+                    label="From Address"
+                    v-model="form.FromAddress"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="textarea"
+                    :rows="2"
+                    autogrow
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <span class="field-label">To Address</span>
-                  <q-input v-model="form.ToAddress" dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-6">
+                  <q-input
+                    square=""
+                    label="To Address"
+                    v-model="form.ToAddress"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="textarea"
+                    :rows="2"
+                    autogrow
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Consignee A/c.</span>
-                  <q-select v-model="form.ConsigneeAccount" :options="mockData.parties" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-select
+                    square=""
+                    label="Consignee A/c."
+                    v-model="form.ConsigneeAccount"
+                    :options="mockData.parties"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Consignee Name</span>
-                  <q-input v-model="form.ConsigneeName" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square=""
+                    label="Consignee Name"
+                    v-model="form.ConsigneeName"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Phone No.</span>
-                  <q-input v-model="form.ConsigneePhone" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square=""
+                    label="Phone No."
+                    v-model="form.ConsigneePhone"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">To GST No.</span>
-                  <q-input v-model="form.ToGSTNo" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square=""
+                    label="To GST No."
+                    v-model="form.ToGSTNo"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
               </div>
             </q-tab-panel>
@@ -247,122 +518,357 @@
             <q-tab-panel name="charges">
               <div class="row q-col-gutter-sm">
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">E-Way Bill No.</span>
-                  <q-input v-model="form.EWayBillNo" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="E-Way Bill No."
+                    v-model="form.EWayBillNo"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Bill No.</span>
-                  <q-input v-model="form.BillNo" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Bill No."
+                    v-model="form.BillNo"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Value</span>
-                  <q-input v-model="form.BillValue" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Value"
+                    v-model="form.BillValue"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Item</span>
-                  <q-select v-model="form.Item" :options="['Box', 'Parcel', 'Pallet', 'Crate', 'Drum', 'Kp', 'pallate']" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-select
+                    square=""
+                    label="Item"
+                    v-model="form.Item"
+                    :options="[
+                      'Box',
+                      'Parcel',
+                      'Pallet',
+                      'Crate',
+                      'Drum',
+                      'Kp',
+                      'pallate',
+                    ]"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Part No.</span>
-                  <q-input v-model="form.PartNo" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Part No."
+                    v-model="form.PartNo"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Quantity</span>
-                  <q-input v-model="form.Quantity" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" @update:model-value="calcTotal" />
+                  <q-input
+                    square=""
+                    label="Quantity"
+                    v-model="form.Quantity"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                    @update:model-value="calcTotal"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Weight</span>
-                  <q-input v-model="form.Weight" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" @update:model-value="calcFreight" />
+                  <q-input
+                    square=""
+                    label="Weight"
+                    v-model="form.Weight"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                    @update:model-value="calcFreight"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Rate</span>
-                  <q-input v-model="form.Rate" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" @update:model-value="calcFreight" />
+                  <q-input
+                    square=""
+                    label="Rate"
+                    v-model="form.Rate"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                    @update:model-value="calcFreight"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Freight</span>
-                  <q-input v-model="form.FreightAmount" dense outlined bg-color="yellow-1" type="number" readonly />
+                  <q-input
+                    square=""
+                    label="Freight"
+                    v-model="form.FreightAmount"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    readonly
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.IsDoorDelivery" val="orange" color="orange" intermediate-icon="black" :disable="dialogMode === 'view'" @update:model-value="calcTotal" />
+                      <q-checkbox
+                        dense
+                        v-model="form.IsDoorDelivery"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        :disable="dialogMode === 'view'"
+                        @update:model-value="calcTotal"
+                      />
                     </q-item-section>
-                    <q-item-section><q-item-label dense>Door Del.</q-item-label></q-item-section>
+                    <q-item-section>
+                      <q-item-label dense>Door Del.</q-item-label>
+                    </q-item-section>
                   </q-item>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">D.D. Amt.</span>
-                  <q-input v-model="form.DoorDeliveryAmt" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view' || !form.IsDoorDelivery" @update:model-value="calcTotal" />
+                  <q-input
+                    square=""
+                    label="D.D. Amt."
+                    v-model="form.DoorDeliveryAmt"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view' || !form.IsDoorDelivery"
+                    @update:model-value="calcTotal"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.IsDoorCollection" val="orange" color="orange" intermediate-icon="black" :disable="dialogMode === 'view'" @update:model-value="calcTotal" />
+                      <q-checkbox
+                        dense
+                        v-model="form.IsDoorCollection"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        :disable="dialogMode === 'view'"
+                        @update:model-value="calcTotal"
+                      />
                     </q-item-section>
-                    <q-item-section><q-item-label dense>Door Coll.</q-item-label></q-item-section>
+                    <q-item-section>
+                      <q-item-label dense>Door Coll.</q-item-label>
+                    </q-item-section>
                   </q-item>
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Collection</span>
-                  <q-input v-model="form.DoorCollectionAmt" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view' || !form.IsDoorCollection" @update:model-value="calcTotal" />
+                  <q-input
+                    square=""
+                    label="Collection"
+                    v-model="form.DoorCollectionAmt"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view' || !form.IsDoorCollection"
+                    @update:model-value="calcTotal"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.HasOther" val="orange" color="orange" intermediate-icon="black" :disable="dialogMode === 'view'" @update:model-value="calcTotal" />
+                      <q-checkbox
+                        dense
+                        v-model="form.HasOther"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        :disable="dialogMode === 'view'"
+                        @update:model-value="calcTotal"
+                      />
                     </q-item-section>
-                    <q-item-section><q-item-label dense>Other</q-item-label></q-item-section>
+                    <q-item-section>
+                      <q-item-label dense>Other</q-item-label>
+                    </q-item-section>
                   </q-item>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Other Amt.</span>
-                  <q-input v-model="form.OtherAmt" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view' || !form.HasOther" @update:model-value="calcTotal" />
+                  <q-input
+                    square=""
+                    label="Other Amt."
+                    v-model="form.OtherAmt"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view' || !form.HasOther"
+                    @update:model-value="calcTotal"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">S.T. By</span>
-                  <q-select v-model="form.STBy" :options="['NoST', 'Consignor', 'Consignee', 'Agent']" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-select
+                    square=""
+                    label="S.T. By"
+                    v-model="form.STBy"
+                    :options="['NoST', 'Consignor', 'Consignee', 'Agent']"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Discount Type</span>
-                  <q-select v-model="form.DiscountType" :options="['Select Value', '%', 'Fixed']" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-select
+                    square=""
+                    label="Discount Type"
+                    v-model="form.DiscountType"
+                    :options="['Select Value', '%', 'Fixed']"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Discount</span>
-                  <q-input v-model="form.DiscountLeft" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Discount"
+                    v-model="form.DiscountLeft"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Kasar</span>
-                  <q-input v-model="form.Kasar" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Kasar"
+                    v-model="form.Kasar"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Other Frgt.</span>
-                  <q-input v-model="form.OtherFreight" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Other Frgt."
+                    v-model="form.OtherFreight"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Other Frgt. A/c.</span>
-                  <q-select v-model="form.OtherFreightAc" :options="['Select Account', ...mockData.parties]" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-select
+                    square=""
+                    label="Other Frgt. A/c."
+                    v-model="form.OtherFreightAc"
+                    :options="['Select Account', ...mockData.parties]"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Total Amt.</span>
-                  <q-input v-model="form.TotalAmt" dense outlined bg-color="yellow-1" readonly input-class="text-negative text-weight-bold" />
+                  <q-input
+                    square=""
+                    label="Total Amt."
+                    v-model="form.TotalAmt"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    input-class="text-negative text-weight-bold"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Lock Dt.</span>
-                  <q-input v-model="form.LockDate" dense outlined bg-color="grey-2" readonly input-class="text-red text-weight-bold" />
+                  <q-input
+                    square=""
+                    label="Lock Dt."
+                    v-model="form.LockDate"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    input-class="text-red text-weight-bold"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Lock By</span>
-                  <q-input v-model="form.LockBy" dense outlined bg-color="grey-2" readonly input-class="text-red" />
+                  <q-input
+                    square=""
+                    label="Lock By"
+                    v-model="form.LockBy"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    input-class="text-red"
+                  />
                 </div>
 
                 <!-- Tax Type toggle (edit/add only) -->
-                <div v-if="dialogMode !== 'view'" class="col-12 row items-center q-mb-xs">
-                  <span class="field-label q-mr-sm" style="display: inline">Tax Type:</span>
+                <div
+                  v-if="dialogMode !== 'view'"
+                  class="col-12 row items-center q-mb-xs"
+                >
+                  <span class="field-label q-mr-sm" style="display: inline">
+                    Tax Type:
+                  </span>
                   <q-btn-toggle
                     v-model="form.taxType"
                     dense
@@ -383,123 +889,336 @@
                 <!-- CGST / SGST fields -->
                 <template v-if="form.taxType === 'CGST_SGST'">
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <span class="field-label">CGST %</span>
-                    <q-input v-model="form.CGSTRate" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" @update:model-value="calcTotal" />
+                    <q-input
+                      square=""
+                      label="CGST %"
+                      v-model="form.CGSTRate"
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      type="number"
+                      :readonly="dialogMode === 'view'"
+                      @update:model-value="calcTotal"
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <span class="field-label">CGST Amt.</span>
-                    <q-input v-model="form.CGSTAmt" dense outlined bg-color="yellow-1" readonly />
+                    <q-input
+                      square=""
+                      label="CGST Amt."
+                      v-model="form.CGSTAmt"
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <span class="field-label">Service Tax</span>
-                    <q-input v-model="form.ServiceTax" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" />
+                    <q-input
+                      square=""
+                      label="Service Tax"
+                      v-model="form.ServiceTax"
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      type="number"
+                      :readonly="dialogMode === 'view'"
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <span class="field-label">SGST %</span>
-                    <q-input v-model="form.SGSTRate" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" @update:model-value="calcTotal" />
+                    <q-input
+                      square=""
+                      label="SGST %"
+                      v-model="form.SGSTRate"
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      type="number"
+                      :readonly="dialogMode === 'view'"
+                      @update:model-value="calcTotal"
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <span class="field-label">SGST Amt.</span>
-                    <q-input v-model="form.SGSTAmt" dense outlined bg-color="yellow-1" readonly />
+                    <q-input
+                      square=""
+                      label="SGST Amt."
+                      v-model="form.SGSTAmt"
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                    />
                   </div>
                 </template>
                 <template v-else>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <span class="field-label">IGST %</span>
-                    <q-input v-model="form.IGSTRate" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" @update:model-value="calcTotal" />
+                    <q-input
+                      square=""
+                      label="IGST %"
+                      v-model="form.IGSTRate"
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      type="number"
+                      :readonly="dialogMode === 'view'"
+                      @update:model-value="calcTotal"
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <span class="field-label">IGST Amt.</span>
-                    <q-input v-model="form.IGSTAmt" dense outlined bg-color="yellow-1" readonly />
+                    <q-input
+                      square=""
+                      label="IGST Amt."
+                      v-model="form.IGSTAmt"
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                    />
                   </div>
                 </template>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Total Tax</span>
-                  <q-input v-model="form.TotalTax" dense outlined bg-color="yellow-1" readonly />
+                  <q-input
+                    square=""
+                    label="Total Tax"
+                    v-model="form.TotalTax"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Discount</span>
-                  <q-input v-model="form.Discount" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" @update:model-value="calcTotal" />
+                  <q-input
+                    square=""
+                    label="Discount"
+                    v-model="form.Discount"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                    @update:model-value="calcTotal"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Net Amt.</span>
-                  <q-input v-model="form.NetAmt" dense outlined bg-color="yellow-1" readonly input-class="text-negative text-weight-bold" />
+                  <q-input
+                    square=""
+                    label="Net Amt."
+                    v-model="form.NetAmt"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    input-class="text-negative text-weight-bold"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Received</span>
-                  <q-input v-model="form.Received" dense outlined bg-color="blue-1" type="number" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Received"
+                    v-model="form.Received"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Time</span>
-                  <q-input v-model="form.BookingTime" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Time"
+                    v-model="form.BookingTime"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Ref.</span>
-                  <q-input v-model="form.RefUser" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Ref."
+                    v-model="form.RefUser"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.CashCredit" val="orange" color="orange" intermediate-icon="black" :disable="dialogMode === 'view'" />
+                      <q-checkbox
+                        dense
+                        v-model="form.CashCredit"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        :disable="dialogMode === 'view'"
+                      />
                     </q-item-section>
-                    <q-item-section><q-item-label dense>Cash Credit</q-item-label></q-item-section>
+                    <q-item-section>
+                      <q-item-label dense>Cash Credit</q-item-label>
+                    </q-item-section>
                   </q-item>
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.PayReceived" val="orange" color="orange" intermediate-icon="black" :disable="dialogMode === 'view'" />
+                      <q-checkbox
+                        dense
+                        v-model="form.PayReceived"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        :disable="dialogMode === 'view'"
+                      />
                     </q-item-section>
-                    <q-item-section><q-item-label dense>Pay. Received</q-item-label></q-item-section>
+                    <q-item-section>
+                      <q-item-label dense>Pay. Received</q-item-label>
+                    </q-item-section>
                   </q-item>
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Pay. Received Date</span>
-                  <q-input v-model="form.PayReceivedDate" dense outlined bg-color="blue-1" placeholder="dd/mm/yyyy" :readonly="dialogMode === 'view' || !form.PayReceived">
+                  <q-input
+                    square=""
+                    label="Pay. Received Date"
+                    v-model="form.PayReceivedDate"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    placeholder="dd/mm/yyyy"
+                    :readonly="dialogMode === 'view' || !form.PayReceived"
+                  >
                     <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer" v-if="dialogMode !== 'view' && form.PayReceived">
-                        <q-popup-proxy ref="payDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="form.PayReceivedDate" mask="DD/MM/YYYY" minimal style="width: 280px" @update:model-value="$refs.payDateProxy.hide()" />
+                      <q-icon
+                        name="event"
+                        class="cursor-pointer"
+                        v-if="dialogMode !== 'view' && form.PayReceived"
+                      >
+                        <q-popup-proxy
+                          ref="payDateProxy"
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="form.PayReceivedDate"
+                            mask="DD/MM/YYYY"
+                            minimal
+                            style="width: 280px"
+                            @update:model-value="$refs.payDateProxy.hide()"
+                          />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
                   </q-input>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Reference No.</span>
-                  <q-input v-model="form.ReferenceNo" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Reference No."
+                    v-model="form.ReferenceNo"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Reference Date</span>
-                  <q-input v-model="form.ReferenceDate" dense outlined bg-color="blue-1" placeholder="dd/mm/yyyy" :readonly="dialogMode === 'view'">
+                  <q-input
+                    square=""
+                    label="Reference Date"
+                    v-model="form.ReferenceDate"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    placeholder="dd/mm/yyyy"
+                    :readonly="dialogMode === 'view'"
+                  >
                     <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer" v-if="dialogMode !== 'view'">
-                        <q-popup-proxy ref="refDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="form.ReferenceDate" mask="DD/MM/YYYY" minimal style="width: 280px" @update:model-value="$refs.refDateProxy.hide()" />
+                      <q-icon
+                        name="event"
+                        class="cursor-pointer"
+                        v-if="dialogMode !== 'view'"
+                      >
+                        <q-popup-proxy
+                          ref="refDateProxy"
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="form.ReferenceDate"
+                            mask="DD/MM/YYYY"
+                            minimal
+                            style="width: 280px"
+                            @update:model-value="$refs.refDateProxy.hide()"
+                          />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
                   </q-input>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Invoice No.</span>
-                  <q-input v-model="form.InvoiceNo" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Invoice No."
+                    v-model="form.InvoiceNo"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Bank Name</span>
-                  <q-input v-model="form.BankName" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Bank Name"
+                    v-model="form.BankName"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Remarks</span>
-                  <q-input v-model="form.Remarks" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Remarks"
+                    v-model="form.Remarks"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <span class="field-label">Display Remarks</span>
-                  <q-input v-model="form.DisplayRemarks" dense outlined bg-color="blue-1" :readonly="dialogMode === 'view'" />
+                  <q-input
+                    square=""
+                    label="Display Remarks"
+                    v-model="form.DisplayRemarks"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    :readonly="dialogMode === 'view'"
+                  />
                 </div>
               </div>
             </q-tab-panel>
@@ -508,15 +1227,40 @@
           <!-- Prev/Next tab nav — same structure/classes as
                DMSBBookingView.vue's own tab-panel nav. -->
           <div class="q-pa-xs row justify-between tab-nav-buttons">
-            <q-btn icon="chevron_left" class="Navtab" label="" flat :disable="tabIndex === 0" @click="goToPreviousTab" />
-            <q-btn label="" icon-right="chevron_right" class="Navtab" flat :disable="tabIndex === tabOrder.length - 1" @click="goToNextTab" />
+            <q-btn
+              icon="chevron_left"
+              class="Navtab"
+              label=""
+              flat
+              :disable="tabIndex === 0"
+              @click="goToPreviousTab"
+            />
+            <q-btn
+              label=""
+              icon-right="chevron_right"
+              class="Navtab"
+              flat
+              :disable="tabIndex === tabOrder.length - 1"
+              @click="goToNextTab"
+            />
           </div>
 
           <!-- Print info row — same as the old dialog's footer caption. -->
-          <div class="text-caption text-grey-7 row q-gutter-x-md wrap q-px-md q-pb-sm">
-            <span>Print Dt.: <b>{{ form.PrintDate }}</b></span>
-            <span>Count: <b>{{ form.Count }}</b></span>
-            <span>Print By: <b>{{ form.PrintBy }}</b></span>
+          <div
+            class="text-caption text-grey-7 row q-gutter-x-md wrap q-px-md q-pb-sm"
+          >
+            <span>
+              Print Dt.:
+              <b>{{ form.PrintDate }}</b>
+            </span>
+            <span>
+              Count:
+              <b>{{ form.Count }}</b>
+            </span>
+            <span>
+              Print By:
+              <b>{{ form.PrintBy }}</b>
+            </span>
           </div>
         </q-card>
       </div>
@@ -525,22 +1269,44 @@
     <!-- ══════════════════════════════════════
          Print / PDF Preview Dialog
     ══════════════════════════════════════ -->
-    <q-dialog v-model="showPrintDialog" maximized @before-hide="closePrintDialog">
+    <q-dialog
+      v-model="showPrintDialog"
+      maximized
+      @before-hide="closePrintDialog"
+    >
       <q-card style="display: flex; flex-direction: column; height: 100%">
         <q-toolbar class="bg-primary text-white">
           <q-icon name="receipt_long" size="22px" class="q-mr-sm" />
           <q-toolbar-title>Booking Report Preview</q-toolbar-title>
-          <q-btn unelevated icon="picture_as_pdf" label="Download PDF" color="white" text-color="primary" size="sm" class="q-mr-sm" no-caps @click="downloadPDF" />
+          <q-btn
+            unelevated
+            icon="picture_as_pdf"
+            label="Download PDF"
+            color="white"
+            text-color="primary"
+            size="sm"
+            class="q-mr-sm"
+            no-caps
+            @click="downloadPDF"
+          />
           <q-btn flat round icon="close" @click="closePrintDialog" />
         </q-toolbar>
-        <iframe ref="reportFrame" :src="printBlobUrl" style="flex: 1; border: none; width: 100%; background: #f4f4f4" />
+        <iframe
+          ref="reportFrame"
+          :src="printBlobUrl"
+          style="flex: 1; border: none; width: 100%; background: #f4f4f4"
+        />
       </q-card>
     </q-dialog>
   </div>
 </template>
 
 <script>
-import { apiGetBookingById, apiSaveBooking, MOCK_DATA } from "./DMSTruckBooking.vue";
+import {
+  apiGetBookingById,
+  apiSaveBooking,
+  MOCK_DATA_BOOKING as MOCK_DATA,
+} from "src/data/bookingData.js";
 import ictLogoUrl from "src/assets/ICT-logo.png";
 
 export default {
@@ -594,7 +1360,8 @@ export default {
       if (this.tabIndex > 0) this.activeTab = this.tabOrder[this.tabIndex - 1];
     },
     goToNextTab() {
-      if (this.tabIndex < this.tabOrder.length - 1) this.activeTab = this.tabOrder[this.tabIndex + 1];
+      if (this.tabIndex < this.tabOrder.length - 1)
+        this.activeTab = this.tabOrder[this.tabIndex + 1];
     },
 
     async loadBooking() {
@@ -695,9 +1462,15 @@ export default {
 
     calcTotal() {
       const freight = parseFloat(this.form.FreightAmount) || 0;
-      const dd = this.form.IsDoorDelivery ? parseFloat(this.form.DoorDeliveryAmt) || 0 : 0;
-      const dc = this.form.IsDoorCollection ? parseFloat(this.form.DoorCollectionAmt) || 0 : 0;
-      const other = this.form.HasOther ? parseFloat(this.form.OtherAmt) || 0 : 0;
+      const dd = this.form.IsDoorDelivery
+        ? parseFloat(this.form.DoorDeliveryAmt) || 0
+        : 0;
+      const dc = this.form.IsDoorCollection
+        ? parseFloat(this.form.DoorCollectionAmt) || 0
+        : 0;
+      const other = this.form.HasOther
+        ? parseFloat(this.form.OtherAmt) || 0
+        : 0;
       const total = freight + dd + dc + other;
       this.form.TotalAmt = total.toFixed(2);
 
@@ -727,7 +1500,11 @@ export default {
       if (res.success) {
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Booking saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Booking saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
 
@@ -743,7 +1520,11 @@ export default {
       if (res.success) {
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Saved!",
+          color: "positive",
+          position: "top",
+        });
         this.printBooking(includeFreight);
       }
     },

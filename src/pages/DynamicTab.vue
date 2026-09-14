@@ -1,5 +1,4 @@
-<template>
-  <div class="scaled-content">
+<template><div class="scaled-content">
     <main :class="['app-content', { 'with-sidebar': sidebarOpen }]">
       <div>
         <template v-if="openTabs.length">
@@ -54,8 +53,7 @@
         </li>
       </ul>
     </q-footer>
-  </div>
-</template>
+  </div></template>
 
 <script>
 import { defineAsyncComponent } from "vue";
@@ -123,7 +121,11 @@ export default {
       this.basePath = "/";
     }
     // Load the dashboard page by default on mount
-    this.openDashboard();
+    if (this.$route.path === '/DMSMenu') {
+      this.openTab({ path: '/DMSMenu', moduleName: 'DMS' }, 'DMS - Menu Directory');
+    } else {
+      this.openDashboard();
+    }
     window.addEventListener("app:backbutton", this.handleHardwareBack);
   },
   beforeUnmount() {

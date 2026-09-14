@@ -1,6 +1,4 @@
-<template>
-  <GenericMasterList entity="bookingofficewisepaymentmode" />
-</template>
+<template><GenericMasterList entity="bookingofficewisepaymentmode" /></template>
 
 <script>
 import GenericMasterList from "components/GenericMasterList.vue";

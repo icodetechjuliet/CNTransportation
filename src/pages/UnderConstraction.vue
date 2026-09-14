@@ -1,5 +1,4 @@
-<template>
-  <div class="UC-container">
+<template><div class="UC-container">
     <!-- Row 1 -->
     <div class="UC-gears">
       <div class="gear small"></div>
@@ -18,7 +17,6 @@
       We’re working hard to get this page ready.<br />
       Please contact <span class="UC-highlight">Admin</span>.
     </p>
-  </div>
-</template>
+  </div></template>
 
 <style></style>

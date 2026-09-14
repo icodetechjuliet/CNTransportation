@@ -20,7 +20,6 @@
           <!-- ── Grid ── -->
           <q-table
             square
-            dense
             :rows="filteredTrips"
             :columns="tableColumns"
             row-key="TripId"
@@ -85,6 +84,7 @@
                   />
 
                   <q-select
+                    square=""
                     v-model="tripType"
                     :options="['All', 'Outward', 'Inward']"
                     dense
@@ -168,15 +168,18 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md"
-                >Page {{ pagination.page }} of {{ maxPages }}</span
-              >
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <!-- ── Desktop column slots ── -->
             <template v-slot:body-cell-Status="props">
               <q-td :props="props">
-                <q-badge :color="statusColor(props.value)" :label="props.value" />
+                <q-badge
+                  :color="statusColor(props.value)"
+                  :label="props.value"
+                />
               </q-td>
             </template>
 
@@ -189,8 +192,9 @@
                   outline
                   class="edit-icon-style vw"
                   @click="viewTrip(props.row)"
-                  ><q-tooltip>View</q-tooltip></q-btn
                 >
+                  <q-tooltip>View</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-pen-to-square"
                   color="primary"
@@ -198,8 +202,9 @@
                   outline
                   class="edit-icon-style mody"
                   @click="editTrip(props.row)"
-                  ><q-tooltip>Modify</q-tooltip></q-btn
                 >
+                  <q-tooltip>Modify</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-print"
                   color="primary"
@@ -207,8 +212,9 @@
                   outline
                   class="edit-icon-style q-ml-xs"
                   @click="printTrip(props.row)"
-                  ><q-tooltip>Print</q-tooltip></q-btn
                 >
+                  <q-tooltip>Print</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-truck"
                   color="primary"
@@ -216,8 +222,9 @@
                   outline
                   class="edit-icon-style q-ml-xs"
                   @click="openUpdateVehicle(props.row)"
-                  ><q-tooltip>Update Vehicle / Carrier</q-tooltip></q-btn
                 >
+                  <q-tooltip>Update Vehicle / Carrier</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
@@ -230,8 +237,9 @@
                   outline
                   class="edit-icon-style"
                   @click="deleteTrip(props.row)"
-                  ><q-tooltip>Delete</q-tooltip></q-btn
                 >
+                  <q-tooltip>Delete</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
@@ -298,28 +306,27 @@
                     <div class="mjc-details-grid">
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Route</span>
-                        <span class="mjc-detail-value"
-                          >{{ props.row.FromCity }} →
-                          {{ props.row.ToCity }}</span
-                        >
+                        <span class="mjc-detail-value">
+                          {{ props.row.FromCity }} → {{ props.row.ToCity }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Vehicle</span>
-                        <span class="mjc-detail-value">{{
-                          props.row.VehicleNo || "—"
-                        }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.VehicleNo || "—" }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Transporter</span>
-                        <span class="mjc-detail-value">{{
-                          props.row.Transporter || "—"
-                        }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.Transporter || "—" }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Quantity</span>
-                        <span class="mjc-detail-value">{{
-                          props.row.Quantity
-                        }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.Quantity }}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -346,33 +353,87 @@
         </q-card-section>
         <q-separator />
         <q-card-section>
-          <div class="row q-col-gutter-sm">
-            <div class="col-6">
-              <span class="field-label">Carrier</span>
-              <q-select v-model="vehicleForm.Carrier" :options="['own', 'Truck']" dense outlined bg-color="blue-1" />
+          <div class="row q-col-gutter-sm items-start">
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-select
+                square=""
+                label="Carrier"
+                v-model="vehicleForm.Carrier"
+                :options="['own', 'Truck']"
+                dense
+                outlined
+                bg-color="blue-1"
+              />
             </div>
-            <div class="col-6">
-              <span class="field-label">Transporter</span>
-              <q-select v-model="vehicleForm.Transporter" :options="mockData.transporters" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" />
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-select
+                square=""
+                label="Transporter"
+                v-model="vehicleForm.Transporter"
+                :options="mockData.transporters"
+                dense
+                outlined
+                bg-color="blue-1"
+                use-input
+                fill-input
+                display-value=""
+                input-debounce="0"
+              />
             </div>
-            <div class="col-6">
-              <span class="field-label">Vehicle</span>
-              <q-select v-model="vehicleForm.Vehicle" :options="mockData.vehicles" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" />
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-select
+                square=""
+                label="Vehicle"
+                v-model="vehicleForm.Vehicle"
+                :options="mockData.vehicles"
+                dense
+                outlined
+                bg-color="blue-1"
+                use-input
+                fill-input
+                display-value=""
+                input-debounce="0"
+              />
             </div>
-            <div class="col-6">
-              <span class="field-label">Vehicle No.</span>
-              <q-input v-model="vehicleForm.VehicleNo" dense outlined bg-color="blue-1" />
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-input
+                square=""
+                label="Vehicle No."
+                v-model="vehicleForm.VehicleNo"
+                dense
+                outlined
+                bg-color="blue-1"
+              />
             </div>
-            <div class="col-6">
-              <span class="field-label">Driver</span>
-              <q-select v-model="vehicleForm.Driver" :options="mockData.drivers" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" />
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-select
+                square=""
+                label="Driver"
+                v-model="vehicleForm.Driver"
+                :options="mockData.drivers"
+                dense
+                outlined
+                bg-color="blue-1"
+                use-input
+                fill-input
+                display-value=""
+                input-debounce="0"
+              />
             </div>
           </div>
         </q-card-section>
         <q-separator />
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
+        <q-card-actions
+          align="right"
+          class="q-gutter-sm q-pt-none q-pb-none q-pr-none"
+        >
           <q-btn label="Cancel" v-close-popup />
-          <q-btn color="primary" class="m-btn-style" label="Update" @click="saveVehicleUpdate" />
+          <q-btn
+            color="primary"
+            class="m-btn-style"
+            label="Update"
+            @click="saveVehicleUpdate"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -417,16 +478,51 @@ export default {
 
       baseColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "Status", label: "Trip Status", field: "Status", align: "center", sortable: true },
-        { name: "TripDate", label: "Trip Start Date", field: "TripDate", sortable: true },
-        { name: "TripStartTime", label: "Trip Start Time", field: "TripStartTime" },
+        {
+          name: "Status",
+          label: "Trip Status",
+          field: "Status",
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "TripDate",
+          label: "Trip Start Date",
+          field: "TripDate",
+          sortable: true,
+        },
+        {
+          name: "TripStartTime",
+          label: "Trip Start Time",
+          field: "TripStartTime",
+        },
         { name: "TripNo", label: "Trip No", field: "TripNo", sortable: true },
-        { name: "TripEndDate", label: "Trip End Date", field: "TripEndDate", sortable: true },
+        {
+          name: "TripEndDate",
+          label: "Trip End Date",
+          field: "TripEndDate",
+          sortable: true,
+        },
         { name: "Carrier", label: "Carrier", field: "Carrier" },
-        { name: "FromCity", label: "From City", field: "FromCity", sortable: true },
+        {
+          name: "FromCity",
+          label: "From City",
+          field: "FromCity",
+          sortable: true,
+        },
         { name: "ToCity", label: "To City", field: "ToCity", sortable: true },
-        { name: "Quantity", label: "Quantity", field: "Quantity", align: "right", sortable: true },
-        { name: "Transporter", label: "Vehicle1 Transporter", field: "Transporter" },
+        {
+          name: "Quantity",
+          label: "Quantity",
+          field: "Quantity",
+          align: "right",
+          sortable: true,
+        },
+        {
+          name: "Transporter",
+          label: "Vehicle1 Transporter",
+          field: "Transporter",
+        },
         { name: "Vehicle", label: "Vehicle1", field: "Vehicle" },
         { name: "VehicleNo", label: "Vehicle No", field: "VehicleNo" },
         { name: "delete", label: "Delete", field: "delete", align: "center" },
@@ -514,7 +610,11 @@ export default {
       // pattern) — searches across the common fields at once, see
       // tripData.js's apiGetTrips for the multi-field fallback when
       // searchBy is omitted.
-      this.filteredTrips = await apiGetTrips(this.tripType, null, this.searchText);
+      this.filteredTrips = await apiGetTrips(
+        this.tripType,
+        null,
+        this.searchText
+      );
     },
 
     statusColor(status) {
@@ -559,10 +659,16 @@ export default {
         th,td{border:1px solid #ccc;padding:4px 8px;text-align:left}
         h2{margin-bottom:4px}</style></head><body>
         <h2>Trip Sheet — ${row.TripNo}</h2>
-        <div>Date: ${row.TripDate} ${row.TripStartTime} &nbsp; Carrier: ${row.Carrier} &nbsp; Route: ${row.FromCity} → ${row.ToCity}</div>
-        <div>Vehicle: ${row.VehicleNo || "—"} &nbsp; Transporter: ${row.Transporter || "—"}</div>
+        <div>Date: ${row.TripDate} ${row.TripStartTime} &nbsp; Carrier: ${
+        row.Carrier
+      } &nbsp; Route: ${row.FromCity} → ${row.ToCity}</div>
+        <div>Vehicle: ${row.VehicleNo || "—"} &nbsp; Transporter: ${
+        row.Transporter || "—"
+      }</div>
         <table><thead><tr><th>Booking No</th><th>Date</th><th>Status</th><th>Consignee</th></tr></thead>
-        <tbody>${rowsHtml || '<tr><td colspan="4">No bookings loaded.</td></tr>'}</tbody></table>
+        <tbody>${
+          rowsHtml || '<tr><td colspan="4">No bookings loaded.</td></tr>'
+        }</tbody></table>
         </body></html>`;
       const win = window.open("", "_blank");
       if (win) {
@@ -590,7 +696,11 @@ export default {
         ...this.vehicleForm,
       });
       if (res.success) {
-        this.$q.notify({ message: "Vehicle / carrier updated!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Vehicle / carrier updated!",
+          color: "positive",
+          position: "top",
+        });
         this.showVehicleDialog = false;
         await this.loadTrips();
       }
@@ -599,7 +709,11 @@ export default {
     async deleteTrip(row) {
       const res = await apiDeleteTrip(row.TripId);
       if (res.success) {
-        this.$q.notify({ message: `Trip ${row.TripNo} deleted.`, color: "positive", position: "top" });
+        this.$q.notify({
+          message: `Trip ${row.TripNo} deleted.`,
+          color: "positive",
+          position: "top",
+        });
         await this.loadTrips();
       }
     },
@@ -615,5 +729,4 @@ export default {
   margin-bottom: 2px;
   font-weight: 500;
 }
-
 </style>

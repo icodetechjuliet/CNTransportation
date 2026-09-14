@@ -6,7 +6,9 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Booking Office Commission</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
           </div>
@@ -31,8 +33,8 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -43,7 +45,7 @@
                   :options="mockData.bookingOffices"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -58,7 +60,7 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -69,7 +71,7 @@
                   :options="mockData.items"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -81,7 +83,11 @@
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="fromDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="fromDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.FromDate"
                           mask="DD/MM/YYYY"
@@ -95,7 +101,7 @@
                 </q-input>
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -107,7 +113,11 @@
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="toDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="toDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.ToDate"
                           mask="DD/MM/YYYY"
@@ -120,7 +130,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -131,7 +141,7 @@
                   v-model="form.InwardCommissionRate"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -142,8 +152,15 @@
                   v-model="form.OutwardCommissionRate"
                 />
               </div>
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                />
               </div>
             </div>
           </q-card-section>
@@ -154,9 +171,15 @@
 </template>
 
 <script>
-import { apiGetCommissionById, apiSaveCommission, MOCK_DATA } from "./DMSBookingOfficeCommission.vue";
+import entryNavigation from "src/mixins/entryNavigation.js";
+import {
+  apiGetCommissionById,
+  apiSaveCommission,
+  MOCK_DATA_BOOKING_OFFICE_COMMISSION as MOCK_DATA,
+} from "src/data/bookingOfficeData.js";
 
 export default {
+  mixins: [entryNavigation],
   name: "DMSBookingOfficeCommissionView",
 
   props: {
@@ -216,14 +239,23 @@ export default {
 
     async saveCommission() {
       if (!this.form.BookingOfficeName || !this.form.AccountName) {
-        this.$q.notify({ message: "Booking Office and Account are required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Booking Office and Account are required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       const res = await apiSaveCommission({ ...this.form });
       if (res.success) {
+        this.notifyEntrySaved();
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Commission saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Commission saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },

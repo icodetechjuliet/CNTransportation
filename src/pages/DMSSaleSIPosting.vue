@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="sipostinglist" />
-</template>
+<template><GenericReportList report-key="sipostinglist" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

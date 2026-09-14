@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="bocommissionscreen" />
-</template>
+<template><GenericReportList report-key="bocommissionscreen" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

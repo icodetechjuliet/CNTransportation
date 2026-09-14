@@ -20,7 +20,6 @@
           <!-- ── Invoices already generated ── -->
           <q-table
             square
-            dense
             :rows="invoices"
             :columns="invoiceColumns"
             row-key="InvoiceID"
@@ -48,7 +47,10 @@
 
             <template v-slot:body-cell-Status="props">
               <q-td :props="props">
-                <q-badge :color="props.value === 'Paid' ? 'positive' : 'orange'" :label="props.value" />
+                <q-badge
+                  :color="props.value === 'Paid' ? 'positive' : 'orange'"
+                  :label="props.value"
+                />
               </q-td>
             </template>
 
@@ -61,20 +63,26 @@
                   outline
                   class="edit-icon-style"
                   @click="printInvoice(props.row)"
-                  ><q-tooltip>Print</q-tooltip></q-btn
                 >
+                  <q-tooltip>Print</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
 
           <!-- ── Door deliveries still awaiting an invoice ── -->
           <div class="row items-center q-px-sm q-pt-md q-pb-xs">
-            <q-icon name="pending_actions" size="18px" class="q-mr-xs text-primary" />
-            <span class="text-subtitle2 text-weight-bold">Pending Invoice Generation</span>
+            <q-icon
+              name="pending_actions"
+              size="18px"
+              class="q-mr-xs text-primary"
+            />
+            <span class="text-subtitle2 text-weight-bold">
+              Pending Invoice Generation
+            </span>
           </div>
           <q-table
             square
-            dense
             flat
             bordered
             :rows="pendingDoorDeliveries"
@@ -127,22 +135,55 @@ export default {
       pagination: { page: 1, rowsPerPage: 15 },
 
       invoiceColumns: [
-        { name: "InvoiceNo", label: "Invoice No.", field: "InvoiceNo", sortable: true },
-        { name: "InvoiceDate", label: "Date", field: "InvoiceDate", sortable: true },
-        { name: "DoorDeliveryNo", label: "Door Delivery No.", field: "DoorDeliveryNo" },
+        {
+          name: "InvoiceNo",
+          label: "Invoice No.",
+          field: "InvoiceNo",
+          sortable: true,
+        },
+        {
+          name: "InvoiceDate",
+          label: "Date",
+          field: "InvoiceDate",
+          sortable: true,
+        },
+        {
+          name: "DoorDeliveryNo",
+          label: "Door Delivery No.",
+          field: "DoorDeliveryNo",
+        },
         { name: "Transporter", label: "Transporter", field: "Transporter" },
         { name: "Vehicle", label: "Vehicle", field: "Vehicle" },
-        { name: "Amount", label: "Amount", field: "Amount", align: "right", sortable: true },
+        {
+          name: "Amount",
+          label: "Amount",
+          field: "Amount",
+          align: "right",
+          sortable: true,
+        },
         { name: "Status", label: "Status", field: "Status", align: "center" },
         { name: "action", label: "Action", field: "action" },
       ],
 
       pendingColumns: [
-        { name: "DoorDeliveryNo", label: "Door Delivery No.", field: "DoorDeliveryNo" },
+        {
+          name: "DoorDeliveryNo",
+          label: "Door Delivery No.",
+          field: "DoorDeliveryNo",
+        },
         { name: "DoorDeliveryDate", label: "Date", field: "DoorDeliveryDate" },
-        { name: "TransporterAccount", label: "Transporter", field: "TransporterAccount" },
+        {
+          name: "TransporterAccount",
+          label: "Transporter",
+          field: "TransporterAccount",
+        },
         { name: "Vehicle", label: "Vehicle", field: "Vehicle" },
-        { name: "VehicleAmount", label: "Vehicle Amt.", field: "VehicleAmount", align: "right" },
+        {
+          name: "VehicleAmount",
+          label: "Vehicle Amt.",
+          field: "VehicleAmount",
+          align: "right",
+        },
         { name: "action", label: "Action", field: "action" },
       ],
     };
@@ -151,7 +192,9 @@ export default {
   computed: {
     pendingDoorDeliveries() {
       const invoicedIds = new Set(this.invoices.map((i) => i.DoorDeliveryID));
-      return this.doorDeliveries.filter((d) => !invoicedIds.has(d.DoorDeliveryID));
+      return this.doorDeliveries.filter(
+        (d) => !invoicedIds.has(d.DoorDeliveryID)
+      );
     },
   },
 
@@ -167,13 +210,23 @@ export default {
 
     async generateInvoice(row) {
       try {
-        const res = await apiGenerateInvoiceFromDoorDelivery(row.DoorDeliveryID);
+        const res = await apiGenerateInvoiceFromDoorDelivery(
+          row.DoorDeliveryID
+        );
         if (res.success) {
-          this.$q.notify({ message: `Invoice ${res.data.InvoiceNo} generated!`, color: "positive", position: "top" });
+          this.$q.notify({
+            message: `Invoice ${res.data.InvoiceNo} generated!`,
+            color: "positive",
+            position: "top",
+          });
           await this.loadAll();
         }
       } catch (err) {
-        this.$q.notify({ message: err.message, color: "negative", position: "top" });
+        this.$q.notify({
+          message: err.message,
+          color: "negative",
+          position: "top",
+        });
       }
     },
 

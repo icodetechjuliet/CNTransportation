@@ -19,7 +19,6 @@
 
           <q-table
             square
-            dense
             :rows="filteredRows"
             :columns="tableColumns"
             :row-key="def.idField"
@@ -109,7 +108,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template
@@ -118,7 +119,13 @@
               v-slot:[bodyCellSlot(field.name)]="props"
             >
               <q-td :props="props">
-                <q-icon :name="props.value ? 'check_circle' : 'radio_button_unchecked'" :color="props.value ? 'positive' : 'grey-5'" size="18px" />
+                <q-icon
+                  :name="
+                    props.value ? 'check_circle' : 'radio_button_unchecked'
+                  "
+                  :color="props.value ? 'positive' : 'grey-5'"
+                  size="18px"
+                />
               </q-td>
             </template>
 
@@ -131,8 +138,9 @@
                   outline
                   class="edit-icon-style mody"
                   @click="openEdit(props.row)"
-                  ><q-tooltip>Edit</q-tooltip></q-btn
                 >
+                  <q-tooltip>Edit</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
@@ -140,8 +148,9 @@
                   outline
                   class="edit-icon-style q-ml-xs"
                   @click="deleteRow(props.row)"
-                  ><q-tooltip>Delete</q-tooltip></q-btn
                 >
+                  <q-tooltip>Delete</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
@@ -156,7 +165,11 @@
     <q-dialog v-model="showDialog">
       <q-card style="min-width: 480px">
         <q-card-section class="row items-center">
-          <div class="text-h6">{{ dialogMode === "add" ? "New " + def.title : "Edit " + def.title }}</div>
+          <div class="text-h6">
+            {{
+              dialogMode === "add" ? "New " + def.title : "Edit " + def.title
+            }}
+          </div>
           <q-space />
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
@@ -166,6 +179,7 @@
             <template v-for="field in def.fields" :key="field.name">
               <div :class="field.type === 'checkbox' ? 'col-6' : 'col-12'">
                 <q-select
+                  square=""
                   v-if="field.type === 'select'"
                   v-model="form[field.name]"
                   :options="field.options"
@@ -189,6 +203,7 @@
                   </q-item-section>
                 </q-item>
                 <q-input
+                  square=""
                   v-else-if="field.type === 'date'"
                   v-model="form[field.name]"
                   :label="field.label"
@@ -199,13 +214,22 @@
                 >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-date v-model="form[field.name]" mask="DD-MM-YYYY" minimal style="width: 280px" />
+                      <q-popup-proxy
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date
+                          v-model="form[field.name]"
+                          mask="DD-MM-YYYY"
+                          minimal
+                          style="width: 280px"
+                        />
                       </q-popup-proxy>
                     </q-icon>
                   </template>
                 </q-input>
                 <q-input
+                  square=""
                   v-else
                   v-model="form[field.name]"
                   :label="field.label"
@@ -219,9 +243,17 @@
           </div>
         </q-card-section>
         <q-separator />
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
+        <q-card-actions
+          align="right"
+          class="q-gutter-sm q-pt-none q-pb-none q-pr-none"
+        >
           <q-btn label="Cancel" v-close-popup />
-          <q-btn color="primary" class="m-btn-style" label="Save" @click="save" />
+          <q-btn
+            color="primary"
+            class="m-btn-style"
+            label="Save"
+            @click="save"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -229,7 +261,12 @@
 </template>
 
 <script>
-import { getEntityDef, apiGetMasterList, apiSaveMasterRow, apiDeleteMasterRow } from "src/data/mastersData.js";
+import {
+  getEntityDef,
+  apiGetMasterList,
+  apiSaveMasterRow,
+  apiDeleteMasterRow,
+} from "src/data/mastersData.js";
 
 export default {
   name: "GenericMasterList",
@@ -261,10 +298,18 @@ export default {
         name: f.name,
         label: f.label,
         field: f.name,
-        align: f.type === "number" ? "right" : f.type === "checkbox" ? "center" : "left",
+        align:
+          f.type === "number"
+            ? "right"
+            : f.type === "checkbox"
+            ? "center"
+            : "left",
         sortable: f.type !== "checkbox",
       }));
-      return [...fieldColumns, { name: "action", label: "Action", field: "action" }];
+      return [
+        ...fieldColumns,
+        { name: "action", label: "Action", field: "action" },
+      ];
     },
     checkboxFields() {
       return this.def.fields.filter((f) => f.type === "checkbox");
@@ -312,14 +357,19 @@ export default {
       }
       const s = this.searchText.toLowerCase();
       this.filteredRows = this.allRows.filter((row) =>
-        this.def.fields.some((f) => String(row[f.name] ?? "").toLowerCase().includes(s))
+        this.def.fields.some((f) =>
+          String(row[f.name] ?? "")
+            .toLowerCase()
+            .includes(s)
+        )
       );
     },
 
     emptyForm() {
       const form = {};
       this.def.fields.forEach((f) => {
-        form[f.name] = f.type === "checkbox" ? false : f.type === "number" ? 0 : "";
+        form[f.name] =
+          f.type === "checkbox" ? false : f.type === "number" ? 0 : "";
       });
       return form;
     },
@@ -339,7 +389,11 @@ export default {
     async save() {
       const res = await apiSaveMasterRow(this.entity, { ...this.form });
       if (res.success) {
-        this.$q.notify({ message: this.def.title + " saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: this.def.title + " saved!",
+          color: "positive",
+          position: "top",
+        });
         this.showDialog = false;
         await this.loadRows();
       }
@@ -348,7 +402,11 @@ export default {
     async deleteRow(row) {
       const res = await apiDeleteMasterRow(this.entity, row[this.def.idField]);
       if (res.success) {
-        this.$q.notify({ message: this.def.title + " deleted.", color: "positive", position: "top" });
+        this.$q.notify({
+          message: this.def.title + " deleted.",
+          color: "positive",
+          position: "top",
+        });
         await this.loadRows();
       }
     },

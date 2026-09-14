@@ -6,14 +6,32 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Booking Web</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Web No." v-model="form.BookingWebNo" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Web No."
+                v-model="form.BookingWebNo"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Status" v-model="form.Status" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Status"
+                v-model="form.Status"
+              />
             </div>
           </div>
 
@@ -37,12 +55,23 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Web Date" v-model="form.BookingWebDate">
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Web Date"
+                  v-model="form.BookingWebDate"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="webDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="webDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.BookingWebDate"
                           mask="DD/MM/YYYY"
@@ -55,10 +84,17 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Web Time" v-model="form.BookingWebTime" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Web Time"
+                  v-model="form.BookingWebTime"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -73,7 +109,7 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -89,7 +125,7 @@
                 />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -104,7 +140,7 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -119,7 +155,7 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -130,17 +166,40 @@
                   :options="['Box', 'Parcel', 'Pallet', 'Crate', 'Drum']"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Bill No." v-model="form.BillNo" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Bill No."
+                  v-model="form.BillNo"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Bill Value" type="number" v-model="form.BillValue" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Bill Value"
+                  type="number"
+                  v-model="form.BillValue"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Quantity" type="number" v-model="form.Quantity" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Quantity"
+                  type="number"
+                  v-model="form.Quantity"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -151,7 +210,7 @@
                   :options="['ToPay', 'Paid', 'TBBS', 'TBBR']"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -163,8 +222,15 @@
                 />
               </div>
 
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                />
               </div>
             </div>
           </q-card-section>
@@ -175,9 +241,15 @@
 </template>
 
 <script>
-import { apiGetWebBookingById, apiSaveWebBooking, MOCK_DATA } from "./DMSBookingWeb.vue";
+import entryNavigation from "src/mixins/entryNavigation.js";
+import {
+  apiGetWebBookingById,
+  apiSaveWebBooking,
+  MOCK_DATA_BOOKING_WEB as MOCK_DATA,
+} from "src/data/bookingData.js";
 
 export default {
+  mixins: [entryNavigation],
   name: "DMSBookingWebView",
 
   // Set by DynamicTab.vue's openTab() from the `?mode=...&webId=...` query
@@ -246,14 +318,23 @@ export default {
 
     async saveWebBooking() {
       if (!this.form.FromCity || !this.form.ToCity) {
-        this.$q.notify({ message: "From City and To City are required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "From City and To City are required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       const res = await apiSaveWebBooking({ ...this.form });
       if (res.success) {
+        this.notifyEntrySaved();
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Booking Web saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Booking Web saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },

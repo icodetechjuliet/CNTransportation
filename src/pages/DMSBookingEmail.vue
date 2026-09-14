@@ -8,7 +8,9 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="mail" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{ filteredBookings.length }}</span>
+                <span class="total-stat-count">
+                  {{ filteredBookings.length }}
+                </span>
                 <span class="total-stat-label">Total Bookings</span>
               </div>
             </div>
@@ -92,26 +94,46 @@
                   outline
                   class="edit-icon-style"
                   @click="openSendDialog(props.row)"
-                  ><q-tooltip>Send Email</q-tooltip></q-btn
                 >
+                  <q-tooltip>Send Email</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
             <template v-slot:item="props">
               <div class="mobile-job-card">
-                <div class="mjc-header" @click="toggleMobileCard(props.row.BookingId)">
+                <div
+                  class="mjc-header"
+                  @click="toggleMobileCard(props.row.BookingId)"
+                >
                   <div class="mjc-header-left">
-                    <div class="mjc-job-badge"><q-icon name="mail" size="14px" /></div>
+                    <div class="mjc-job-badge">
+                      <q-icon name="mail" size="14px" />
+                    </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
-                      <span class="mjc-job-date">{{ props.row.BookingDate }}</span>
+                      <span class="mjc-job-date">
+                        {{ props.row.BookingDate }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge v-if="!props.row.LastSentOn" class="mjc-status-badge" color="grey">Not Sent</q-badge>
-                    <q-badge v-else class="mjc-status-badge" color="positive">Sent</q-badge>
+                    <q-badge
+                      v-if="!props.row.LastSentOn"
+                      class="mjc-status-badge"
+                      color="grey"
+                    >
+                      Not Sent
+                    </q-badge>
+                    <q-badge v-else class="mjc-status-badge" color="positive">
+                      Sent
+                    </q-badge>
                     <q-icon
-                      :name="expandedMobileCards.includes(props.row.BookingId) ? 'expand_less' : 'expand_more'"
+                      :name="
+                        expandedMobileCards.includes(props.row.BookingId)
+                          ? 'expand_less'
+                          : 'expand_more'
+                      "
                       size="20px"
                       color="grey-6"
                     />
@@ -119,18 +141,53 @@
                 </div>
 
                 <div class="mjc-actions">
-                  <q-btn dense unelevated icon="mail" label="Send Email" class="mjc-btn mjc-btn-edit" @click="openSendDialog(props.row)" />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="mail"
+                    label="Send Email"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="openSendDialog(props.row)"
+                  />
                 </div>
 
                 <transition name="mobile-expand">
-                  <div v-if="expandedMobileCards.includes(props.row.BookingId)" class="mjc-details">
+                  <div
+                    v-if="expandedMobileCards.includes(props.row.BookingId)"
+                    class="mjc-details"
+                  >
                     <q-separator class="mjc-divider" />
                     <div class="mjc-details-grid">
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignor</span><span class="mjc-detail-value">{{ props.row.ConsignorName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignee</span><span class="mjc-detail-value">{{ props.row.ConsigneeName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignor Email</span><span class="mjc-detail-value">{{ props.row.ConsignorEmail || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignee Email</span><span class="mjc-detail-value">{{ props.row.ConsigneeEmail || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Last Sent To</span><span class="mjc-detail-value">{{ props.row.LastSentTo || "—" }}</span></div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignor</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsignorName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignee</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsigneeName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignor Email</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsignorEmail || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignee Email</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsigneeEmail || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Last Sent To</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.LastSentTo || "—" }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </transition>
@@ -146,26 +203,54 @@
     ══════════════════════════════════════ -->
     <q-dialog v-model="showSendDialog" persistent>
       <q-card style="min-width: 360px">
-        <q-card-section class="text-subtitle1">Send Booking Email — {{ sendForm.BookingNo }}</q-card-section>
+        <q-card-section class="text-subtitle1">
+          Send Booking Email — {{ sendForm.BookingNo }}
+        </q-card-section>
         <q-card-section class="q-pt-none">
-          <div class="row q-col-gutter-sm">
-            <div class="col-12">
-              <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+          <div class="row q-col-gutter-sm items-start">
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-item
+                tag="label"
+                v-ripple
+                bg-color="blue-1"
+                class="chckbx-style full-width"
+              >
                 <q-item-section avatar>
-                  <q-checkbox dense v-model="sendForm.toConsignor" val="orange" color="orange" intermediate-icon="black" />
+                  <q-checkbox
+                    dense
+                    v-model="sendForm.toConsignor"
+                    val="orange"
+                    color="orange"
+                    intermediate-icon="black"
+                  />
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label dense>Consignor ({{ sendForm.ConsignorEmail || "—" }})</q-item-label>
+                  <q-item-label dense>
+                    Consignor ({{ sendForm.ConsignorEmail || "—" }})
+                  </q-item-label>
                 </q-item-section>
               </q-item>
             </div>
-            <div class="col-12">
-              <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-item
+                tag="label"
+                v-ripple
+                bg-color="blue-1"
+                class="chckbx-style full-width"
+              >
                 <q-item-section avatar>
-                  <q-checkbox dense v-model="sendForm.toConsignee" val="orange" color="orange" intermediate-icon="black" />
+                  <q-checkbox
+                    dense
+                    v-model="sendForm.toConsignee"
+                    val="orange"
+                    color="orange"
+                    intermediate-icon="black"
+                  />
                 </q-item-section>
                 <q-item-section>
-                  <q-item-label dense>Consignee ({{ sendForm.ConsigneeEmail || "—" }})</q-item-label>
+                  <q-item-label dense>
+                    Consignee ({{ sendForm.ConsigneeEmail || "—" }})
+                  </q-item-label>
                 </q-item-section>
               </q-item>
             </div>
@@ -264,8 +349,18 @@ export default {
 
       tableColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "BookingNo", label: "Booking No.", field: "BookingNo", sortable: true },
-        { name: "BookingDate", label: "Date", field: "BookingDate", sortable: true },
+        {
+          name: "BookingNo",
+          label: "Booking No.",
+          field: "BookingNo",
+          sortable: true,
+        },
+        {
+          name: "BookingDate",
+          label: "Date",
+          field: "BookingDate",
+          sortable: true,
+        },
         { name: "ConsignorName", label: "Consignor", field: "ConsignorName" },
         { name: "ConsigneeName", label: "Consignee", field: "ConsigneeName" },
         { name: "LastSentOn", label: "Last Sent On", field: "LastSentOn" },
@@ -307,20 +402,32 @@ export default {
 
     sendEmail() {
       const recipients = [];
-      if (this.sendForm.toConsignor && this.sendForm.ConsignorEmail) recipients.push(this.sendForm.ConsignorEmail);
-      if (this.sendForm.toConsignee && this.sendForm.ConsigneeEmail) recipients.push(this.sendForm.ConsigneeEmail);
+      if (this.sendForm.toConsignor && this.sendForm.ConsignorEmail)
+        recipients.push(this.sendForm.ConsignorEmail);
+      if (this.sendForm.toConsignee && this.sendForm.ConsigneeEmail)
+        recipients.push(this.sendForm.ConsigneeEmail);
 
       if (!recipients.length) {
-        this.$q.notify({ message: "Select at least one recipient", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Select at least one recipient",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
 
-      const row = MOCK_EMAIL_BOOKINGS.find((b) => b.BookingId === this.sendForm.BookingId);
+      const row = MOCK_EMAIL_BOOKINGS.find(
+        (b) => b.BookingId === this.sendForm.BookingId
+      );
       if (row) {
         row.LastSentOn = new Date().toLocaleString();
         row.LastSentTo = recipients.join(", ");
       }
-      this.$q.notify({ message: "Email sent (mock)", color: "positive", position: "top" });
+      this.$q.notify({
+        message: "Email sent (mock)",
+        color: "positive",
+        position: "top",
+      });
       this.showSendDialog = false;
       this.loadBookings();
     },

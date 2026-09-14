@@ -8,14 +8,18 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="trending_up" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count text-positive">{{ totalIncome }}</span>
+                <span class="total-stat-count text-positive">
+                  {{ totalIncome }}
+                </span>
                 <span class="total-stat-label">Total Income</span>
               </div>
             </div>
             <div class="total-stat-tile total-stat-tile--inline q-ml-sm">
               <q-icon name="trending_down" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count text-negative">{{ totalExpense }}</span>
+                <span class="total-stat-count text-negative">
+                  {{ totalExpense }}
+                </span>
                 <span class="total-stat-label">Total Expense</span>
               </div>
             </div>
@@ -29,7 +33,6 @@
                EagleParcel WinForms app. ── -->
           <q-table
             square
-            dense
             :rows="filteredEntries"
             :columns="tableColumns"
             row-key="EntryId"
@@ -83,6 +86,7 @@
                   />
 
                   <q-select
+                    square=""
                     v-model="typeFilter"
                     :options="['All', 'Income', 'Expense']"
                     dense
@@ -129,7 +133,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-EntryType="props">
@@ -150,8 +156,9 @@
                   outline
                   class="edit-icon-style mody"
                   @click="editEntry(props.row)"
-                  ><q-tooltip>Edit</q-tooltip></q-btn
                 >
+                  <q-tooltip>Edit</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
@@ -159,8 +166,9 @@
                   outline
                   class="edit-icon-style q-ml-xs"
                   @click="deleteEntry(props.row)"
-                  ><q-tooltip>Delete</q-tooltip></q-btn
                 >
+                  <q-tooltip>Delete</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
@@ -177,22 +185,47 @@
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge :color="props.row.EntryType === 'Income' ? 'positive' : 'negative'" :label="props.row.EntryType" />
+                    <q-badge
+                      :color="
+                        props.row.EntryType === 'Income'
+                          ? 'positive'
+                          : 'negative'
+                      "
+                      :label="props.row.EntryType"
+                    />
                   </div>
                 </div>
                 <div class="mjc-actions">
-                  <q-btn dense unelevated icon="fa-solid fa-pen-to-square" label="Edit" class="mjc-btn mjc-btn-edit" @click="editEntry(props.row)" />
-                  <q-btn dense unelevated icon="fa-solid fa-trash" label="Delete" class="mjc-btn mjc-btn-view" @click="deleteEntry(props.row)" />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-pen-to-square"
+                    label="Edit"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="editEntry(props.row)"
+                  />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-trash"
+                    label="Delete"
+                    class="mjc-btn mjc-btn-view"
+                    @click="deleteEntry(props.row)"
+                  />
                 </div>
                 <div class="mjc-details">
                   <div class="mjc-details-grid">
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Amount</span>
-                      <span class="mjc-detail-value">{{ props.row.Amount }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.Amount }}
+                      </span>
                     </div>
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Date</span>
-                      <span class="mjc-detail-value">{{ props.row.EntryDate }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.EntryDate }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -202,99 +235,24 @@
         </q-card>
       </div>
     </q-page>
-
-    <!-- ══════════════════════════════════════
-         Income/Expense Add / Edit Dialog — canonical compact-dialog shape
-         (ReferredDetailsDialog.vue), same as DMSTripCharge.vue's own.
-    ══════════════════════════════════════ -->
-    <q-dialog v-model="showDialog">
-      <q-card style="min-width: 480px">
-        <q-card-section class="row items-center">
-          <div class="text-h6">{{ dialogMode === "add" ? "New Income / Expense Entry" : "Edit Income / Expense Entry" }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section>
-          <div class="row q-col-gutter-sm">
-            <div class="col-12">
-              <span class="field-label">Trip No.</span>
-              <q-select
-                v-model="form.TripNo"
-                :options="tripOptions.filter((t) => t !== 'All')"
-                dense
-                outlined
-                bg-color="blue-1"
-              />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Type</span>
-              <q-select
-                v-model="form.EntryType"
-                :options="['Income', 'Expense']"
-                dense
-                outlined
-                bg-color="blue-1"
-                @update:model-value="onTypeChange"
-              />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Category</span>
-              <q-select
-                v-model="form.Category"
-                :options="categoryOptions"
-                dense
-                outlined
-                bg-color="blue-1"
-              />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Entry Date</span>
-              <q-input v-model="form.EntryDate" dense outlined bg-color="blue-1" placeholder="dd/mm/yyyy">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="entryDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date
-                        v-model="form.EntryDate"
-                        mask="DD/MM/YYYY"
-                        minimal
-                        style="width: 280px"
-                        @update:model-value="$refs.entryDateProxy.hide()"
-                      />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-            <div class="col-6">
-              <span class="field-label">Amount</span>
-              <q-input v-model="form.Amount" type="number" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-12">
-              <span class="field-label">Remarks</span>
-              <q-input v-model="form.Remarks" dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow />
-            </div>
-          </div>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
-          <q-btn label="Cancel" v-close-popup />
-          <q-btn color="primary" class="m-btn-style" label="Save" @click="saveEntry" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
+import entryNavigation from "src/mixins/entryNavigation.js";
 import { apiGetTrips } from "src/data/tripData.js";
 
-const INCOME_CATEGORIES = ["Freight Income", "Detention Income", "Other Income"];
-const EXPENSE_CATEGORIES = ["Diesel Expense", "Toll Expense", "Driver Batta", "Other Expense"];
+const INCOME_CATEGORIES = [
+  "Freight Income",
+  "Detention Income",
+  "Other Income",
+];
+const EXPENSE_CATEGORIES = [
+  "Diesel Expense",
+  "Toll Expense",
+  "Driver Batta",
+  "Other Expense",
+];
 
 const MOCK_ENTRIES = [
   {
@@ -360,6 +318,8 @@ function apiDeleteEntry(id) {
 }
 
 export default {
+  mixins: [entryNavigation],
+  entryReload: "loadEntries",
   name: "DMSTripIncomeExpense",
 
   data() {
@@ -377,10 +337,32 @@ export default {
 
       baseColumns: [
         { name: "TripNo", label: "Trip No.", field: "TripNo", sortable: true },
-        { name: "EntryType", label: "Type", field: "EntryType", align: "center", sortable: true },
-        { name: "Category", label: "Category", field: "Category", sortable: true },
-        { name: "EntryDate", label: "Date", field: "EntryDate", sortable: true },
-        { name: "Amount", label: "Amount", field: "Amount", align: "right", sortable: true },
+        {
+          name: "EntryType",
+          label: "Type",
+          field: "EntryType",
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "Category",
+          label: "Category",
+          field: "Category",
+          sortable: true,
+        },
+        {
+          name: "EntryDate",
+          label: "Date",
+          field: "EntryDate",
+          sortable: true,
+        },
+        {
+          name: "Amount",
+          label: "Amount",
+          field: "Amount",
+          align: "right",
+          sortable: true,
+        },
         { name: "Remarks", label: "Remarks", field: "Remarks" },
         { name: "action", label: "Action", field: "action" },
       ],
@@ -392,7 +374,9 @@ export default {
       return this.baseColumns;
     },
     categoryOptions() {
-      return this.form.EntryType === "Income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+      return this.form.EntryType === "Income"
+        ? INCOME_CATEGORIES
+        : EXPENSE_CATEGORIES;
     },
     totalIncome() {
       return this.filteredEntries
@@ -468,20 +452,47 @@ export default {
     openAddEntry() {
       this.form = this.emptyForm();
       this.dialogMode = "add";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSTripIncomeExpenseForm?mode=${this.dialogMode}&id=${
+            this.form.EntryId || ""
+          }`,
+          "Trip Income / Expense"
+        );
+      }
     },
 
     editEntry(row) {
       this.form = { ...row };
       this.dialogMode = "edit";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSTripIncomeExpenseForm?mode=${this.dialogMode}&id=${
+            this.form.EntryId || ""
+          }`,
+          "Trip Income / Expense"
+        );
+      }
     },
 
     async saveEntry() {
       const res = await apiSaveEntry({ ...this.form });
       if (res.success) {
-        this.$q.notify({ message: "Entry saved!", color: "positive", position: "top" });
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
+        this.$q.notify({
+          message: "Entry saved!",
+          color: "positive",
+          position: "top",
+        });
         this.showDialog = false;
+        this.notifyEntrySaved();
         await this.loadEntries();
       }
     },
@@ -489,20 +500,18 @@ export default {
     async deleteEntry(row) {
       const res = await apiDeleteEntry(row.EntryId);
       if (res.success) {
-        this.$q.notify({ message: "Entry deleted.", color: "positive", position: "top" });
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
+        this.$q.notify({
+          message: "Entry deleted.",
+          color: "positive",
+          position: "top",
+        });
         await this.loadEntries();
       }
     },
   },
 };
 </script>
-
-<style scoped>
-.field-label {
-  display: block;
-  font-size: 11px;
-  color: #555;
-  margin-bottom: 2px;
-  font-weight: 500;
-}
-</style>

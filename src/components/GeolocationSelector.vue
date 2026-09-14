@@ -1,5 +1,4 @@
-<template>
-  <q-dialog
+<template><q-dialog
     v-model="visible"
     persistent
     @hide="destroyMap"
@@ -296,8 +295,7 @@
         />
       </q-card-actions>
     </q-card>
-  </q-dialog>
-</template>
+  </q-dialog></template>
 
 <script>
 import { markRaw } from "vue";

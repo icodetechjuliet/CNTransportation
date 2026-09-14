@@ -11,17 +11,45 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Trip</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
-              <span class="header_text2">{{ isReadonly ? "View" : "Modify" }}</span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
+              <span class="header_text2">
+                {{ isReadonly ? "View" : "Modify" }}
+              </span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Trip No." v-model="form.TripNo" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Trip No."
+                v-model="form.TripNo"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Date" v-model="form.TripDate" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Date"
+                v-model="form.TripDate"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Carrier" v-model="form.Carrier" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Carrier"
+                v-model="form.Carrier"
+              />
             </div>
           </div>
 
@@ -47,37 +75,65 @@
                     content-class="desktop-actions-dropdown"
                   >
                     <q-list class="desktop-actions-list">
-                      <q-item clickable v-close-popup class="desktop-actions-item" @click="saveAndNew">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        class="desktop-actions-item"
+                        @click="saveAndNew"
+                      >
                         <q-item-section avatar>
                           <div class="action-icon-badge bg-save-new">
                             <q-icon name="post_add" color="white" />
                           </div>
                         </q-item-section>
-                        <q-item-section><q-item-label>Save +</q-item-label></q-item-section>
+                        <q-item-section>
+                          <q-item-label>Save +</q-item-label>
+                        </q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup class="desktop-actions-item" @click="exportTrip">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        class="desktop-actions-item"
+                        @click="exportTrip"
+                      >
                         <q-item-section avatar>
                           <div class="action-icon-badge bg-report">
                             <q-icon name="file_download" color="white" />
                           </div>
                         </q-item-section>
-                        <q-item-section><q-item-label>Export</q-item-label></q-item-section>
+                        <q-item-section>
+                          <q-item-label>Export</q-item-label>
+                        </q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup class="desktop-actions-item" @click="printTrip">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        class="desktop-actions-item"
+                        @click="printTrip"
+                      >
                         <q-item-section avatar>
                           <div class="action-icon-badge bg-export">
                             <q-icon name="print" color="white" />
                           </div>
                         </q-item-section>
-                        <q-item-section><q-item-label>Print</q-item-label></q-item-section>
+                        <q-item-section>
+                          <q-item-label>Print</q-item-label>
+                        </q-item-section>
                       </q-item>
-                      <q-item clickable v-close-popup class="desktop-actions-item" @click="resetForm">
+                      <q-item
+                        clickable
+                        v-close-popup
+                        class="desktop-actions-item"
+                        @click="resetForm"
+                      >
                         <q-item-section avatar>
                           <div class="action-icon-badge bg-reset">
                             <q-icon name="restart_alt" color="white" />
                           </div>
                         </q-item-section>
-                        <q-item-section><q-item-label>Reset</q-item-label></q-item-section>
+                        <q-item-section>
+                          <q-item-label>Reset</q-item-label>
+                        </q-item-section>
                       </q-item>
                     </q-list>
                   </q-btn-dropdown>
@@ -108,63 +164,275 @@
 
             <!-- General Details -->
             <q-tab-panel name="general">
-              <div class="row q-col-gutter-sm">
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="Time" placeholder="hh:mm AM/PM" v-model="form.TripStartTime" :readonly="isReadonly" />
+              <div class="row q-col-gutter-sm items-start">
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Time"
+                    placeholder="hh:mm AM/PM"
+                    v-model="form.TripStartTime"
+                    :readonly="isReadonly"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="End Date" placeholder="dd-mm-yyyy" v-model="form.TripEndDate" :readonly="isReadonly">
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="End Date"
+                    placeholder="dd-mm-yyyy"
+                    v-model="form.TripEndDate"
+                    :readonly="isReadonly"
+                  >
                     <template v-slot:append>
-                      <q-icon name="event" class="cursor-pointer" v-if="!isReadonly">
-                        <q-popup-proxy ref="endDateProxy" transition-show="scale" transition-hide="scale">
-                          <q-date v-model="form.TripEndDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.endDateProxy.hide()" />
+                      <q-icon
+                        name="event"
+                        class="cursor-pointer"
+                        v-if="!isReadonly"
+                      >
+                        <q-popup-proxy
+                          ref="endDateProxy"
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="form.TripEndDate"
+                            mask="DD-MM-YYYY"
+                            minimal
+                            style="width: 280px"
+                            @update:model-value="$refs.endDateProxy.hide()"
+                          />
                         </q-popup-proxy>
                       </q-icon>
                     </template>
                   </q-input>
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="From City" v-model="form.FromCity" :readonly="isReadonly" v-if="isReadonly" />
-                  <q-select v-else square dense outlined bg-color="blue-1" label="From City" :options="mockData.cities" use-input fill-input display-value="" input-debounce="0" v-model="form.FromCity" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="From City"
+                    v-model="form.FromCity"
+                    :readonly="isReadonly"
+                    v-if="isReadonly"
+                  />
+                  <q-select
+                    v-else
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="From City"
+                    :options="mockData.cities"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    v-model="form.FromCity"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="To City" v-model="form.ToCity" :readonly="isReadonly" v-if="isReadonly" />
-                  <q-select v-else square dense outlined bg-color="blue-1" label="To City" :options="mockData.cities" use-input fill-input display-value="" input-debounce="0" v-model="form.ToCity" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="To City"
+                    v-model="form.ToCity"
+                    :readonly="isReadonly"
+                    v-if="isReadonly"
+                  />
+                  <q-select
+                    v-else
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="To City"
+                    :options="mockData.cities"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    v-model="form.ToCity"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="From B.O." v-model="form.FromBookingOffice" :readonly="isReadonly" v-if="isReadonly" />
-                  <q-select v-else square dense outlined bg-color="blue-1" label="From B.O." :options="mockData.bookingOffices" v-model="form.FromBookingOffice" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="From B.O."
+                    v-model="form.FromBookingOffice"
+                    :readonly="isReadonly"
+                    v-if="isReadonly"
+                  />
+                  <q-select
+                    v-else
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="From B.O."
+                    :options="mockData.bookingOffices"
+                    v-model="form.FromBookingOffice"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="To B.O." v-model="form.ToBookingOffice" :readonly="isReadonly" v-if="isReadonly" />
-                  <q-select v-else square dense outlined bg-color="blue-1" label="To B.O." :options="mockData.bookingOffices" v-model="form.ToBookingOffice" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="To B.O."
+                    v-model="form.ToBookingOffice"
+                    :readonly="isReadonly"
+                    v-if="isReadonly"
+                  />
+                  <q-select
+                    v-else
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="To B.O."
+                    :options="mockData.bookingOffices"
+                    v-model="form.ToBookingOffice"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="Transporter" v-model="form.Transporter" :readonly="isReadonly" v-if="isReadonly" />
-                  <q-select v-else square dense outlined bg-color="blue-1" label="Transporter" :options="mockData.transporters" use-input fill-input display-value="" input-debounce="0" v-model="form.Transporter" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Transporter"
+                    v-model="form.Transporter"
+                    :readonly="isReadonly"
+                    v-if="isReadonly"
+                  />
+                  <q-select
+                    v-else
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Transporter"
+                    :options="mockData.transporters"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    v-model="form.Transporter"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="Vehicle" v-model="form.Vehicle" :readonly="isReadonly" v-if="isReadonly" />
-                  <q-select v-else square dense outlined bg-color="blue-1" label="Vehicle" :options="mockData.vehicles" use-input fill-input display-value="" input-debounce="0" v-model="form.Vehicle" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Vehicle"
+                    v-model="form.Vehicle"
+                    :readonly="isReadonly"
+                    v-if="isReadonly"
+                  />
+                  <q-select
+                    v-else
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Vehicle"
+                    :options="mockData.vehicles"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    v-model="form.Vehicle"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="Vehicle No" v-model="form.VehicleNo" :readonly="isReadonly" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Vehicle No"
+                    v-model="form.VehicleNo"
+                    :readonly="isReadonly"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="Adv." type="number" v-model="form.AdvanceAmount" :readonly="isReadonly" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Adv."
+                    type="number"
+                    v-model="form.AdvanceAmount"
+                    :readonly="isReadonly"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="Wt." type="number" v-model="form.Weight" :readonly="isReadonly" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Wt."
+                    type="number"
+                    v-model="form.Weight"
+                    :readonly="isReadonly"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" label="Driver" v-model="form.Driver" :readonly="isReadonly" v-if="isReadonly" />
-                  <q-select v-else square dense outlined bg-color="blue-1" label="Driver" :options="mockData.drivers" use-input fill-input display-value="" input-debounce="0" v-model="form.Driver" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Driver"
+                    v-model="form.Driver"
+                    :readonly="isReadonly"
+                    v-if="isReadonly"
+                  />
+                  <q-select
+                    v-else
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Driver"
+                    :options="mockData.drivers"
+                    use-input
+                    fill-input
+                    display-value=""
+                    input-debounce="0"
+                    v-model="form.Driver"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" :readonly="isReadonly" />
+                <div class="col-12 col-sm-6 col-md-6">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    label="Remarks"
+                    v-model="form.Remarks"
+                    :readonly="isReadonly"
+                  />
                 </div>
               </div>
 
@@ -212,7 +480,11 @@
             <!-- Bookings -->
             <q-tab-panel name="bookings">
               <div class="row items-center q-mb-xs">
-                <q-icon name="local_shipping" size="18px" class="q-mr-xs text-primary" />
+                <q-icon
+                  name="local_shipping"
+                  size="18px"
+                  class="q-mr-xs text-primary"
+                />
                 <span class="text-subtitle2 text-weight-bold">Bookings</span>
                 <q-space />
                 <q-checkbox
@@ -226,7 +498,6 @@
 
               <q-table
                 square
-                dense
                 flat
                 bordered
                 :rows="form.Bookings"
@@ -238,22 +509,35 @@
               >
                 <template v-slot:body-cell-Load="props">
                   <q-td :props="props">
-                    <q-checkbox v-model="props.row.Load" dense :disable="isReadonly" />
+                    <q-checkbox
+                      v-model="props.row.Load"
+                      dense
+                      :disable="isReadonly"
+                    />
                   </q-td>
                 </template>
                 <template v-slot:body-cell-Status="props">
                   <q-td :props="props">
-                    <q-badge :color="bookingStatusColor(props.value)" :label="props.value" />
+                    <q-badge
+                      :color="bookingStatusColor(props.value)"
+                      :label="props.value"
+                    />
                   </q-td>
                 </template>
                 <template v-slot:body-cell-BookingNo="props">
                   <q-td :props="props">
-                    <span class="text-primary text-weight-medium">{{ props.value }}</span>
+                    <span class="text-primary text-weight-medium">
+                      {{ props.value }}
+                    </span>
                   </q-td>
                 </template>
                 <template v-slot:body-cell-Payment="props">
                   <q-td :props="props">
-                    <q-badge outline :color="paymentColor(props.value)" :label="props.value" />
+                    <q-badge
+                      outline
+                      :color="paymentColor(props.value)"
+                      :label="props.value"
+                    />
                   </q-td>
                 </template>
               </q-table>
@@ -298,25 +582,48 @@
         <q-separator />
         <q-card-section>
           <div class="text-caption text-grey-7 q-mb-sm">
-            Pending bookings matching {{ form.FromCity || "—" }} → {{ form.ToCity || "—" }}
+            Pending bookings matching {{ form.FromCity || "—" }} →
+            {{ form.ToCity || "—" }}
           </div>
           <q-list bordered separator v-if="availableBookings.length">
-            <q-item v-for="b in availableBookings" :key="b.BookingId" tag="label">
+            <q-item
+              v-for="b in availableBookings"
+              :key="b.BookingId"
+              tag="label"
+            >
               <q-item-section avatar>
-                <q-checkbox v-model="selectedAvailableBookingIds" :val="b.BookingId" />
+                <q-checkbox
+                  v-model="selectedAvailableBookingIds"
+                  :val="b.BookingId"
+                />
               </q-item-section>
               <q-item-section>
-                <q-item-label>{{ b.BookingNo }} — {{ b.Consignee }}</q-item-label>
-                <q-item-label caption>{{ b.FromCity }} → {{ b.ToCity }} · {{ b.Date }} · {{ b.Payment }}</q-item-label>
+                <q-item-label>
+                  {{ b.BookingNo }} — {{ b.Consignee }}
+                </q-item-label>
+                <q-item-label caption>
+                  {{ b.FromCity }} → {{ b.ToCity }} · {{ b.Date }} ·
+                  {{ b.Payment }}
+                </q-item-label>
               </q-item-section>
             </q-item>
           </q-list>
-          <div v-else class="text-grey-6 text-center q-pa-md">No pending bookings match this route.</div>
+          <div v-else class="text-grey-6 text-center q-pa-md">
+            No pending bookings match this route.
+          </div>
         </q-card-section>
         <q-separator />
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
+        <q-card-actions
+          align="right"
+          class="q-gutter-sm q-pt-none q-pb-none q-pr-none"
+        >
           <q-btn label="Cancel" v-close-popup />
-          <q-btn color="primary" class="m-btn-style" label="Add Selected" @click="addSelectedBookings" />
+          <q-btn
+            color="primary"
+            class="m-btn-style"
+            label="Add Selected"
+            @click="addSelectedBookings"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -334,15 +641,31 @@
         </q-card-section>
         <q-separator />
         <q-card-section>
-          <q-select v-model="selectToCityValue" :options="mockData.cities" label="To City" dense outlined bg-color="blue-1" />
+          <q-select
+            square=""
+            v-model="selectToCityValue"
+            :options="mockData.cities"
+            label="To City"
+            dense
+            outlined
+            bg-color="blue-1"
+          />
           <div class="text-caption text-grey-7 q-mt-sm">
             Applies to every booking row currently checked in the Load column.
           </div>
         </q-card-section>
         <q-separator />
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
+        <q-card-actions
+          align="right"
+          class="q-gutter-sm q-pt-none q-pb-none q-pr-none"
+        >
           <q-btn label="Cancel" v-close-popup />
-          <q-btn color="primary" class="m-btn-style" label="Apply" @click="applySelectToCity" />
+          <q-btn
+            color="primary"
+            class="m-btn-style"
+            label="Apply"
+            @click="applySelectToCity"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -359,22 +682,58 @@
         </q-card-section>
         <q-separator />
         <q-card-section>
-          <div class="row q-col-gutter-sm">
-            <div class="col-6">
-              <q-input v-model="otherDetailsForm.InsuranceNo" label="Insurance No." dense outlined bg-color="blue-1" :readonly="isReadonly" />
+          <div class="row q-col-gutter-sm items-start">
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-input
+                square=""
+                v-model="otherDetailsForm.InsuranceNo"
+                label="Insurance No."
+                dense
+                outlined
+                bg-color="blue-1"
+                :readonly="isReadonly"
+              />
             </div>
-            <div class="col-6">
-              <q-input v-model="otherDetailsForm.EwayBillRefNo" label="E-Way Bill Ref No." dense outlined bg-color="blue-1" :readonly="isReadonly" />
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-input
+                square=""
+                v-model="otherDetailsForm.EwayBillRefNo"
+                label="E-Way Bill Ref No."
+                dense
+                outlined
+                bg-color="blue-1"
+                :readonly="isReadonly"
+              />
             </div>
-            <div class="col-12">
-              <q-input v-model="otherDetailsForm.SpecialInstructions" label="Special Instructions" dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow :readonly="isReadonly" />
+            <div class="col-12 col-sm-6 col-md-6">
+              <q-input
+                square=""
+                v-model="otherDetailsForm.SpecialInstructions"
+                label="Special Instructions"
+                dense
+                outlined
+                bg-color="blue-1"
+                type="textarea"
+                :rows="2"
+                autogrow
+                :readonly="isReadonly"
+              />
             </div>
           </div>
         </q-card-section>
         <q-separator />
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
+        <q-card-actions
+          align="right"
+          class="q-gutter-sm q-pt-none q-pb-none q-pr-none"
+        >
           <q-btn label="Cancel" v-close-popup />
-          <q-btn v-if="!isReadonly" color="primary" class="m-btn-style" label="Apply" @click="saveOtherDetails" />
+          <q-btn
+            v-if="!isReadonly"
+            color="primary"
+            class="m-btn-style"
+            label="Apply"
+            @click="saveOtherDetails"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -405,7 +764,12 @@ export default {
   data() {
     return {
       loading: false,
-      mode: this.params && this.params.mode === "add" ? "add" : this.params && this.params.mode === "edit" ? "edit" : "view",
+      mode:
+        this.params && this.params.mode === "add"
+          ? "add"
+          : this.params && this.params.mode === "edit"
+          ? "edit"
+          : "view",
       form: this.emptyForm(),
       savedForm: null,
       mockData: MOCK_DATA,
@@ -424,16 +788,30 @@ export default {
       selectToCityValue: "",
 
       showOtherDetailsDialog: false,
-      otherDetailsForm: { InsuranceNo: "", EwayBillRefNo: "", SpecialInstructions: "" },
+      otherDetailsForm: {
+        InsuranceNo: "",
+        EwayBillRefNo: "",
+        SpecialInstructions: "",
+      },
 
       bookingColumns: [
         { name: "Load", label: "Load", field: "Load", align: "center" },
         { name: "Status", label: "Status", field: "Status", align: "center" },
-        { name: "BookingNo", label: "Booking No", field: "BookingNo", sortable: true },
+        {
+          name: "BookingNo",
+          label: "Booking No",
+          field: "BookingNo",
+          sortable: true,
+        },
         { name: "Date", label: "Date", field: "Date", sortable: true },
         { name: "Carrier", label: "Carrier", field: "Carrier" },
         { name: "LoadCarrier", label: "Load Carrier", field: "LoadCarrier" },
-        { name: "Payment", label: "Payment", field: "Payment", align: "center" },
+        {
+          name: "Payment",
+          label: "Payment",
+          field: "Payment",
+          align: "center",
+        },
         { name: "ToCity", label: "To City", field: "ToCity" },
         { name: "Consignee", label: "Consignee", field: "Consignee" },
         { name: "FromCity", label: "From City", field: "FromCity" },
@@ -491,7 +869,11 @@ export default {
         Quantity: 0,
         IsStockTransferTrip: false,
         Posted: false,
-        OtherDetails: { InsuranceNo: "", EwayBillRefNo: "", SpecialInstructions: "" },
+        OtherDetails: {
+          InsuranceNo: "",
+          EwayBillRefNo: "",
+          SpecialInstructions: "",
+        },
         Bookings: [],
       };
     },
@@ -506,7 +888,9 @@ export default {
       this.loading = true;
       try {
         const data = await apiGetTripById(id);
-        this.form = data ? { ...data, Bookings: (data.Bookings || []).map((b) => ({ ...b })) } : this.emptyForm();
+        this.form = data
+          ? { ...data, Bookings: (data.Bookings || []).map((b) => ({ ...b })) }
+          : this.emptyForm();
         this.savedForm = JSON.parse(JSON.stringify(this.form));
         this.otherDetailsForm = { ...(this.form.OtherDetails || {}) };
       } finally {
@@ -520,7 +904,13 @@ export default {
     },
 
     paymentColor(type) {
-      const map = { TBBS: "blue", ToPay: "orange", Paid: "positive", TBBR: "purple", Cash: "teal" };
+      const map = {
+        TBBS: "blue",
+        ToPay: "orange",
+        Paid: "positive",
+        TBBR: "purple",
+        Cash: "teal",
+      };
       return map[type] || "grey";
     },
 
@@ -532,7 +922,10 @@ export default {
 
     async openFillBooking() {
       this.selectedAvailableBookingIds = [];
-      this.availableBookings = await apiGetAvailableBookings(this.form.FromCity, this.form.ToCity);
+      this.availableBookings = await apiGetAvailableBookings(
+        this.form.FromCity,
+        this.form.ToCity
+      );
       this.showFillBookingDialog = true;
     },
 
@@ -540,7 +933,8 @@ export default {
       const chosen = this.availableBookings.filter((b) =>
         this.selectedAvailableBookingIds.includes(b.BookingId)
       );
-      let nextId = Math.max(0, ...this.form.Bookings.map((b) => b.BookingTranId)) + 1;
+      let nextId =
+        Math.max(0, ...this.form.Bookings.map((b) => b.BookingTranId)) + 1;
       chosen.forEach((b) => {
         this.form.Bookings.push({
           BookingTranId: nextId++,
@@ -566,7 +960,11 @@ export default {
         (b) => !this.selectedAvailableBookingIds.includes(b.BookingId)
       );
       this.showFillBookingDialog = false;
-      this.$q.notify({ message: `${chosen.length} booking(s) added to trip.`, color: "positive", position: "top" });
+      this.$q.notify({
+        message: `${chosen.length} booking(s) added to trip.`,
+        color: "positive",
+        position: "top",
+      });
     },
 
     openSelectToCity() {
@@ -592,14 +990,19 @@ export default {
     },
 
     async saveTrip() {
-      this.form.Quantity = this.form.Bookings.filter((b) => b.Load).length || this.form.Quantity;
+      this.form.Quantity =
+        this.form.Bookings.filter((b) => b.Load).length || this.form.Quantity;
       const res = await apiSaveTrip({ ...this.form });
       if (res.success) {
         if (this.pendingConsumedBookingIds.length) {
           await apiConsumeAvailableBookings(this.pendingConsumedBookingIds);
           this.pendingConsumedBookingIds = [];
         }
-        this.$q.notify({ message: "Trip saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Trip saved!",
+          color: "positive",
+          position: "top",
+        });
         this.form = { ...res.data };
         this.savedForm = JSON.parse(JSON.stringify(this.form));
         this.mode = "edit";
@@ -615,7 +1018,11 @@ export default {
     },
 
     exportTrip() {
-      this.$q.notify({ message: "Export coming soon.", color: "info", position: "top" });
+      this.$q.notify({
+        message: "Export coming soon.",
+        color: "info",
+        position: "top",
+      });
     },
 
     printTrip() {

@@ -1,5 +1,4 @@
-﻿<template>
-  <div class="hide-overflow">
+﻿<template><div class="hide-overflow">
     <div v-if="loading" class="loader-container">
       <span class="loader"></span>
     </div>
@@ -33,7 +32,7 @@
                 novalidate="novalidate"
                 @submit="login"
               >
-                <q-input
+                <q-input bg-color="blue-1"
                   ref="usernameFieldRef"
                   outlined
                   class="login-field"
@@ -46,7 +45,7 @@
                   </template>
                 </q-input>
 
-                <q-input
+                <q-input bg-color="blue-1"
                   ref="passwordFieldRef"
                   outlined
                   class="login-field"
@@ -171,8 +170,7 @@
         </div>
       </q-page>
     </div>
-  </div>
-</template>
+  </div></template>
 
 <script>
 // Same login logic as pages/LoginPage.vue (MainLayout1's login screen) —

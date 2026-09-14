@@ -1,5 +1,4 @@
-<template>
-  <q-card class="q-filter-wrapper">
+<template><q-card class="q-filter-wrapper">
     <!-- HEADER -->
     <q-card-section class="filter-page-header row items-center justify-between">
       <div class="header-title">
@@ -77,7 +76,7 @@
                 class="row q-col-gutter-sm"
               >
                 <div class="col-6">
-                  <q-input
+                  <q-input bg-color="blue-1"
                     outlined
                     dense
                     type="date"
@@ -86,7 +85,7 @@
                   />
                 </div>
                 <div class="col-6">
-                  <q-input
+                  <q-input bg-color="blue-1"
                     outlined
                     dense
                     type="date"
@@ -264,8 +263,7 @@
         v-close-popup
       />
     </div>
-  </q-card>
-</template>
+  </q-card></template>
 
 <script>
 import { date } from "quasar";

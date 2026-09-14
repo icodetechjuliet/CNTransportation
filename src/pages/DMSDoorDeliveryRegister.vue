@@ -27,7 +27,6 @@
           <!-- ── Grid — report/list only, mirrors GET /api/Delivery/door-delivery. ── -->
           <q-table
             square
-            dense
             :rows="filteredRows"
             :columns="tableColumns"
             row-key="DoorDeliveryID"
@@ -72,6 +71,7 @@
                   </div>
 
                   <q-select
+                    square=""
                     v-model="transporterFilter"
                     :options="transporterOptions"
                     dense
@@ -118,7 +118,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
           </q-table>
         </q-card>
@@ -143,15 +145,46 @@ export default {
       pagination: { page: 1, rowsPerPage: 15 },
 
       baseColumns: [
-        { name: "DoorDeliveryNo", label: "Door Delivery No.", field: "DoorDeliveryNo", sortable: true },
-        { name: "DoorDeliveryDate", label: "Date", field: "DoorDeliveryDate", sortable: true },
+        {
+          name: "DoorDeliveryNo",
+          label: "Door Delivery No.",
+          field: "DoorDeliveryNo",
+          sortable: true,
+        },
+        {
+          name: "DoorDeliveryDate",
+          label: "Date",
+          field: "DoorDeliveryDate",
+          sortable: true,
+        },
         { name: "DoorDeliveryName", label: "Name", field: "DoorDeliveryName" },
         { name: "Vehicle", label: "Vehicle", field: "Vehicle" },
-        { name: "TransporterAccount", label: "Transporter", field: "TransporterAccount", sortable: true },
+        {
+          name: "TransporterAccount",
+          label: "Transporter",
+          field: "TransporterAccount",
+          sortable: true,
+        },
         { name: "RateType", label: "Rate Type", field: "RateType" },
-        { name: "ReceivableAmount", label: "Receivable", field: "ReceivableAmount", align: "right" },
-        { name: "VehicleAmount", label: "Vehicle Amt.", field: "VehicleAmount", align: "right", sortable: true },
-        { name: "IsDoorCollection", label: "Door Collection", field: (r) => (r.IsDoorCollection ? "Yes" : "No"), align: "center" },
+        {
+          name: "ReceivableAmount",
+          label: "Receivable",
+          field: "ReceivableAmount",
+          align: "right",
+        },
+        {
+          name: "VehicleAmount",
+          label: "Vehicle Amt.",
+          field: "VehicleAmount",
+          align: "right",
+          sortable: true,
+        },
+        {
+          name: "IsDoorCollection",
+          label: "Door Collection",
+          field: (r) => (r.IsDoorCollection ? "Yes" : "No"),
+          align: "center",
+        },
       ],
     };
   },
@@ -193,7 +226,9 @@ export default {
     applyFilters() {
       let result = [...this.allRows];
       if (this.transporterFilter && this.transporterFilter !== "All")
-        result = result.filter((r) => r.TransporterAccount === this.transporterFilter);
+        result = result.filter(
+          (r) => r.TransporterAccount === this.transporterFilter
+        );
       if (this.searchText) {
         const s = this.searchText.toLowerCase();
         result = result.filter(

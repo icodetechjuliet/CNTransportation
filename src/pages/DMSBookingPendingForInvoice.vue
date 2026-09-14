@@ -8,7 +8,9 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="fa-solid fa-file-invoice-dollar" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{ filteredBookings.length }}</span>
+                <span class="total-stat-count">
+                  {{ filteredBookings.length }}
+                </span>
                 <span class="total-stat-label">Total Bookings</span>
               </div>
             </div>
@@ -87,13 +89,23 @@
 
             <template v-slot:header-cell-select="props">
               <q-th :props="props">
-                <q-checkbox dense v-model="selectAll" color="orange" @update:model-value="toggleSelectAll" />
+                <q-checkbox
+                  dense
+                  v-model="selectAll"
+                  color="orange"
+                  @update:model-value="toggleSelectAll"
+                />
               </q-th>
             </template>
 
             <template v-slot:body-cell-select="props">
               <q-td :props="props">
-                <q-checkbox dense v-model="selectedIds" :val="props.row.BookingId" color="orange" />
+                <q-checkbox
+                  dense
+                  v-model="selectedIds"
+                  :val="props.row.BookingId"
+                  color="orange"
+                />
               </q-td>
             </template>
 
@@ -106,14 +118,18 @@
                   outline
                   class="edit-icon-style"
                   @click="addToInvoice(props.row)"
-                  ><q-tooltip>Add To Invoice</q-tooltip></q-btn
                 >
+                  <q-tooltip>Add To Invoice</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
             <template v-slot:item="props">
               <div class="mobile-job-card">
-                <div class="mjc-header" @click="toggleMobileCard(props.row.BookingId)">
+                <div
+                  class="mjc-header"
+                  @click="toggleMobileCard(props.row.BookingId)"
+                >
                   <div class="mjc-header-left">
                     <q-checkbox
                       dense
@@ -123,16 +139,29 @@
                       class="q-mr-xs"
                       @click.stop
                     />
-                    <div class="mjc-job-badge"><q-icon name="fa-solid fa-file-invoice-dollar" size="14px" /></div>
+                    <div class="mjc-job-badge">
+                      <q-icon
+                        name="fa-solid fa-file-invoice-dollar"
+                        size="14px"
+                      />
+                    </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
-                      <span class="mjc-job-date">{{ props.row.BookingDate }}</span>
+                      <span class="mjc-job-date">
+                        {{ props.row.BookingDate }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge class="mjc-status-badge" color="orange">Pending</q-badge>
+                    <q-badge class="mjc-status-badge" color="orange">
+                      Pending
+                    </q-badge>
                     <q-icon
-                      :name="expandedMobileCards.includes(props.row.BookingId) ? 'expand_less' : 'expand_more'"
+                      :name="
+                        expandedMobileCards.includes(props.row.BookingId)
+                          ? 'expand_less'
+                          : 'expand_more'
+                      "
                       size="20px"
                       color="grey-6"
                     />
@@ -140,17 +169,47 @@
                 </div>
 
                 <div class="mjc-actions">
-                  <q-btn dense unelevated icon="fa-solid fa-file-invoice-dollar" label="Add To Invoice" class="mjc-btn mjc-btn-edit" @click="addToInvoice(props.row)" />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-file-invoice-dollar"
+                    label="Add To Invoice"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="addToInvoice(props.row)"
+                  />
                 </div>
 
                 <transition name="mobile-expand">
-                  <div v-if="expandedMobileCards.includes(props.row.BookingId)" class="mjc-details">
+                  <div
+                    v-if="expandedMobileCards.includes(props.row.BookingId)"
+                    class="mjc-details"
+                  >
                     <q-separator class="mjc-divider" />
                     <div class="mjc-details-grid">
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignor</span><span class="mjc-detail-value">{{ props.row.ConsignorName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignee</span><span class="mjc-detail-value">{{ props.row.ConsigneeName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Net Amt.</span><span class="mjc-detail-value">{{ props.row.NetAmt || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Payment Type</span><span class="mjc-detail-value">{{ props.row.PaymentType || "—" }}</span></div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignor</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsignorName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignee</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsigneeName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Net Amt.</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.NetAmt || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Payment Type</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.PaymentType || "—" }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </transition>
@@ -234,8 +293,18 @@ export default {
       tableColumns: [
         { name: "select", label: "", field: "select" },
         { name: "action", label: "Action", field: "action" },
-        { name: "BookingNo", label: "Booking No.", field: "BookingNo", sortable: true },
-        { name: "BookingDate", label: "Date", field: "BookingDate", sortable: true },
+        {
+          name: "BookingNo",
+          label: "Booking No.",
+          field: "BookingNo",
+          sortable: true,
+        },
+        {
+          name: "BookingDate",
+          label: "Date",
+          field: "BookingDate",
+          sortable: true,
+        },
         { name: "ConsignorName", label: "Consignor", field: "ConsignorName" },
         { name: "ConsigneeName", label: "Consignee", field: "ConsigneeName" },
         { name: "NetAmt", label: "Net Amt.", field: "NetAmt", align: "right" },
@@ -261,13 +330,17 @@ export default {
     },
 
     async loadBookings() {
-      this.filteredBookings = await apiGetInvoicePendingBookings(this.searchText);
+      this.filteredBookings = await apiGetInvoicePendingBookings(
+        this.searchText
+      );
       this.selectedIds = [];
       this.selectAll = false;
     },
 
     toggleSelectAll(value) {
-      this.selectedIds = value ? this.filteredBookings.map((b) => b.BookingId) : [];
+      this.selectedIds = value
+        ? this.filteredBookings.map((b) => b.BookingId)
+        : [];
     },
 
     addToInvoice() {
@@ -280,7 +353,11 @@ export default {
 
     generateInvoiceForSelected() {
       if (!this.selectedIds.length) {
-        this.$q.notify({ message: "Select at least one booking", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Select at least one booking",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       this.$q.notify({

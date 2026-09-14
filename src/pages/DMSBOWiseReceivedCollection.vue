@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="bowisereceivedcollection" />
-</template>
+<template><GenericReportList report-key="bowisereceivedcollection" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

@@ -18,17 +18,43 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">BBooking</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">View</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Booking No." v-model="form.BookingNo" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Booking No."
+                v-model="form.BookingNo"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Date" v-model="form.BookingDate" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Date"
+                v-model="form.BookingDate"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Carrier" v-model="form.Carrier" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Carrier"
+                v-model="form.Carrier"
+              />
             </div>
           </div>
 
@@ -105,76 +131,242 @@
 
             <!-- General Details -->
             <q-tab-panel name="general">
-              <div class="row q-col-gutter-sm">
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Booking Type" v-model="form.BookingType" />
+              <div class="row q-col-gutter-sm items-start">
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Booking Type"
+                    v-model="form.BookingType"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Booked From" v-model="form.BookedFrom" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Booked From"
+                    v-model="form.BookedFrom"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Load" v-model="form.Load" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Load"
+                    v-model="form.Load"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Payment Type" v-model="form.PaymentType" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Payment Type"
+                    v-model="form.PaymentType"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Mode" v-model="form.PaymentMode" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Mode"
+                    v-model="form.PaymentMode"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="From City" v-model="form.FromCity" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="From City"
+                    v-model="form.FromCity"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="To City" v-model="form.ToCity" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="To City"
+                    v-model="form.ToCity"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Delivery City" v-model="form.DeliveryCity" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Delivery City"
+                    v-model="form.DeliveryCity"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="From Buk. Office" v-model="form.FromBookingOffice" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="From Buk. Office"
+                    v-model="form.FromBookingOffice"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="To Buk. Office" v-model="form.ToBookingOffice" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="To Buk. Office"
+                    v-model="form.ToBookingOffice"
+                  />
                 </div>
               </div>
             </q-tab-panel>
 
             <!-- Party Details -->
             <q-tab-panel name="party">
-              <div class="row q-col-gutter-sm">
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Consignor A/c." v-model="form.ConsignorAccount" />
+              <div class="row q-col-gutter-sm items-start">
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Consignor A/c."
+                    v-model="form.ConsignorAccount"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Consignor Name" v-model="form.ConsignorName" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Consignor Name"
+                    v-model="form.ConsignorName"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Consignor Phone No." v-model="form.ConsignorPhone" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Consignor Phone No."
+                    v-model="form.ConsignorPhone"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="From GST No." v-model="form.FromGSTNo" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="From GST No."
+                    v-model="form.FromGSTNo"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <q-input square dense outlined bg-color="blue-1" readonly type="textarea" :rows="1" autogrow label="From Address" v-model="form.FromAddress" />
+                <div class="col-12 col-sm-6 col-md-6">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    type="textarea"
+                    :rows="1"
+                    autogrow
+                    label="From Address"
+                    v-model="form.FromAddress"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                  <q-input square dense outlined bg-color="blue-1" readonly type="textarea" :rows="1" autogrow label="To Address" v-model="form.ToAddress" />
+                <div class="col-12 col-sm-6 col-md-6">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    type="textarea"
+                    :rows="1"
+                    autogrow
+                    label="To Address"
+                    v-model="form.ToAddress"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Consignee A/c." v-model="form.ConsigneeAccount" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Consignee A/c."
+                    v-model="form.ConsigneeAccount"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Consignee Name" v-model="form.ConsigneeName" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Consignee Name"
+                    v-model="form.ConsigneeName"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Consignee Phone No." v-model="form.ConsigneePhone" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Consignee Phone No."
+                    v-model="form.ConsigneePhone"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="To GST No." v-model="form.ToGSTNo" />
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="To GST No."
+                    v-model="form.ToGSTNo"
+                  />
                 </div>
               </div>
             </q-tab-panel>
@@ -183,48 +375,161 @@
             <q-tab-panel name="charges">
               <div class="row q-col-gutter-sm">
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="E-Way Bill No." v-model="form.EWayBillNo" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="E-Way Bill No."
+                    v-model="form.EWayBillNo"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Bill No." v-model="form.BillNo" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Bill No."
+                    v-model="form.BillNo"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Value" v-model="form.BillValue" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Value"
+                    v-model="form.BillValue"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Total Amt." v-model="form.TotalAmt" input-class="text-negative text-weight-bold" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Total Amt."
+                    v-model="form.TotalAmt"
+                    input-class="text-negative text-weight-bold"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Lock Dt." v-model="form.LockDate" input-class="text-red text-weight-bold" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Lock Dt."
+                    v-model="form.LockDate"
+                    input-class="text-red text-weight-bold"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Lock By" v-model="form.LockBy" input-class="text-red" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Lock By"
+                    v-model="form.LockBy"
+                    input-class="text-red"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Item" v-model="form.Item" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Item"
+                    v-model="form.Item"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Part No." v-model="form.PartNo" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Part No."
+                    v-model="form.PartNo"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Quantity" v-model="form.Quantity" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Quantity"
+                    v-model="form.Quantity"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Weight" v-model="form.Weight" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Weight"
+                    v-model="form.Weight"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Rate" v-model="form.Rate" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Rate"
+                    v-model="form.Rate"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Freight" v-model="form.FreightAmount" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Freight"
+                    v-model="form.FreightAmount"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.IsDoorDelivery" val="orange" color="orange" intermediate-icon="black" disable />
+                      <q-checkbox
+                        dense
+                        v-model="form.IsDoorDelivery"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        disable
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label dense>Door Del.</q-item-label>
@@ -232,12 +537,34 @@
                   </q-item>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="D.D. Amt." v-model="form.DoorDeliveryAmt" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="D.D. Amt."
+                    v-model="form.DoorDeliveryAmt"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.IsDoorCollection" val="orange" color="orange" intermediate-icon="black" disable />
+                      <q-checkbox
+                        dense
+                        v-model="form.IsDoorCollection"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        disable
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label dense>Door Coll.</q-item-label>
@@ -245,13 +572,35 @@
                   </q-item>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Collection" v-model="form.DoorCollectionAmt" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Collection"
+                    v-model="form.DoorCollectionAmt"
+                  />
                 </div>
 
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.HasOther" val="orange" color="orange" intermediate-icon="black" disable />
+                      <q-checkbox
+                        dense
+                        v-model="form.HasOther"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        disable
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label dense>Other</q-item-label>
@@ -259,88 +608,277 @@
                   </q-item>
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Other Amt." v-model="form.OtherAmt" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Other Amt."
+                    v-model="form.OtherAmt"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="S.T. By" v-model="form.STBy" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="S.T. By"
+                    v-model="form.STBy"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Discount Type" v-model="form.DiscountType" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Discount Type"
+                    v-model="form.DiscountType"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Discount" v-model="form.DiscountLeft" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Discount"
+                    v-model="form.DiscountLeft"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Kasar" v-model="form.Kasar" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Kasar"
+                    v-model="form.Kasar"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Other Frgt." v-model="form.OtherFreight" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Other Frgt."
+                    v-model="form.OtherFreight"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Other Frgt. A/c." v-model="form.OtherFreightAc" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Other Frgt. A/c."
+                    v-model="form.OtherFreightAc"
+                  />
                 </div>
 
                 <!-- CGST / SGST / IGST -->
                 <template v-if="form.taxType === 'CGST_SGST'">
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <q-input square dense outlined bg-color="blue-1" readonly label="CGST %" v-model="form.CGSTRate" />
+                    <q-input
+                      square
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                      label="CGST %"
+                      v-model="form.CGSTRate"
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <q-input square dense outlined bg-color="blue-1" readonly label="CGST Amt." v-model="form.CGSTAmt" />
+                    <q-input
+                      square
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                      label="CGST Amt."
+                      v-model="form.CGSTAmt"
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <q-input square dense outlined bg-color="blue-1" readonly label="Service Tax" v-model="form.ServiceTax" />
+                    <q-input
+                      square
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                      label="Service Tax"
+                      v-model="form.ServiceTax"
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <q-input square dense outlined bg-color="blue-1" readonly label="SGST %" v-model="form.SGSTRate" />
+                    <q-input
+                      square
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                      label="SGST %"
+                      v-model="form.SGSTRate"
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <q-input square dense outlined bg-color="blue-1" readonly label="SGST Amt." v-model="form.SGSTAmt" />
+                    <q-input
+                      square
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                      label="SGST Amt."
+                      v-model="form.SGSTAmt"
+                    />
                   </div>
                 </template>
                 <template v-else>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <q-input square dense outlined bg-color="blue-1" readonly label="IGST %" v-model="form.IGSTRate" />
+                    <q-input
+                      square
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                      label="IGST %"
+                      v-model="form.IGSTRate"
+                    />
                   </div>
                   <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                    <q-input square dense outlined bg-color="blue-1" readonly label="IGST Amt." v-model="form.IGSTAmt" />
+                    <q-input
+                      square
+                      dense
+                      outlined
+                      bg-color="blue-1"
+                      readonly
+                      label="IGST Amt."
+                      v-model="form.IGSTAmt"
+                    />
                   </div>
                 </template>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Total Tax" v-model="form.TotalTax" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Total Tax"
+                    v-model="form.TotalTax"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Discount" v-model="form.Discount" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Discount"
+                    v-model="form.Discount"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Net Amt." v-model="form.NetAmt" input-class="text-negative text-weight-bold" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Net Amt."
+                    v-model="form.NetAmt"
+                    input-class="text-negative text-weight-bold"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Received" v-model="form.Received" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Received"
+                    v-model="form.Received"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Time" v-model="form.BookingTime" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Time"
+                    v-model="form.BookingTime"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Ref." v-model="form.RefUser" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Ref."
+                    v-model="form.RefUser"
+                  />
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.CashCredit" val="orange" color="orange" intermediate-icon="black" disable />
+                      <q-checkbox
+                        dense
+                        v-model="form.CashCredit"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        disable
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label dense>Cash Credit</q-item-label>
                     </q-item-section>
                   </q-item>
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center">
-                  <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+                <div
+                  class="col-xs-12 col-sm-6 col-md-3 col-lg-3 flex items-center"
+                >
+                  <q-item
+                    tag="label"
+                    v-ripple
+                    bg-color="blue-1"
+                    class="chckbx-style full-width"
+                  >
                     <q-item-section avatar>
-                      <q-checkbox dense v-model="form.PayReceived" val="orange" color="orange" intermediate-icon="black" disable />
+                      <q-checkbox
+                        dense
+                        v-model="form.PayReceived"
+                        val="orange"
+                        color="orange"
+                        intermediate-icon="black"
+                        disable
+                      />
                     </q-item-section>
                     <q-item-section>
                       <q-item-label dense>Pay. Received</q-item-label>
@@ -349,26 +887,82 @@
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Pay. Received Date" v-model="form.PayReceivedDate" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Pay. Received Date"
+                    v-model="form.PayReceivedDate"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Reference No." v-model="form.ReferenceNo" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Reference No."
+                    v-model="form.ReferenceNo"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Reference Date" v-model="form.ReferenceDate" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Reference Date"
+                    v-model="form.ReferenceDate"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Invoice No." v-model="form.InvoiceNo" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Invoice No."
+                    v-model="form.InvoiceNo"
+                  />
                 </div>
 
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Bank Name" v-model="form.BankName" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Bank Name"
+                    v-model="form.BankName"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Remarks" v-model="form.Remarks" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Remarks"
+                    v-model="form.Remarks"
+                  />
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                  <q-input square dense outlined bg-color="blue-1" readonly label="Display Remarks" v-model="form.DisplayRemarks" />
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    readonly
+                    label="Display Remarks"
+                    v-model="form.DisplayRemarks"
+                  />
                 </div>
               </div>
             </q-tab-panel>
@@ -406,22 +1000,40 @@
     <!-- ══════════════════════════════════════
          Print / PDF Preview Dialog
     ══════════════════════════════════════ -->
-    <q-dialog v-model="showPrintDialog" maximized @before-hide="closePrintDialog">
+    <q-dialog
+      v-model="showPrintDialog"
+      maximized
+      @before-hide="closePrintDialog"
+    >
       <q-card style="display: flex; flex-direction: column; height: 100%">
         <q-toolbar class="bg-primary text-white">
           <q-icon name="receipt_long" size="22px" class="q-mr-sm" />
           <q-toolbar-title>Booking Report Preview</q-toolbar-title>
-          <q-btn unelevated icon="picture_as_pdf" label="Download PDF" color="white" text-color="primary" size="sm" class="q-mr-sm" no-caps @click="downloadPDF" />
+          <q-btn
+            unelevated
+            icon="picture_as_pdf"
+            label="Download PDF"
+            color="white"
+            text-color="primary"
+            size="sm"
+            class="q-mr-sm"
+            no-caps
+            @click="downloadPDF"
+          />
           <q-btn flat round icon="close" @click="closePrintDialog" />
         </q-toolbar>
-        <iframe ref="reportFrame" :src="printBlobUrl" style="flex: 1; border: none; width: 100%; background: #f4f4f4" />
+        <iframe
+          ref="reportFrame"
+          :src="printBlobUrl"
+          style="flex: 1; border: none; width: 100%; background: #f4f4f4"
+        />
       </q-card>
     </q-dialog>
   </div>
 </template>
 
 <script>
-import { apiGetBookingById } from "./DMSBBooking.vue";
+import { apiGetBookingById } from "src/data/bookingData.js";
 import ictLogoUrl from "src/assets/ICT-logo.png";
 
 export default {

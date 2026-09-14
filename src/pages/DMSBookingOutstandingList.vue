@@ -54,7 +54,13 @@
                     >
                       <q-tooltip>Clear</q-tooltip>
                     </q-btn>
-                    <q-btn flat dense icon="search" class="search-combo-icon-btn" @click="loadRows">
+                    <q-btn
+                      flat
+                      dense
+                      icon="search"
+                      class="search-combo-icon-btn"
+                      @click="loadRows"
+                    >
                       <q-tooltip>Search</q-tooltip>
                     </q-btn>
                   </div>
@@ -86,9 +92,15 @@
             <template v-slot:bottom-row>
               <q-tr>
                 <q-td class="text-weight-bold">Total</q-td>
-                <q-td class="text-right text-weight-bold">{{ totalBooked.toFixed(2) }}</q-td>
-                <q-td class="text-right text-weight-bold">{{ totalReceived.toFixed(2) }}</q-td>
-                <q-td class="text-right text-weight-bold text-negative">{{ totalOutstanding.toFixed(2) }}</q-td>
+                <q-td class="text-right text-weight-bold">
+                  {{ totalBooked.toFixed(2) }}
+                </q-td>
+                <q-td class="text-right text-weight-bold">
+                  {{ totalReceived.toFixed(2) }}
+                </q-td>
+                <q-td class="text-right text-weight-bold text-negative">
+                  {{ totalOutstanding.toFixed(2) }}
+                </q-td>
               </q-tr>
             </template>
 
@@ -96,13 +108,19 @@
               <div class="mobile-job-card">
                 <div class="mjc-header">
                   <div class="mjc-header-left">
-                    <div class="mjc-job-badge"><q-icon name="account_balance" size="14px" /></div>
+                    <div class="mjc-job-badge">
+                      <q-icon name="account_balance" size="14px" />
+                    </div>
                     <div class="mjc-header-info">
-                      <span class="mjc-job-no">{{ props.row.PartyAccountName }}</span>
+                      <span class="mjc-job-no">
+                        {{ props.row.PartyAccountName }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge class="mjc-status-badge" color="negative">{{ props.row.OutstandingAmount.toFixed(2) }}</q-badge>
+                    <q-badge class="mjc-status-badge" color="negative">
+                      {{ props.row.OutstandingAmount.toFixed(2) }}
+                    </q-badge>
                   </div>
                 </div>
               </div>
@@ -120,19 +138,40 @@
 //  real backend; computed client-side here from a small local mock set).
 // ─────────────────────────────────────────────
 const MOCK_ROWS = [
-  { PartyAccountName: "Balaji xxx Co.", BookedAmount: 12500, ReceivedAmount: 9500 },
-  { PartyAccountName: "Rajsani xxx Polymers", BookedAmount: 8200, ReceivedAmount: 8200 },
-  { PartyAccountName: "Ring xxx Ltd", BookedAmount: 4600, ReceivedAmount: 2100 },
-  { PartyAccountName: "Galaxy xxx Tooling", BookedAmount: 3000, ReceivedAmount: 0 },
+  {
+    PartyAccountName: "Balaji xxx Co.",
+    BookedAmount: 12500,
+    ReceivedAmount: 9500,
+  },
+  {
+    PartyAccountName: "Rajsani xxx Polymers",
+    BookedAmount: 8200,
+    ReceivedAmount: 8200,
+  },
+  {
+    PartyAccountName: "Ring xxx Ltd",
+    BookedAmount: 4600,
+    ReceivedAmount: 2100,
+  },
+  {
+    PartyAccountName: "Galaxy xxx Tooling",
+    BookedAmount: 3000,
+    ReceivedAmount: 0,
+  },
 ];
 
 function apiGetOutstanding(search) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      let result = MOCK_ROWS.map((r) => ({ ...r, OutstandingAmount: r.BookedAmount - r.ReceivedAmount }));
+      let result = MOCK_ROWS.map((r) => ({
+        ...r,
+        OutstandingAmount: r.BookedAmount - r.ReceivedAmount,
+      }));
       if (search) {
         const s = search.toLowerCase();
-        result = result.filter((r) => r.PartyAccountName.toLowerCase().includes(s));
+        result = result.filter((r) =>
+          r.PartyAccountName.toLowerCase().includes(s)
+        );
       }
       resolve(result);
     }, 150);
@@ -148,10 +187,33 @@ export default {
       searchText: "",
       pagination: { page: 1, rowsPerPage: 15 },
       tableColumns: [
-        { name: "PartyAccountName", label: "Party", field: "PartyAccountName", sortable: true },
-        { name: "BookedAmount", label: "Booked Amt.", field: "BookedAmount", align: "right", sortable: true },
-        { name: "ReceivedAmount", label: "Received Amt.", field: "ReceivedAmount", align: "right", sortable: true },
-        { name: "OutstandingAmount", label: "Outstanding", field: "OutstandingAmount", align: "right", sortable: true },
+        {
+          name: "PartyAccountName",
+          label: "Party",
+          field: "PartyAccountName",
+          sortable: true,
+        },
+        {
+          name: "BookedAmount",
+          label: "Booked Amt.",
+          field: "BookedAmount",
+          align: "right",
+          sortable: true,
+        },
+        {
+          name: "ReceivedAmount",
+          label: "Received Amt.",
+          field: "ReceivedAmount",
+          align: "right",
+          sortable: true,
+        },
+        {
+          name: "OutstandingAmount",
+          label: "Outstanding",
+          field: "OutstandingAmount",
+          align: "right",
+          sortable: true,
+        },
       ],
     };
   },
@@ -183,7 +245,11 @@ export default {
     },
 
     printReport() {
-      this.$q.notify({ message: "Outstanding List print — not yet wired to a PDF export.", color: "info", position: "top" });
+      this.$q.notify({
+        message: "Outstanding List print — not yet wired to a PDF export.",
+        color: "info",
+        position: "top",
+      });
     },
   },
 };

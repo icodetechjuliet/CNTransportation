@@ -1,5 +1,4 @@
-<template>
-  <q-input
+<template><q-input bg-color="blue-1"
     square
     dense
     outlined
@@ -21,8 +20,7 @@
         <span v-if="mandatoryStar" class="mandatory-star">*</span>
       </span>
     </template>
-  </q-input>
-</template>
+  </q-input></template>
 
 <script>
 export default {

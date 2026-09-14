@@ -19,7 +19,6 @@
 
           <q-table
             square
-            dense
             :rows="rows"
             :columns="tableColumns"
             row-key="SIID"
@@ -64,8 +63,9 @@
                   outline
                   class="edit-icon-style mody"
                   @click="openEdit(props.row)"
-                  ><q-tooltip>Edit</q-tooltip></q-btn
                 >
+                  <q-tooltip>Edit</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
@@ -73,76 +73,20 @@
                   outline
                   class="edit-icon-style q-ml-xs"
                   @click="deleteRow(props.row)"
-                  ><q-tooltip>Delete</q-tooltip></q-btn
                 >
+                  <q-tooltip>Delete</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
         </q-card>
       </div>
     </q-page>
-
-    <!-- ══════════════════════════════════════
-         SI Add / Edit Dialog — canonical compact-dialog shape.
-    ══════════════════════════════════════ -->
-    <q-dialog v-model="showDialog">
-      <q-card style="min-width: 520px">
-        <q-card-section class="row items-center">
-          <div class="text-h6">{{ dialogMode === "add" ? "New SI" : "Edit SI" }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-separator />
-        <q-card-section>
-          <div class="row q-col-gutter-sm">
-            <div class="col-6">
-              <q-input v-model="form.SIDate" label="SI Date" placeholder="dd-mm-yyyy" dense outlined bg-color="blue-1">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="siDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="form.SIDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.siDateProxy.hide()" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-            <div class="col-6">
-              <q-select v-model="form.InvoiceType" :options="['Tax Invoice', 'Bill of Supply']" label="Invoice Type" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-12">
-              <q-input v-model="form.PartyName" label="Party Name" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <q-input v-model="form.PartyGST" label="Party GST No." dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <q-select v-model="form.GSTRate" :options="[0, 5, 12, 18, 28]" label="GST Rate %" dense outlined bg-color="blue-1" @update:model-value="calcTotal" />
-            </div>
-            <div class="col-6">
-              <q-input v-model="form.TaxableValue" type="number" label="Taxable Value" dense outlined bg-color="blue-1" @update:model-value="calcTotal" />
-            </div>
-            <div class="col-6">
-              <q-input v-model="form.GSTAmount" label="GST Amount" dense outlined bg-color="yellow-1" readonly />
-            </div>
-            <div class="col-12">
-              <q-input v-model="form.TotalAmount" label="Total Amount" dense outlined bg-color="yellow-1" readonly input-class="text-weight-bold" />
-            </div>
-            <div class="col-12">
-              <q-input v-model="form.Remarks" label="Remarks" dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow />
-            </div>
-          </div>
-        </q-card-section>
-        <q-separator />
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
-          <q-btn label="Cancel" v-close-popup />
-          <q-btn color="primary" class="m-btn-style" label="Save" @click="save" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
+import entryNavigation from "src/mixins/entryNavigation.js";
 // Self-contained mock data — same "no live API yet" pattern as
 // DMSTripCharge.vue. "SI Posting"/"SI Email" (reportsData.js) are separate,
 // read-only report screens over their own illustrative rows rather than
@@ -187,7 +131,9 @@ function apiSaveSI(si) {
         const idx = MOCK_SI.findIndex((s) => s.SIID === si.SIID);
         if (idx !== -1) MOCK_SI[idx] = { ...si };
       } else {
-        si.SIID = MOCK_SI.length ? Math.max(...MOCK_SI.map((s) => s.SIID)) + 1 : 1;
+        si.SIID = MOCK_SI.length
+          ? Math.max(...MOCK_SI.map((s) => s.SIID)) + 1
+          : 1;
         si.SINo = "SI2026" + String(si.SIID).padStart(4, "0");
         MOCK_SI.push(si);
       }
@@ -207,6 +153,8 @@ function apiDeleteSI(id) {
 }
 
 export default {
+  mixins: [entryNavigation],
+  entryReload: "loadRows",
   name: "DMSSaleSI",
 
   data() {
@@ -222,10 +170,31 @@ export default {
         { name: "SINo", label: "SI No.", field: "SINo", sortable: true },
         { name: "SIDate", label: "Date", field: "SIDate", sortable: true },
         { name: "InvoiceType", label: "Invoice Type", field: "InvoiceType" },
-        { name: "PartyName", label: "Party", field: "PartyName", sortable: true },
-        { name: "TaxableValue", label: "Taxable Value", field: "TaxableValue", align: "right" },
-        { name: "GSTAmount", label: "GST Amt.", field: "GSTAmount", align: "right" },
-        { name: "TotalAmount", label: "Total Amt.", field: "TotalAmount", align: "right", sortable: true },
+        {
+          name: "PartyName",
+          label: "Party",
+          field: "PartyName",
+          sortable: true,
+        },
+        {
+          name: "TaxableValue",
+          label: "Taxable Value",
+          field: "TaxableValue",
+          align: "right",
+        },
+        {
+          name: "GSTAmount",
+          label: "GST Amt.",
+          field: "GSTAmount",
+          align: "right",
+        },
+        {
+          name: "TotalAmount",
+          label: "Total Amt.",
+          field: "TotalAmount",
+          align: "right",
+          sortable: true,
+        },
         { name: "action", label: "Action", field: "action" },
       ],
     };
@@ -273,21 +242,44 @@ export default {
     openAdd() {
       this.form = this.emptyForm();
       this.dialogMode = "add";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSSaleSIForm?mode=${this.dialogMode}&id=${this.form.SIID || ""}`,
+          "Sale SI"
+        );
+      }
     },
 
     openEdit(row) {
       this.form = { ...row };
       this.dialogMode = "edit";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSSaleSIForm?mode=${this.dialogMode}&id=${this.form.SIID || ""}`,
+          "Sale SI"
+        );
+      }
     },
 
     async save() {
       this.calcTotal();
       const res = await apiSaveSI({ ...this.form });
       if (res.success) {
-        this.$q.notify({ message: "SI saved!", color: "positive", position: "top" });
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
+        this.$q.notify({
+          message: "SI saved!",
+          color: "positive",
+          position: "top",
+        });
         this.showDialog = false;
+        this.notifyEntrySaved();
         await this.loadRows();
       }
     },
@@ -295,7 +287,15 @@ export default {
     async deleteRow(row) {
       const res = await apiDeleteSI(row.SIID);
       if (res.success) {
-        this.$q.notify({ message: "SI deleted.", color: "positive", position: "top" });
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
+        this.$q.notify({
+          message: "SI deleted.",
+          color: "positive",
+          position: "top",
+        });
         await this.loadRows();
       }
     },

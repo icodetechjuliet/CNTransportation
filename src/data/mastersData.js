@@ -42,6 +42,15 @@ const OPTIONS = {
   bookingOffices: ["Greenland", "Chakan", "Nasik", "Hyderabad", "Pune", "Vasai Eagle"],
   taxTypes: ["CGST+SGST", "IGST", "Exempt"],
   commissionTypes: ["Percentage", "Fixed"],
+  userTypes: ["Admin", "Operator", "Viewer"],
+  // Matches the "tax" entity's own seed row names above (kept as a plain
+  // string list here rather than a live cross-reference, same as this
+  // file's other OPTIONS lists).
+  taxNames: ["GST 5%", "GST 5% (CGST+SGST)", "Exempt"],
+  // Matches this app's own top-level module groups (the "DMS" child-menu
+  // header rows in src/IPConfig/mockData.js) — what a Menu row's own
+  // ParentMenu would realistically be one of.
+  menuGroups: ["(Top Level)", "Booking", "Trip", "Delivery", "Accounting", "Booking Office", "Sale", "Master", "Report Screens", "Reports", "Security", "Eway Bill"],
 };
 
 // ── Entity definitions — one per master screen. `fields` describes both
@@ -304,6 +313,71 @@ const ENTITY_DEFS = {
     ],
   },
 
+  // ── Master > Tax submenu (old app's TAX_ServiceTaxConfig/TAX_TaxSystem/
+  // TAX_TaxApplyOnTax/TAX_TaxSystemWiseTax tables) — flyout group under the
+  // "Tax" row alongside the plain "tax" entity above (see the "Tax" group
+  // in src/IPConfig/mockData.js's DMS array). ──────────────────────────────
+  servicetaxconfig: {
+    title: "Service Tax Config",
+    icon: "settings",
+    idField: "ConfigID",
+    fields: [
+      { name: "ConfigName", label: "Config Name", type: "text" },
+      { name: "ServiceTaxRate", label: "Service Tax Rate (%)", type: "number" },
+      { name: "EducessRate", label: "Educess Rate (%)", type: "number" },
+      { name: "SHEducessRate", label: "SH Educess Rate (%)", type: "number" },
+      { name: "EffectiveFrom", label: "Effective From", type: "date" },
+      { name: "IsActive", label: "Active", type: "checkbox" },
+    ],
+    seed: [
+      { ConfigID: 1, ConfigName: "Pre-GST Service Tax", ServiceTaxRate: 14, EducessRate: 0.5, SHEducessRate: 0.5, EffectiveFrom: "01-06-2015", IsActive: false },
+    ],
+  },
+
+  taxapplyontax: {
+    title: "Tax Apply On Tax",
+    icon: "layers",
+    idField: "ID",
+    fields: [
+      { name: "BaseTax", label: "Base Tax", type: "select", options: OPTIONS.taxNames },
+      { name: "ApplyOnTax", label: "Apply On Tax", type: "select", options: OPTIONS.taxNames },
+      { name: "Sequence", label: "Sequence", type: "number" },
+    ],
+    seed: [
+      { ID: 1, BaseTax: "GST 5%", ApplyOnTax: "GST 5% (CGST+SGST)", Sequence: 1 },
+    ],
+  },
+
+  taxsystem: {
+    title: "Tax System",
+    icon: "account_tree",
+    idField: "TaxSystemID",
+    fields: [
+      { name: "SystemName", label: "System Name", type: "text" },
+      { name: "EffectiveFrom", label: "Effective From", type: "date" },
+      { name: "IsActive", label: "Active", type: "checkbox" },
+    ],
+    seed: [
+      { TaxSystemID: 1, SystemName: "GST", EffectiveFrom: "01-07-2017", IsActive: true },
+      { TaxSystemID: 2, SystemName: "Service Tax", EffectiveFrom: "01-06-2015", IsActive: false },
+    ],
+  },
+
+  taxsystemwisetax: {
+    title: "Tax System Wise Tax",
+    icon: "rule",
+    idField: "ID",
+    fields: [
+      { name: "TaxSystem", label: "Tax System", type: "select", options: ["GST", "Service Tax"] },
+      { name: "TaxName", label: "Tax Name", type: "select", options: OPTIONS.taxNames },
+      { name: "IsDefault", label: "Default", type: "checkbox" },
+    ],
+    seed: [
+      { ID: 1, TaxSystem: "GST", TaxName: "GST 5%", IsDefault: true },
+      { ID: 2, TaxSystem: "GST", TaxName: "GST 5% (CGST+SGST)", IsDefault: false },
+    ],
+  },
+
   bookingoffice: {
     title: "Booking Office",
     icon: "store",
@@ -404,6 +478,86 @@ const ENTITY_DEFS = {
     seed: [
       { ID: 1, City: "Rajkot-G", HandlingCharge: 20 },
       { ID: 2, City: "Vasai", HandlingCharge: 25 },
+    ],
+  },
+
+  // ── Security (old app's SEC_User/SEC_Menu/SEC_Right/SEC_Patch tables) ──
+  // The other 4 Security screens (User Wise Menu/Rights/Booking
+  // Office/Fin Year) aren't flat masters — they're a "pick a user, check
+  // items" shape — so they're driven by src/data/securityData.js and
+  // rendered by GenericUserWiseAssignment.vue instead of this file.
+  secuser: {
+    title: "User",
+    icon: "person",
+    idField: "UserID",
+    fields: [
+      { name: "UserName", label: "User Name", type: "text" },
+      { name: "Password", label: "Password", type: "text" },
+      { name: "FullName", label: "Full Name", type: "text" },
+      { name: "Email", label: "Email", type: "text" },
+      { name: "MobileNo", label: "Mobile No.", type: "text" },
+      { name: "UserType", label: "User Type", type: "select", options: OPTIONS.userTypes },
+      { name: "IsActive", label: "Active", type: "checkbox" },
+    ],
+    seed: [
+      { UserID: 1, UserName: "admin", Password: "admin@123", FullName: "System Administrator", Email: "admin@cargonet.com", MobileNo: "9876500000", UserType: "Admin", IsActive: true },
+      { UserID: 2, UserName: "ketan.patel", Password: "ketan@123", FullName: "Ketan Patel", Email: "ketan.patel@cargonet.com", MobileNo: "9876500001", UserType: "Operator", IsActive: true },
+      { UserID: 3, UserName: "suresh.rao", Password: "suresh@123", FullName: "Suresh Rao", Email: "suresh.rao@cargonet.com", MobileNo: "9876500002", UserType: "Operator", IsActive: true },
+      { UserID: 4, UserName: "devuser", Password: "dev@123", FullName: "Dev User", Email: "devuser@cargonet.com", MobileNo: "9876500003", UserType: "Viewer", IsActive: false },
+    ],
+  },
+
+  secmenu: {
+    title: "Menu",
+    icon: "menu",
+    idField: "MenuID",
+    fields: [
+      { name: "MenuName", label: "Menu Name", type: "text" },
+      { name: "ParentMenu", label: "Parent Menu", type: "select", options: OPTIONS.menuGroups },
+      { name: "FormName", label: "Form Name", type: "text" },
+      { name: "ShowOrder", label: "Show Order", type: "number" },
+      { name: "Shortcut", label: "Shortcut", type: "text" },
+    ],
+    seed: [
+      { MenuID: 1, MenuName: "Booking", ParentMenu: "(Top Level)", FormName: "DMSBooking", ShowOrder: 1, Shortcut: "" },
+      { MenuID: 2, MenuName: "Booking Office", ParentMenu: "Booking", FormName: "DMSBookingOffice", ShowOrder: 1, Shortcut: "" },
+      { MenuID: 3, MenuName: "Trip", ParentMenu: "(Top Level)", FormName: "DMSTrip", ShowOrder: 2, Shortcut: "" },
+      { MenuID: 4, MenuName: "User", ParentMenu: "Security", FormName: "DMSSecurityUser", ShowOrder: 1, Shortcut: "" },
+    ],
+  },
+
+  secright: {
+    title: "Rights",
+    icon: "verified_user",
+    idField: "RightID",
+    fields: [
+      { name: "RightName", label: "Right Name", type: "text" },
+      { name: "Description", label: "Description", type: "text" },
+    ],
+    seed: [
+      { RightID: 1, RightName: "Add", Description: "Create a new record" },
+      { RightID: 2, RightName: "Edit", Description: "Modify an existing record" },
+      { RightID: 3, RightName: "Delete", Description: "Remove a record" },
+      { RightID: 4, RightName: "Print", Description: "Print a record/report" },
+      { RightID: 5, RightName: "Export", Description: "Export a report" },
+      { RightID: 6, RightName: "Cancel", Description: "Cancel/void a record" },
+      { RightID: 7, RightName: "Approve", Description: "Approve a pending record" },
+    ],
+  },
+
+  secpatch: {
+    title: "Patch Details",
+    icon: "system_update",
+    idField: "PatchID",
+    fields: [
+      { name: "PatchNo", label: "Patch No.", type: "text" },
+      { name: "PatchDate", label: "Patch Date", type: "date" },
+      { name: "Description", label: "Description", type: "text" },
+      { name: "AppliedBy", label: "Applied By", type: "text" },
+    ],
+    seed: [
+      { PatchID: 1, PatchNo: "P-2026-04-001", PatchDate: "01-04-2026", Description: "Booking Office Commission rate fix", AppliedBy: "admin" },
+      { PatchID: 2, PatchNo: "P-2026-04-002", PatchDate: "05-04-2026", Description: "E-Way Bill Part B consolidated support", AppliedBy: "admin" },
     ],
   },
 };

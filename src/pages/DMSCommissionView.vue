@@ -6,11 +6,21 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Commission</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Commission No." v-model="form.CommissionNo" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Commission No."
+                v-model="form.CommissionNo"
+              />
             </div>
           </div>
 
@@ -34,15 +44,35 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" readonly label="Commission No." v-model="form.CommissionNo" />
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Commission No."
+                  v-model="form.CommissionNo"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Commission Date" v-model="form.CommissionDate" placeholder="dd/mm/yyyy">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Commission Date"
+                  v-model="form.CommissionDate"
+                  placeholder="dd/mm/yyyy"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="commissionDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="commissionDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.CommissionDate"
                           mask="DD/MM/YYYY"
@@ -55,7 +85,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -70,19 +100,42 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Commission Amount" type="number" v-model="form.CommissionAmount" @update:model-value="calcTDS" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Commission Amount"
+                  type="number"
+                  v-model="form.CommissionAmount"
+                  @update:model-value="calcTDS"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsDeductTDS" val="orange" color="orange" intermediate-icon="black" @update:model-value="calcTDS" />
+                    <q-checkbox
+                      dense
+                      v-model="form.IsDeductTDS"
+                      val="orange"
+                      color="orange"
+                      intermediate-icon="black"
+                      @update:model-value="calcTDS"
+                    />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Deduct TDS</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Deduct TDS</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -95,15 +148,38 @@
                   @update:model-value="calcTDS"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" readonly label="TDS Amount" v-model="form.TDSAmount" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="TDS Amount"
+                  v-model="form.TDSAmount"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" readonly label="Net Payable" v-model="form.NetPayable" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Net Payable"
+                  v-model="form.NetPayable"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                />
               </div>
             </div>
           </q-card-section>
@@ -114,9 +190,15 @@
 </template>
 
 <script>
-import { apiGetCommissionById, apiSaveCommission, MOCK_DATA } from "./DMSCommission.vue";
+import entryNavigation from "src/mixins/entryNavigation.js";
+import {
+  apiGetCommissionById,
+  apiSaveCommission,
+  MOCK_DATA_BK_COMMISSION as MOCK_DATA,
+} from "src/data/bookingData.js";
 
 export default {
+  mixins: [entryNavigation],
   name: "DMSCommissionView",
 
   props: {
@@ -185,15 +267,24 @@ export default {
 
     async saveCommission() {
       if (!this.form.CommissionDate || !this.form.BookingOfficeName) {
-        this.$q.notify({ message: "Commission Date and Booking Office are required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Commission Date and Booking Office are required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       this.calcTDS();
       const res = await apiSaveCommission({ ...this.form });
       if (res.success) {
+        this.notifyEntrySaved();
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Commission saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Commission saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },

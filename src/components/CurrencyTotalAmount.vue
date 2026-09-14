@@ -1,5 +1,4 @@
-<template>
-  <div>
+<template><div>
     <q-card flat text-color="grey-7">
       <div class="row q-gutte-y-md q-pt-xs items-start" v-show="showTotals">
         <div class="col-12 col-md-3 q-pa-sm">
@@ -19,7 +18,7 @@
               class="q-py-sm"
               table-header-class="text-black bg-blue-2"
               row-key="CurType"
-              dense
+              
               flat
               separator="cell"
               :pagination="false"
@@ -53,7 +52,7 @@
               class="q-py-sm"
               :columns="CurTotalColumns"
               row-key="CurType"
-              dense
+              
               flat
               separator="cell"
               :pagination="false"
@@ -86,7 +85,7 @@
               class="q-py-sm"
               :columns="CurTotalColumns"
               row-key="CurType"
-              dense
+              
               flat
               separator="cell"
               :pagination="false"
@@ -119,7 +118,7 @@
               table-header-class="text-black bg-blue-2"
               class="q-py-sm"
               row-key="CurType"
-              dense
+              
               flat
               separator="cell"
               :pagination="false"
@@ -137,8 +136,7 @@
         </div>
       </div>
     </q-card>
-  </div>
-</template>
+  </div></template>
 
 <script>
 import axios from "axios";

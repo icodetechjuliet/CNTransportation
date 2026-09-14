@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="rsdebitledger" />
-</template>
+<template><GenericReportList report-key="rsdebitledger" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

@@ -21,7 +21,6 @@
                (mirrors DEL_DeliveryENT + the booking it links to). ── -->
           <q-table
             square
-            dense
             :rows="filteredRows"
             :columns="tableColumns"
             row-key="DeliveryID"
@@ -101,12 +100,17 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-IsPaymentReceived="props">
               <q-td :props="props">
-                <q-badge :color="props.value ? 'positive' : 'orange'" :label="props.value ? 'Received' : 'Pending'" />
+                <q-badge
+                  :color="props.value ? 'positive' : 'orange'"
+                  :label="props.value ? 'Received' : 'Pending'"
+                />
               </q-td>
             </template>
 
@@ -119,8 +123,9 @@
                   outline
                   class="edit-icon-style"
                   @click="printDelivery(props.row)"
-                  ><q-tooltip>Print</q-tooltip></q-btn
                 >
+                  <q-tooltip>Print</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
@@ -145,17 +150,48 @@ export default {
 
       baseColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "DeliveryNo", label: "Delivery No.", field: "DeliveryNo", sortable: true },
-        { name: "DeliveryDate", label: "Date", field: "DeliveryDate", sortable: true },
-        { name: "BookingNo", label: "Booking No", field: "BookingNo", sortable: true },
+        {
+          name: "DeliveryNo",
+          label: "Delivery No.",
+          field: "DeliveryNo",
+          sortable: true,
+        },
+        {
+          name: "DeliveryDate",
+          label: "Date",
+          field: "DeliveryDate",
+          sortable: true,
+        },
+        {
+          name: "BookingNo",
+          label: "Booking No",
+          field: "BookingNo",
+          sortable: true,
+        },
         { name: "FromPartyName", label: "Consignor", field: "FromPartyName" },
         { name: "ToPartyName", label: "Consignee", field: "ToPartyName" },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
         { name: "ReceiverName", label: "Receiver", field: "ReceiverName" },
-        { name: "NetAmount", label: "Net Amt.", field: "NetAmount", align: "right" },
-        { name: "ReceivedAmount", label: "Received", field: "ReceivedAmount", align: "right", sortable: true },
-        { name: "IsPaymentReceived", label: "Payment", field: "IsPaymentReceived", align: "center" },
+        {
+          name: "NetAmount",
+          label: "Net Amt.",
+          field: "NetAmount",
+          align: "right",
+        },
+        {
+          name: "ReceivedAmount",
+          label: "Received",
+          field: "ReceivedAmount",
+          align: "right",
+          sortable: true,
+        },
+        {
+          name: "IsPaymentReceived",
+          label: "Payment",
+          field: "IsPaymentReceived",
+          align: "center",
+        },
       ],
     };
   },

@@ -30,7 +30,6 @@
                rows get View/Edit/Delete instead. ── -->
           <q-table
             square
-            dense
             :rows="filteredRows"
             :columns="tableColumns"
             row-key="PreDeliveryID"
@@ -76,6 +75,7 @@
                   </div>
 
                   <q-select
+                    square=""
                     v-model="recordType"
                     :options="['All', 'Pending', 'Delivered']"
                     dense
@@ -159,9 +159,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md"
-                >Page {{ pagination.page }} of {{ maxPages }}</span
-              >
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-Status="props">
@@ -175,7 +175,11 @@
 
             <template v-slot:body-cell-PaymentType="props">
               <q-td :props="props">
-                <q-badge outline :color="paymentColor(props.value)" :label="props.value" />
+                <q-badge
+                  outline
+                  :color="paymentColor(props.value)"
+                  :label="props.value"
+                />
               </q-td>
             </template>
 
@@ -202,8 +206,9 @@
                     outline
                     class="edit-icon-style vw"
                     @click="viewDelivery(props.row)"
-                    ><q-tooltip>View</q-tooltip></q-btn
                   >
+                    <q-tooltip>View</q-tooltip>
+                  </q-btn>
                   <q-btn
                     icon="fa-solid fa-pen-to-square"
                     color="primary"
@@ -211,8 +216,9 @@
                     outline
                     class="edit-icon-style mody"
                     @click="editDelivery(props.row)"
-                    ><q-tooltip>Edit</q-tooltip></q-btn
                   >
+                    <q-tooltip>Edit</q-tooltip>
+                  </q-btn>
                   <q-btn
                     icon="fa-solid fa-trash"
                     color="negative"
@@ -220,8 +226,9 @@
                     outline
                     class="edit-icon-style q-ml-xs"
                     @click="deleteDelivery(props.row)"
-                    ><q-tooltip>Undo Delivery</q-tooltip></q-btn
                   >
+                    <q-tooltip>Undo Delivery</q-tooltip>
+                  </q-btn>
                 </template>
               </q-td>
             </template>
@@ -239,7 +246,9 @@
                     </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
-                      <span class="mjc-job-date">{{ props.row.BookingDate }}</span>
+                      <span class="mjc-job-date">
+                        {{ props.row.BookingDate }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
@@ -300,22 +309,27 @@
                     <div class="mjc-details-grid">
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Route</span>
-                        <span class="mjc-detail-value"
-                          >{{ props.row.FromCity }} →
-                          {{ props.row.ToCity }}</span
-                        >
+                        <span class="mjc-detail-value">
+                          {{ props.row.FromCity }} → {{ props.row.ToCity }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Consignee</span>
-                        <span class="mjc-detail-value">{{ props.row.ToPartyName }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ToPartyName }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Net Amt.</span>
-                        <span class="mjc-detail-value">{{ props.row.NetAmount }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.NetAmount }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Receiver</span>
-                        <span class="mjc-detail-value">{{ props.row.ReceiverName || "—" }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ReceiverName || "—" }}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -330,7 +344,10 @@
 </template>
 
 <script>
-import { apiGetPreDeliveryList, apiDeleteDelivery } from "src/data/deliveryData.js";
+import {
+  apiGetPreDeliveryList,
+  apiDeleteDelivery,
+} from "src/data/deliveryData.js";
 
 export default {
   name: "DMSDelivery",
@@ -352,9 +369,25 @@ export default {
 
       baseColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "Status", label: "Status", field: "Status", align: "center", sortable: true },
-        { name: "BookingNo", label: "Booking No", field: "BookingNo", sortable: true },
-        { name: "BookingDate", label: "Booking Date", field: "BookingDate", sortable: true },
+        {
+          name: "Status",
+          label: "Status",
+          field: "Status",
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "BookingNo",
+          label: "Booking No",
+          field: "BookingNo",
+          sortable: true,
+        },
+        {
+          name: "BookingDate",
+          label: "Booking Date",
+          field: "BookingDate",
+          sortable: true,
+        },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
         { name: "FromPartyName", label: "Consignor", field: "FromPartyName" },
@@ -362,12 +395,33 @@ export default {
         { name: "ItemName", label: "Item", field: "ItemName" },
         { name: "Qty", label: "Qty", field: "Qty", align: "right" },
         { name: "Weight", label: "Weight", field: "Weight", align: "right" },
-        { name: "PaymentType", label: "Payment", field: "PaymentType", align: "center" },
-        { name: "NetAmount", label: "Net Amt.", field: "NetAmount", align: "right", sortable: true },
-        { name: "ReceivedAmount", label: "Received", field: "ReceivedAmount", align: "right" },
+        {
+          name: "PaymentType",
+          label: "Payment",
+          field: "PaymentType",
+          align: "center",
+        },
+        {
+          name: "NetAmount",
+          label: "Net Amt.",
+          field: "NetAmount",
+          align: "right",
+          sortable: true,
+        },
+        {
+          name: "ReceivedAmount",
+          label: "Received",
+          field: "ReceivedAmount",
+          align: "right",
+        },
         { name: "EWayBillNo", label: "E-Way Bill No.", field: "EWayBillNo" },
         { name: "ReceiverName", label: "Receiver", field: "ReceiverName" },
-        { name: "DeliveryDate", label: "Delivery Date", field: "DeliveryDate", sortable: true },
+        {
+          name: "DeliveryDate",
+          label: "Delivery Date",
+          field: "DeliveryDate",
+          sortable: true,
+        },
       ],
 
       visibleColumns: [
@@ -458,11 +512,20 @@ export default {
       // pattern) — searches across the common fields at once, see
       // deliveryData.js's apiGetPreDeliveryList for the multi-field
       // fallback when searchField is omitted.
-      this.filteredRows = await apiGetPreDeliveryList(this.recordType, this.searchText);
+      this.filteredRows = await apiGetPreDeliveryList(
+        this.recordType,
+        this.searchText
+      );
     },
 
     paymentColor(type) {
-      const map = { TBBS: "blue", ToPay: "orange", Paid: "positive", TBBR: "purple", Cash: "teal" };
+      const map = {
+        TBBS: "blue",
+        ToPay: "orange",
+        Paid: "positive",
+        TBBR: "purple",
+        Cash: "teal",
+      };
       return map[type] || "grey";
     },
 
