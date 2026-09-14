@@ -14,7 +14,9 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="visibility" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{ filteredBookings.length }}</span>
+                <span class="total-stat-count">
+                  {{ filteredBookings.length }}
+                </span>
                 <span class="total-stat-label">Total Bookings</span>
               </div>
             </div>
@@ -57,12 +59,19 @@
                     >
                       <q-tooltip>Clear</q-tooltip>
                     </q-btn>
-                    <q-btn flat dense icon="search" class="search-combo-icon-btn" @click="loadBookings">
+                    <q-btn
+                      flat
+                      dense
+                      icon="search"
+                      class="search-combo-icon-btn"
+                      @click="loadBookings"
+                    >
                       <q-tooltip>Search</q-tooltip>
                     </q-btn>
                   </div>
 
                   <q-select
+                    square=""
                     v-model="direction"
                     :options="['All', 'Outward', 'Inward']"
                     dense
@@ -99,7 +108,10 @@
 
             <template v-slot:body-cell-Status="props">
               <q-td :props="props">
-                <q-badge :color="props.value === 'Delivered' ? 'positive' : 'orange'" :label="props.value" />
+                <q-badge
+                  :color="props.value === 'Delivered' ? 'positive' : 'orange'"
+                  :label="props.value"
+                />
               </q-td>
             </template>
 
@@ -112,27 +124,44 @@
                   outline
                   class="edit-icon-style vw"
                   @click="viewBooking(props.row)"
-                  ><q-tooltip>View</q-tooltip></q-btn
                 >
+                  <q-tooltip>View</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
             <template v-slot:item="props">
               <div class="mobile-job-card">
-                <div class="mjc-header" @click="toggleMobileCard(props.row.BookingId)">
+                <div
+                  class="mjc-header"
+                  @click="toggleMobileCard(props.row.BookingId)"
+                >
                   <div class="mjc-header-left">
-                    <div class="mjc-job-badge"><q-icon name="visibility" size="14px" /></div>
+                    <div class="mjc-job-badge">
+                      <q-icon name="visibility" size="14px" />
+                    </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
-                      <span class="mjc-job-date">{{ props.row.BookingDate }}</span>
+                      <span class="mjc-job-date">
+                        {{ props.row.BookingDate }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge class="mjc-status-badge" :color="props.row.Status === 'Delivered' ? 'positive' : 'orange'">
+                    <q-badge
+                      class="mjc-status-badge"
+                      :color="
+                        props.row.Status === 'Delivered' ? 'positive' : 'orange'
+                      "
+                    >
                       {{ props.row.Status }}
                     </q-badge>
                     <q-icon
-                      :name="expandedMobileCards.includes(props.row.BookingId) ? 'expand_less' : 'expand_more'"
+                      :name="
+                        expandedMobileCards.includes(props.row.BookingId)
+                          ? 'expand_less'
+                          : 'expand_more'
+                      "
                       size="20px"
                       color="grey-6"
                     />
@@ -140,17 +169,47 @@
                 </div>
 
                 <div class="mjc-actions">
-                  <q-btn dense unelevated icon="fa-solid fa-eye" label="View" class="mjc-btn mjc-btn-view" @click="viewBooking(props.row)" />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-eye"
+                    label="View"
+                    class="mjc-btn mjc-btn-view"
+                    @click="viewBooking(props.row)"
+                  />
                 </div>
 
                 <transition name="mobile-expand">
-                  <div v-if="expandedMobileCards.includes(props.row.BookingId)" class="mjc-details">
+                  <div
+                    v-if="expandedMobileCards.includes(props.row.BookingId)"
+                    class="mjc-details"
+                  >
                     <q-separator class="mjc-divider" />
                     <div class="mjc-details-grid">
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Route</span><span class="mjc-detail-value">{{ props.row.FromCity }} → {{ props.row.ToCity }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignor</span><span class="mjc-detail-value">{{ props.row.ConsignorName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignee</span><span class="mjc-detail-value">{{ props.row.ConsigneeName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Net Amt.</span><span class="mjc-detail-value">{{ props.row.NetAmt || "—" }}</span></div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Route</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.FromCity }} → {{ props.row.ToCity }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignor</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsignorName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignee</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsigneeName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Net Amt.</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.NetAmt || "—" }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </transition>
@@ -170,16 +229,50 @@
 //  the "copy don't parametrize" convention this family follows).
 // ─────────────────────────────────────────────
 const MOCK_BOOKINGS = [
-  { BookingId: 1, BookingNo: "RKG21040001", BookingDate: "01/04/2026", BookingType: "Outward", FromCity: "Rajkot-G", ToCity: "Chakan", ConsignorName: "Balaji xxx Co.", ConsigneeName: "Galaxy xxx Tooling", NetAmt: "262.50", Status: "Delivered" },
-  { BookingId: 2, BookingNo: "RKG21040002", BookingDate: "01/04/2026", BookingType: "Outward", FromCity: "Rajkot-G", ToCity: "Nasik", ConsignorName: "Rajsani xxx Polymers", ConsigneeName: "Ring xxx Ltd", NetAmt: "340.00", Status: "Pending" },
-  { BookingId: 3, BookingNo: "RKG21040003", BookingDate: "02/04/2026", BookingType: "Inward", FromCity: "Chakan", ToCity: "Rajkot-G", ConsignorName: "Galaxy xxx Tooling", ConsigneeName: "Balaji xxx Co.", NetAmt: "180.00", Status: "Delivered" },
+  {
+    BookingId: 1,
+    BookingNo: "RKG21040001",
+    BookingDate: "01/04/2026",
+    BookingType: "Outward",
+    FromCity: "Rajkot-G",
+    ToCity: "Chakan",
+    ConsignorName: "Balaji xxx Co.",
+    ConsigneeName: "Galaxy xxx Tooling",
+    NetAmt: "262.50",
+    Status: "Delivered",
+  },
+  {
+    BookingId: 2,
+    BookingNo: "RKG21040002",
+    BookingDate: "01/04/2026",
+    BookingType: "Outward",
+    FromCity: "Rajkot-G",
+    ToCity: "Nasik",
+    ConsignorName: "Rajsani xxx Polymers",
+    ConsigneeName: "Ring xxx Ltd",
+    NetAmt: "340.00",
+    Status: "Pending",
+  },
+  {
+    BookingId: 3,
+    BookingNo: "RKG21040003",
+    BookingDate: "02/04/2026",
+    BookingType: "Inward",
+    FromCity: "Chakan",
+    ToCity: "Rajkot-G",
+    ConsignorName: "Galaxy xxx Tooling",
+    ConsigneeName: "Balaji xxx Co.",
+    NetAmt: "180.00",
+    Status: "Delivered",
+  },
 ];
 
 function apiGetBookings(direction, search) {
   return new Promise((resolve) => {
     setTimeout(() => {
       let result = [...MOCK_BOOKINGS];
-      if (direction !== "All") result = result.filter((b) => b.BookingType === direction);
+      if (direction !== "All")
+        result = result.filter((b) => b.BookingType === direction);
       if (search) {
         const s = search.toLowerCase();
         result = result.filter(
@@ -210,8 +303,18 @@ export default {
       expandedMobileCards: [],
       tableColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "BookingNo", label: "Booking No.", field: "BookingNo", sortable: true },
-        { name: "BookingDate", label: "Date", field: "BookingDate", sortable: true },
+        {
+          name: "BookingNo",
+          label: "Booking No.",
+          field: "BookingNo",
+          sortable: true,
+        },
+        {
+          name: "BookingDate",
+          label: "Date",
+          field: "BookingDate",
+          sortable: true,
+        },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
         { name: "ConsignorName", label: "Consignor", field: "ConsignorName" },
@@ -239,17 +342,27 @@ export default {
     },
 
     async loadBookings() {
-      this.filteredBookings = await apiGetBookings(this.direction, this.searchText);
+      this.filteredBookings = await apiGetBookings(
+        this.direction,
+        this.searchText
+      );
     },
 
     viewBooking(row) {
       if (this.openTab) {
-        this.openTab(`/DMSBookingView?mode=view&bookingId=${row.BookingId}`, `Booking ${row.BookingNo || ""}`.trim());
+        this.openTab(
+          `/DMSBookingView?mode=view&bookingId=${row.BookingId}`,
+          `Booking ${row.BookingNo || ""}`.trim()
+        );
       }
     },
 
     printRegister() {
-      this.$q.notify({ message: "Booking register print — not yet wired to a PDF export.", color: "info", position: "top" });
+      this.$q.notify({
+        message: "Booking register print — not yet wired to a PDF export.",
+        color: "info",
+        position: "top",
+      });
     },
   },
 };

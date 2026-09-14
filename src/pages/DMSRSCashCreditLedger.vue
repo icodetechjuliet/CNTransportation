@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="rscashcreditledger" />
-</template>
+<template><GenericReportList report-key="rscashcreditledger" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

@@ -1,7 +1,6 @@
-<template>
-  <div class="row q-col-gutter-sm">
+<template><div class="row q-col-gutter-sm">
     <div class="col-4" v-if="ShowCode">
-      <q-select
+      <q-select bg-color="blue-1"
         square
         dense
         outlined
@@ -27,7 +26,7 @@
       ></q-select>
     </div>
     <div :class="getColClass()">
-      <q-select
+      <q-select bg-color="blue-1"
         square
         dense
         outlined
@@ -77,7 +76,7 @@
         (name === 'Shippingline' && Modulecode !== 'SE' && ShowAirlinecode)
       "
     >
-      <q-select
+      <q-select bg-color="blue-1"
         square
         dense
         outlined
@@ -105,13 +104,11 @@
         disable
       ></q-select>
     </div>
-  </div>
-  <ChargesControl
+  </div><ChargesControl
     ref="chargesControl"
     :ShowOld="this.ShowOldPartyDetailsFlag === 'O' ? true : false"
     @selected-party="Updateparty"
-  />
-</template>
+  /></template>
 
 <script>
 import { readonly, ref } from "vue";

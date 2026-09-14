@@ -22,7 +22,6 @@
                EagleParcel TRP_TripCharge module. ── -->
           <q-table
             square
-            dense
             :rows="filteredCharges"
             :columns="tableColumns"
             row-key="ChargeId"
@@ -76,6 +75,7 @@
                   />
 
                   <q-select
+                    square=""
                     v-model="tripFilter"
                     :options="tripOptions"
                     dense
@@ -123,7 +123,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-action="props">
@@ -135,8 +137,9 @@
                   outline
                   class="edit-icon-style mody"
                   @click="editCharge(props.row)"
-                  ><q-tooltip>Edit</q-tooltip></q-btn
                 >
+                  <q-tooltip>Edit</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
@@ -144,8 +147,9 @@
                   outline
                   class="edit-icon-style q-ml-xs"
                   @click="deleteCharge(props.row)"
-                  ><q-tooltip>Delete</q-tooltip></q-btn
                 >
+                  <q-tooltip>Delete</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
@@ -158,7 +162,9 @@
                     </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.TripNo }}</span>
-                      <span class="mjc-job-date">{{ props.row.ChargeDate }}</span>
+                      <span class="mjc-job-date">
+                        {{ props.row.ChargeDate }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
@@ -166,18 +172,36 @@
                   </div>
                 </div>
                 <div class="mjc-actions">
-                  <q-btn dense unelevated icon="fa-solid fa-pen-to-square" label="Edit" class="mjc-btn mjc-btn-edit" @click="editCharge(props.row)" />
-                  <q-btn dense unelevated icon="fa-solid fa-trash" label="Delete" class="mjc-btn mjc-btn-view" @click="deleteCharge(props.row)" />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-pen-to-square"
+                    label="Edit"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="editCharge(props.row)"
+                  />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-trash"
+                    label="Delete"
+                    class="mjc-btn mjc-btn-view"
+                    @click="deleteCharge(props.row)"
+                  />
                 </div>
                 <div class="mjc-details">
                   <div class="mjc-details-grid">
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Charge Type</span>
-                      <span class="mjc-detail-value">{{ props.row.ChargeType }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.ChargeType }}
+                      </span>
                     </div>
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Remarks</span>
-                      <span class="mjc-detail-value">{{ props.row.Remarks || "—" }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.Remarks || "—" }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -187,85 +211,11 @@
         </q-card>
       </div>
     </q-page>
-
-    <!-- ══════════════════════════════════════
-         Trip Charge Add / Edit Dialog — canonical compact-dialog shape
-         (ReferredDetailsDialog.vue), not the maximized full-form shape
-         DMSTrip.vue uses, since this form only has a handful of fields.
-    ══════════════════════════════════════ -->
-    <q-dialog v-model="showDialog">
-      <q-card style="min-width: 480px">
-        <q-card-section class="row items-center">
-          <div class="text-h6">{{ dialogMode === "add" ? "New Trip Charge" : "Edit Trip Charge" }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-section>
-          <div class="row q-col-gutter-sm">
-            <div class="col-12">
-              <span class="field-label">Trip No.</span>
-              <q-select
-                v-model="form.TripNo"
-                :options="tripOptions.filter((t) => t !== 'All')"
-                dense
-                outlined
-                bg-color="blue-1"
-              />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Charge Type</span>
-              <q-select
-                v-model="form.ChargeType"
-                :options="['Diesel', 'Toll', 'Loading', 'Unloading', 'Detention', 'Other']"
-                dense
-                outlined
-                bg-color="blue-1"
-              />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Charge Date</span>
-              <q-input v-model="form.ChargeDate" dense outlined bg-color="blue-1" placeholder="dd/mm/yyyy">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="chargeDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date
-                        v-model="form.ChargeDate"
-                        mask="DD/MM/YYYY"
-                        minimal
-                        style="width: 280px"
-                        @update:model-value="$refs.chargeDateProxy.hide()"
-                      />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-            <div class="col-6">
-              <span class="field-label">Amount</span>
-              <q-input v-model="form.Amount" type="number" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-12">
-              <span class="field-label">Remarks</span>
-              <q-input v-model="form.Remarks" dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow />
-            </div>
-          </div>
-        </q-card-section>
-
-        <q-separator />
-
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
-          <q-btn label="Cancel" v-close-popup />
-          <q-btn color="primary" class="m-btn-style" label="Save" @click="saveCharge" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
+import entryNavigation from "src/mixins/entryNavigation.js";
 import { apiGetTrips } from "src/data/tripData.js";
 
 const MOCK_CHARGES = [
@@ -305,7 +255,9 @@ function apiSaveCharge(charge) {
   return new Promise((resolve) => {
     setTimeout(() => {
       if (charge.ChargeId) {
-        const idx = MOCK_CHARGES.findIndex((c) => c.ChargeId === charge.ChargeId);
+        const idx = MOCK_CHARGES.findIndex(
+          (c) => c.ChargeId === charge.ChargeId
+        );
         if (idx !== -1) MOCK_CHARGES[idx] = { ...charge };
       } else {
         charge.ChargeId = MOCK_CHARGES.length
@@ -329,6 +281,8 @@ function apiDeleteCharge(id) {
 }
 
 export default {
+  mixins: [entryNavigation],
+  entryReload: "loadCharges",
   name: "DMSTripCharge",
 
   data() {
@@ -346,9 +300,25 @@ export default {
 
       baseColumns: [
         { name: "TripNo", label: "Trip No.", field: "TripNo", sortable: true },
-        { name: "ChargeType", label: "Charge Type", field: "ChargeType", sortable: true },
-        { name: "ChargeDate", label: "Charge Date", field: "ChargeDate", sortable: true },
-        { name: "Amount", label: "Amount", field: "Amount", align: "right", sortable: true },
+        {
+          name: "ChargeType",
+          label: "Charge Type",
+          field: "ChargeType",
+          sortable: true,
+        },
+        {
+          name: "ChargeDate",
+          label: "Charge Date",
+          field: "ChargeDate",
+          sortable: true,
+        },
+        {
+          name: "Amount",
+          label: "Amount",
+          field: "Amount",
+          align: "right",
+          sortable: true,
+        },
         { name: "Remarks", label: "Remarks", field: "Remarks" },
         { name: "action", label: "Action", field: "action" },
       ],
@@ -421,20 +391,47 @@ export default {
     openAddCharge() {
       this.form = this.emptyForm();
       this.dialogMode = "add";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSTripChargeForm?mode=${this.dialogMode}&id=${
+            this.form.ChargeId || ""
+          }`,
+          "Trip Charge"
+        );
+      }
     },
 
     editCharge(row) {
       this.form = { ...row };
       this.dialogMode = "edit";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSTripChargeForm?mode=${this.dialogMode}&id=${
+            this.form.ChargeId || ""
+          }`,
+          "Trip Charge"
+        );
+      }
     },
 
     async saveCharge() {
       const res = await apiSaveCharge({ ...this.form });
       if (res.success) {
-        this.$q.notify({ message: "Trip charge saved!", color: "positive", position: "top" });
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
+        this.$q.notify({
+          message: "Trip charge saved!",
+          color: "positive",
+          position: "top",
+        });
         this.showDialog = false;
+        this.notifyEntrySaved();
         await this.loadCharges();
       }
     },
@@ -442,20 +439,18 @@ export default {
     async deleteCharge(row) {
       const res = await apiDeleteCharge(row.ChargeId);
       if (res.success) {
-        this.$q.notify({ message: "Trip charge deleted.", color: "positive", position: "top" });
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
+        this.$q.notify({
+          message: "Trip charge deleted.",
+          color: "positive",
+          position: "top",
+        });
         await this.loadCharges();
       }
     },
   },
 };
 </script>
-
-<style scoped>
-.field-label {
-  display: block;
-  font-size: 11px;
-  color: #555;
-  margin-bottom: 2px;
-  font-weight: 500;
-}
-</style>

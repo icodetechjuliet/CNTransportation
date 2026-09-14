@@ -12111,7 +12111,11 @@ td.align-right {
 .add_new_job,
 .add_new_Master,
 .add_new_delivery,
-.add_new_booking {
+.add_new_booking,
+.add_new_stocktransfer,
+.add_new_doorRate,
+.add_new_tripexpense,
+.add_new_tripcharge {
   display: inline-block;
   position: relative;
   letter-spacing: 0.7px;
@@ -12137,7 +12141,11 @@ td.align-right {
 .add_new_button::after,
 .add_new_Lead::after,
 .add_new_Master::after,
-.add_new_delivery::after {
+.add_new_delivery::after,
+.add_new_stocktransfer::after,
+.add_new_doorRate::after,
+.add_new_tripexpense::after,
+.add_new_tripcharge::after {
   padding-left: 28px;
   padding-right: 10px;
   text-transform: capitalize;
@@ -14765,7 +14773,11 @@ thead .gridtableborder th:last-child {
 .add_new_Commission,
 .add_new_OSFreight,
 .add_new_ParcelHC,
-.add_new_CashCredit {
+.add_new_CashCredit,
+.add_new_stocktransfer,
+.add_new_doorRate,
+.add_new_tripexpense,
+.add_new_tripcharge {
   display: inline-block;
   margin: 0;
   padding: 0;
@@ -14793,7 +14805,11 @@ thead .gridtableborder th:last-child {
 .add_new_Commission .q-btn__content,
 .add_new_OSFreight .q-btn__content,
 .add_new_ParcelHC .q-btn__content,
-.add_new_CashCredit .q-btn__content {
+.add_new_CashCredit .q-btn__content,
+.add_new_stocktransfer .q-btn__content,
+.add_new_doorRate .q-btn__content,
+.add_new_tripexpense .q-btn__content,
+.add_new_tripcharge .q-btn__content {
   display: inline-block;
   position: relative;
   letter-spacing: 0.7px;
@@ -14829,7 +14845,11 @@ thead .gridtableborder th:last-child {
 .add_new_Commission .q-btn__content:hover,
 .add_new_OSFreight .q-btn__content:hover,
 .add_new_ParcelHC .q-btn__content:hover,
-.add_new_CashCredit .q-btn__content:hover {
+.add_new_CashCredit .q-btn__content:hover,
+.add_new_stocktransfer .q-btn__content:hover,
+.add_new_doorRate .q-btn__content:hover,
+.add_new_tripexpense .q-btn__content:hover,
+.add_new_tripcharge .q-btn__content:hover {
   background: linear-gradient(
       -75deg,
       transparent 0%,
@@ -14876,7 +14896,11 @@ thead .gridtableborder th:last-child {
 .add_new_Commission .q-btn__content::before,
 .add_new_OSFreight .q-btn__content::before,
 .add_new_ParcelHC .q-btn__content::before,
-.add_new_CashCredit .q-btn__content::before {
+.add_new_CashCredit .q-btn__content::before,
+.add_new_stocktransfer .q-btn__content::before,
+.add_new_doorRate .q-btn__content::before,
+.add_new_tripexpense .q-btn__content::before,
+.add_new_tripcharge .q-btn__content::before {
   font-family: "Material Icons";
   content: "\e145";
   display: inline-block;
@@ -14911,7 +14935,11 @@ thead .gridtableborder th:last-child {
 .add_new_Commission .q-btn__content::after,
 .add_new_OSFreight .q-btn__content::after,
 .add_new_ParcelHC .q-btn__content::after,
-.add_new_CashCredit .q-btn__content::after {
+.add_new_CashCredit .q-btn__content::after,
+.add_new_stocktransfer .q-btn__content::after,
+.add_new_doorRate .q-btn__content::after,
+.add_new_tripexpense .q-btn__content::after,
+.add_new_tripcharge .q-btn__content::after {
   padding-left: 0px;
   padding-right: 10px;
   text-transform: capitalize;
@@ -14935,7 +14963,11 @@ thead .gridtableborder th:last-child {
 .add_new_Commission:hover .q-btn__content::after,
 .add_new_OSFreight:hover .q-btn__content::after,
 .add_new_ParcelHC:hover .q-btn__content::after,
-.add_new_CashCredit:hover .q-btn__content::after {
+.add_new_CashCredit:hover .q-btn__content::after,
+.add_new_stocktransfer:hover .q-btn__content::after,
+.add_new_doorRate:hover .q-btn__content::after,
+.add_new_tripexpense:hover .q-btn__content::after,
+.add_new_tripcharge:hover .q-btn__content::after {
   text-decoration: underline;
 }
 
@@ -15013,6 +15045,22 @@ thead .gridtableborder th:last-child {
 
 .add_new_booking .q-btn__content::after {
   content: "Raise New Booking (n)";
+}
+
+.add_new_stocktransfer .q-btn__content::after {
+  content: "Raise New Stock Transfer Trip (n)";
+}
+
+.add_new_doorRate .q-btn__content::after {
+  content: "Add New Door Delivery Rate (n)";
+}
+
+.add_new_tripexpense .q-btn__content::after {
+  content: "Add New Trip Income/Expense (n)";
+}
+
+.add_new_tripcharge .q-btn__content::after {
+  content: "Add New Trip Charge (n)";
 }
 
 .q-btn--dense.q-btn--round {

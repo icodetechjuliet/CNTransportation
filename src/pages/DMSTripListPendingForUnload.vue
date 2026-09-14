@@ -24,7 +24,6 @@
                WinForms app). ── -->
           <q-table
             square
-            dense
             :rows="filteredTrips"
             :columns="tableColumns"
             row-key="TripId"
@@ -104,7 +103,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-action="props">
@@ -152,15 +153,21 @@
                   <div class="mjc-details-grid">
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Route</span>
-                      <span class="mjc-detail-value">{{ props.row.FromCity }} → {{ props.row.ToCity }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.FromCity }} → {{ props.row.ToCity }}
+                      </span>
                     </div>
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Vehicle</span>
-                      <span class="mjc-detail-value">{{ props.row.VehicleNo || "—" }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.VehicleNo || "—" }}
+                      </span>
                     </div>
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Driver</span>
-                      <span class="mjc-detail-value">{{ props.row.Driver || "—" }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.Driver || "—" }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -198,7 +205,11 @@ export default {
         { name: "ToCity", label: "To City", field: "ToCity" },
         { name: "VehicleNo", label: "Vehicle", field: "VehicleNo" },
         { name: "Driver", label: "Driver", field: "Driver" },
-        { name: "FromBookingOffice", label: "Booking Office", field: "FromBookingOffice" },
+        {
+          name: "FromBookingOffice",
+          label: "Booking Office",
+          field: "FromBookingOffice",
+        },
         { name: "action", label: "Action", field: "action", align: "center" },
       ],
     };

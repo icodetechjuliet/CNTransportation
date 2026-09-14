@@ -23,6 +23,7 @@ const routes = [
     component: () => import("layouts/MainLayout1.vue"),
     children: [
       { path: "IndexPage", component: () => import("pages/DashboardPage.vue") },
+      { path: "DMSMenu", component: () => import("pages/DMSMenu.vue") },
       {
         path: "/",
         name: "IndexPage",
@@ -33,6 +34,16 @@ const routes = [
         component: () => import("pages/UserLogDetails.vue"),
       },
 
+      { path: "DMSBBookingForm", component: () => import("pages/DMSBBookingForm.vue"), props: route => ({ params: route.query }) },
+      { path: "DMSBookingForm", component: () => import("pages/DMSBookingForm.vue"), props: route => ({ params: route.query }) },
+      { path: "DMSTruckBookingForm", component: () => import("pages/DMSTruckBookingForm.vue"), props: route => ({ params: route.query }) },
+      { path: "DMSTripStockTransferForm", component: () => import("pages/DMSTripStockTransferForm.vue"), props: route => ({ params: route.query }) },
+      { path: "DMSTripChargeForm", component: () => import("pages/DMSTripChargeForm.vue"), props: route => ({ params: route.query }) },
+      { path: "DMSTripIncomeExpenseForm", component: () => import("pages/DMSTripIncomeExpenseForm.vue"), props: route => ({ params: route.query }) },
+      { path: "DMSDoorDeliveryForm", component: () => import("pages/DMSDoorDeliveryForm.vue"), props: route => ({ params: route.query }) },
+      { path: "DMSDoorDeliveryRateForm", component: () => import("pages/DMSDoorDeliveryRateForm.vue"), props: route => ({ params: route.query }) },
+      { path: "DMSSaleSIForm", component: () => import("pages/DMSSaleSIForm.vue"), props: route => ({ params: route.query }) },
+      { path: "DMSEWayBillPartAForm", component: () => import("pages/DMSEWayBillPartAForm.vue"), props: route => ({ params: route.query }) },
       // Booking module (sidebar menu built in src/IPConfig/mockData.js's
       // buildMockParentMenu/buildMockChildMenu) — BBooking/Booking/Truck
       // Booking are 3 separate pages now (DMSBBooking.vue / DMSBooking.vue /
@@ -55,6 +66,7 @@ const routes = [
       {
         path: "DMSBBookingView",
         component: () => import("pages/DMSBBookingView.vue"),
+        props: route => ({ params: route.query }),
       },
       // DMS > Trip submenu (src/IPConfig/mockData.js's buildMockChildMenu
       // DMS group), menu item names/order matched 1:1 to the legacy
@@ -64,10 +76,12 @@ const routes = [
       {
         path: "DMSBookingView",
         component: () => import("pages/DMSBookingView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "DMSTruckBookingView",
         component: () => import("pages/DMSTruckBookingView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "DMSBookingOffice",
@@ -76,6 +90,7 @@ const routes = [
       {
         path: "DMSBookingOfficeView",
         component: () => import("pages/DMSBookingOfficeView.vue"),
+        props: route => ({ params: route.query }),
       },
       // Booking Office master/lookup sub-pages (see the
       // dms-booking-page-pattern skill — same list + full-page Add/Edit
@@ -87,6 +102,7 @@ const routes = [
       {
         path: "DMSBookingOfficeWiseCityView",
         component: () => import("pages/DMSBookingOfficeWiseCityView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "DMSBookingOfficeWiseToCity",
@@ -95,6 +111,7 @@ const routes = [
       {
         path: "DMSBookingOfficeWiseToCityView",
         component: () => import("pages/DMSBookingOfficeWiseToCityView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "DMSBookingOfficeWisePaymentMode",
@@ -112,6 +129,7 @@ const routes = [
       {
         path: "DMSBookingOfficeCommissionView",
         component: () => import("pages/DMSBookingOfficeCommissionView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "DMSBookingOfficeCommissionAddMultiple",
@@ -155,6 +173,7 @@ const routes = [
       {
         path: "DMSCommissionView",
         component: () => import("pages/DMSCommissionView.vue"),
+        props: route => ({ params: route.query }),
       },
       // Other-state freight / parcel handling charge vouchers.
       {
@@ -164,6 +183,7 @@ const routes = [
       {
         path: "DMSOtherStateFreightChargeView",
         component: () => import("pages/DMSOtherStateFreightChargeView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "DMSParcelHandlingCharge",
@@ -172,6 +192,7 @@ const routes = [
       {
         path: "DMSParcelHandlingChargeView",
         component: () => import("pages/DMSParcelHandlingChargeView.vue"),
+        props: route => ({ params: route.query }),
       },
       // Utility screen — single page, no list/companion pair (see
       // DMSEWayBill.vue's own header comment).
@@ -190,6 +211,7 @@ const routes = [
       {
         path: "DMSTripView",
         component: () => import("pages/DMSTripView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "DMSTripStockTransfer",
@@ -231,6 +253,7 @@ const routes = [
       {
         path: "DMSDeliveryView",
         component: () => import("pages/DMSDeliveryView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "DMSDoorDeliveryRegister",
@@ -403,6 +426,22 @@ const routes = [
         path: "DMSMasterTax",
         component: () => import("pages/DMSMasterTax.vue"),
       },
+      {
+        path: "DMSMasterServiceTaxConfig",
+        component: () => import("pages/DMSMasterServiceTaxConfig.vue"),
+      },
+      {
+        path: "DMSMasterTaxApplyOnTax",
+        component: () => import("pages/DMSMasterTaxApplyOnTax.vue"),
+      },
+      {
+        path: "DMSMasterTaxSystem",
+        component: () => import("pages/DMSMasterTaxSystem.vue"),
+      },
+      {
+        path: "DMSMasterTaxSystemWiseTax",
+        component: () => import("pages/DMSMasterTaxSystemWiseTax.vue"),
+      },
 
       {
         path: "DMSRSCurrentStock",
@@ -527,6 +566,75 @@ const routes = [
         component: () => import("pages/DMSRptBookingDeleteLogRegister.vue"),
       },
 
+      // Security module — matches the legacy EagleParcel WinForms app's own
+      // "Security" menu 1:1. User/Menu/Rights/Patch Details are flat
+      // masters (GenericMasterList.vue, entities registered in
+      // src/data/mastersData.js); the 4 "User Wise ..." screens are a
+      // pick-a-user-then-check-items shape (GenericUserWiseAssignment.vue,
+      // driven by src/data/securityData.js); User Login Log is a read-only
+      // report (GenericReportList.vue, src/data/reportsData.js).
+      {
+        path: "DMSSecurityUser",
+        component: () => import("pages/DMSSecurityUser.vue"),
+      },
+      {
+        path: "DMSSecurityUserWiseMenu",
+        component: () => import("pages/DMSSecurityUserWiseMenu.vue"),
+      },
+      {
+        path: "DMSSecurityUserWiseRights",
+        component: () => import("pages/DMSSecurityUserWiseRights.vue"),
+      },
+      {
+        path: "DMSSecurityUserWiseBookingOffice",
+        component: () => import("pages/DMSSecurityUserWiseBookingOffice.vue"),
+      },
+      {
+        path: "DMSSecurityUserWiseFinYear",
+        component: () => import("pages/DMSSecurityUserWiseFinYear.vue"),
+      },
+      {
+        path: "DMSSecurityUserLoginLog",
+        component: () => import("pages/DMSSecurityUserLoginLog.vue"),
+      },
+      {
+        path: "DMSSecurityPatchDetails",
+        component: () => import("pages/DMSSecurityPatchDetails.vue"),
+      },
+      {
+        path: "DMSSecurityMenu",
+        component: () => import("pages/DMSSecurityMenu.vue"),
+      },
+      {
+        path: "DMSSecurityRight",
+        component: () => import("pages/DMSSecurityRight.vue"),
+      },
+
+      // Eway Bill module — matches the legacy app's own "Eway Bill" menu.
+      // Dedicated pages + src/data/ewayBillData.js (localStorage-backed,
+      // same pattern as src/data/tripData.js) since Part A/B generation is
+      // a real workflow, not a flat master or plain report.
+      {
+        path: "DMSEWayBillPartBSingle",
+        component: () => import("pages/DMSEWayBillPartBSingle.vue"),
+      },
+      {
+        path: "DMSEWayBillPartBConsolidated",
+        component: () => import("pages/DMSEWayBillPartBConsolidated.vue"),
+      },
+      {
+        path: "DMSEWayBillPartBLog",
+        component: () => import("pages/DMSEWayBillPartBLog.vue"),
+      },
+      {
+        path: "DMSEWayBillPartBPrint",
+        component: () => import("pages/DMSEWayBillPartBPrint.vue"),
+      },
+      {
+        path: "DMSEWayBillPartA",
+        component: () => import("pages/DMSEWayBillPartA.vue"),
+      },
+
       {
         path: "BookingView",
         component: () => import("pages/DMSBookingViewReport.vue"),
@@ -538,6 +646,7 @@ const routes = [
       {
         path: "DMSBookingPODView",
         component: () => import("pages/DMSBookingPODView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "PendingForBooking",
@@ -550,6 +659,7 @@ const routes = [
       {
         path: "DMSBookingWebView",
         component: () => import("pages/DMSBookingWebView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "CashCredit",
@@ -558,6 +668,7 @@ const routes = [
       {
         path: "DMSCashCreditView",
         component: () => import("pages/DMSCashCreditView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "CashCreditDashBoard",
@@ -586,6 +697,7 @@ const routes = [
       {
         path: "DMSBookingLogView",
         component: () => import("pages/DMSBookingLogView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "BookingDeleteLog",
@@ -594,6 +706,7 @@ const routes = [
       {
         path: "DMSBookingDeleteLogView",
         component: () => import("pages/DMSBookingDeleteLogView.vue"),
+        props: route => ({ params: route.query }),
       },
       {
         path: "ReceiptNoRenumbering",

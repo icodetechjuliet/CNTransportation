@@ -1,5 +1,4 @@
-<template>
-  <div>
+<template><div>
     <q-card flat class="my-card" text-color="grey-7">
       <!-- DRAG & DROP UPLOAD AREA -->
       <div class="col-xs-12 col-sm-12 col-md-6">
@@ -123,8 +122,7 @@
         </div>
       </div>
     </q-card>
-  </div>
-</template>
+  </div></template>
 
 <script>
 import axios from "axios";

@@ -6,11 +6,21 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Booking Office Daily Collection</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Net Total" v-model="form.NetTotalAmount" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Net Total"
+                v-model="form.NetTotalAmount"
+              />
             </div>
           </div>
 
@@ -34,12 +44,24 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Collection Date" v-model="form.CollectionDate" placeholder="dd/mm/yyyy">
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Collection Date"
+                  v-model="form.CollectionDate"
+                  placeholder="dd/mm/yyyy"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="collectionDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="collectionDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.CollectionDate"
                           mask="DD/MM/YYYY"
@@ -52,7 +74,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -67,54 +89,184 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Cash Booking Amount" type="number" v-model="form.CashBookingAmount" @update:model-value="calcTotals" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Cash Booking Amount"
+                  type="number"
+                  v-model="form.CashBookingAmount"
+                  @update:model-value="calcTotals"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Cash Booking Kasar Amount" type="number" v-model="form.CashBookingKasarAmount" @update:model-value="calcTotals" />
-              </div>
-
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Cash Delivery Amount" type="number" v-model="form.CashDeliveryAmount" @update:model-value="calcTotals" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Cash Delivery Kasar Amount" type="number" v-model="form.CashDeliveryKasarAmount" @update:model-value="calcTotals" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Booking Cash Credit Amount" type="number" v-model="form.BookingCashCreditAmount" @update:model-value="calcTotals" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Delivery Cash Credit Amount" type="number" v-model="form.DeliveryCashCreditAmount" @update:model-value="calcTotals" />
-              </div>
-
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" readonly label="Total Cash Credit Amount" v-model="form.TotalCashCreditAmount" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Cash Credit Receipt Amount" type="number" v-model="form.CashCreditReceiptAmount" @update:model-value="calcTotals" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Other Cash Receipt Amount" type="number" v-model="form.OtherCashReceiptAmount" @update:model-value="calcTotals" />
-              </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Other Cash Payment Amount" type="number" v-model="form.OtherCashPaymentAmount" @update:model-value="calcTotals" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Cash Booking Kasar Amount"
+                  type="number"
+                  v-model="form.CashBookingKasarAmount"
+                  @update:model-value="calcTotals"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Uchak Debit Amount" type="number" v-model="form.UchakDebitAmount" @update:model-value="calcTotals" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Cash Delivery Amount"
+                  type="number"
+                  v-model="form.CashDeliveryAmount"
+                  @update:model-value="calcTotals"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Uchak Received Amount" type="number" v-model="form.UchakReceivedAmount" @update:model-value="calcTotals" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Cash Delivery Kasar Amount"
+                  type="number"
+                  v-model="form.CashDeliveryKasarAmount"
+                  @update:model-value="calcTotals"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" readonly label="Sub Total Amount" v-model="form.SubTotalAmount" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Booking Cash Credit Amount"
+                  type="number"
+                  v-model="form.BookingCashCreditAmount"
+                  @update:model-value="calcTotals"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" readonly label="Net Total Amount" v-model="form.NetTotalAmount" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Delivery Cash Credit Amount"
+                  type="number"
+                  v-model="form.DeliveryCashCreditAmount"
+                  @update:model-value="calcTotals"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Total Cash Credit Amount"
+                  v-model="form.TotalCashCreditAmount"
+                />
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Cash Credit Receipt Amount"
+                  type="number"
+                  v-model="form.CashCreditReceiptAmount"
+                  @update:model-value="calcTotals"
+                />
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Other Cash Receipt Amount"
+                  type="number"
+                  v-model="form.OtherCashReceiptAmount"
+                  @update:model-value="calcTotals"
+                />
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Other Cash Payment Amount"
+                  type="number"
+                  v-model="form.OtherCashPaymentAmount"
+                  @update:model-value="calcTotals"
+                />
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Uchak Debit Amount"
+                  type="number"
+                  v-model="form.UchakDebitAmount"
+                  @update:model-value="calcTotals"
+                />
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Uchak Received Amount"
+                  type="number"
+                  v-model="form.UchakReceivedAmount"
+                  @update:model-value="calcTotals"
+                />
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Sub Total Amount"
+                  v-model="form.SubTotalAmount"
+                />
+              </div>
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Net Total Amount"
+                  v-model="form.NetTotalAmount"
+                />
+              </div>
+
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                />
               </div>
             </div>
           </q-card-section>
@@ -125,9 +277,15 @@
 </template>
 
 <script>
-import { apiGetCollectionById, apiSaveCollection, MOCK_DATA } from "./DMSBookingOfficeDailyCollection.vue";
+import entryNavigation from "src/mixins/entryNavigation.js";
+import {
+  apiGetCollectionById,
+  apiSaveCollection,
+  MOCK_DATA_DAILY_COLLECTION as MOCK_DATA,
+} from "src/data/bookingOfficeData.js";
 
 export default {
+  mixins: [entryNavigation],
   name: "DMSBookingOfficeDailyCollectionView",
 
   props: {
@@ -216,15 +374,24 @@ export default {
 
     async saveCollection() {
       if (!this.form.CollectionDate) {
-        this.$q.notify({ message: "Collection Date is required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Collection Date is required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       this.calcTotals();
       const res = await apiSaveCollection({ ...this.form });
       if (res.success) {
+        this.notifyEntrySaved();
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Daily Collection saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Daily Collection saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },

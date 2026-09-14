@@ -1,12 +1,11 @@
-<template>
-  <div>
+<template><div>
     <!-- ═══════════════════════════════════════════════════
          FILTER BAR
     ═══════════════════════════════════════════════════ -->
     <div class="filter-bar-wrapper">
       <!-- ── SEARCH BY + GLOBAL SEARCH (combined) ── -->
       <div class="search-combo-wrapper">
-        <q-select
+        <q-select bg-color="blue-1"
           v-model="localSearchBy"
           :options="searchByOptions"
           dense
@@ -18,7 +17,7 @@
           behavior="menu"
         />
         <div class="search-combo-divider" />
-        <q-input
+        <q-input bg-color="blue-1"
           class="global-search"
           dense
           outlined
@@ -217,8 +216,7 @@
         @click="clearAllFilters"
       />
     </div>
-  </div>
-</template>
+  </div></template>
 
 <script>
 import axios from "axios";

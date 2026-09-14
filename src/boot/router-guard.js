@@ -50,7 +50,7 @@ export default ({ router }) => {
 
       // "reload" = F5/Ctrl+R → redirect to dashboard
       // "navigate" = new tab / direct URL entry → allow through
-      if (navType === "reload" && to.path !== "/IndexPage") {
+      if (navType === "reload" && !["/IndexPage", "/DMSMenu"].includes(to.path)) {
         console.log("🔄 Refresh detected → redirecting to Dashboard");
         return next("/IndexPage");
       }

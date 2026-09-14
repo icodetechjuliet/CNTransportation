@@ -257,6 +257,19 @@
             </div>
 
             <div v-show="parent.showDropdown" class="ml2-nav-children">
+              <div v-if="parent.ShortCode === 'DMS'" class="ml2-nav-child">
+                <router-link
+                  to="/DMSMenu"
+                  class="ml2-nav-child-link tooltip-wrapper"
+                  active-class=""
+                  exact-active-class=""
+                  :class="{ 'ml2-nav-child-link--active': isChildRouteActive({ Link: '/DMSMenu' }) }"
+                  @click.prevent="onChildClick({ Link: '/DMSMenu', MenuDesc: 'Menu Directory', Modulecode: 'DMS' }, parent.MenuName)"
+                >
+                  DMS Menu Directory
+                  <q-tooltip class="custom-tooltip">DMS Menu Directory</q-tooltip>
+                </router-link>
+              </div>
               <div
                 class="ml2-nav-child"
                 :class="{

@@ -54,7 +54,13 @@
                     >
                       <q-tooltip>Clear</q-tooltip>
                     </q-btn>
-                    <q-btn flat dense icon="search" class="search-combo-icon-btn" @click="loadLogs">
+                    <q-btn
+                      flat
+                      dense
+                      icon="search"
+                      class="search-combo-icon-btn"
+                      @click="loadLogs"
+                    >
                       <q-tooltip>Search</q-tooltip>
                     </q-btn>
                   </div>
@@ -98,27 +104,40 @@
                   outline
                   class="edit-icon-style vw"
                   @click="viewLog(props.row)"
-                  ><q-tooltip>View</q-tooltip></q-btn
                 >
+                  <q-tooltip>View</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
             <template v-slot:item="props">
               <div class="mobile-job-card">
-                <div class="mjc-header" @click="toggleMobileCard(props.row.LogId)">
+                <div
+                  class="mjc-header"
+                  @click="toggleMobileCard(props.row.LogId)"
+                >
                   <div class="mjc-header-left">
-                    <div class="mjc-job-badge"><q-icon name="history" size="14px" /></div>
+                    <div class="mjc-job-badge">
+                      <q-icon name="history" size="14px" />
+                    </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.BookingNo }}</span>
                       <span class="mjc-job-date">{{ props.row.Date }}</span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge class="mjc-status-badge" :color="opColor(props.row.OperationType)">
+                    <q-badge
+                      class="mjc-status-badge"
+                      :color="opColor(props.row.OperationType)"
+                    >
                       {{ props.row.OperationType }}
                     </q-badge>
                     <q-icon
-                      :name="expandedMobileCards.includes(props.row.LogId) ? 'expand_less' : 'expand_more'"
+                      :name="
+                        expandedMobileCards.includes(props.row.LogId)
+                          ? 'expand_less'
+                          : 'expand_more'
+                      "
                       size="20px"
                       color="grey-6"
                     />
@@ -126,16 +145,41 @@
                 </div>
 
                 <div class="mjc-actions">
-                  <q-btn dense unelevated icon="fa-solid fa-eye" label="View" class="mjc-btn mjc-btn-view" @click="viewLog(props.row)" />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-eye"
+                    label="View"
+                    class="mjc-btn mjc-btn-view"
+                    @click="viewLog(props.row)"
+                  />
                 </div>
 
                 <transition name="mobile-expand">
-                  <div v-if="expandedMobileCards.includes(props.row.LogId)" class="mjc-details">
+                  <div
+                    v-if="expandedMobileCards.includes(props.row.LogId)"
+                    class="mjc-details"
+                  >
                     <q-separator class="mjc-divider" />
                     <div class="mjc-details-grid">
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">User</span><span class="mjc-detail-value">{{ props.row.UserName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">From</span><span class="mjc-detail-value">{{ props.row.OperationFrom || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Net Amt.</span><span class="mjc-detail-value">{{ props.row.NetAmount || "—" }}</span></div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">User</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.UserName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">From</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.OperationFrom || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Net Amt.</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.NetAmount || "—" }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </transition>
@@ -151,22 +195,43 @@
     ══════════════════════════════════════ -->
     <q-dialog v-model="showDeleteByDateDialog" persistent>
       <q-card style="min-width: 320px">
-        <q-card-section class="text-subtitle1">Delete Log Entries By Date</q-card-section>
+        <q-card-section class="text-subtitle1">
+          Delete Log Entries By Date
+        </q-card-section>
         <q-card-section class="q-pt-none">
-          <div class="row q-col-gutter-sm">
-            <div class="col-6">
-              <span class="field-label">From Date</span>
-              <q-input square dense outlined bg-color="blue-1" v-model="deleteFromDate" placeholder="dd/mm/yyyy" />
+          <div class="row q-col-gutter-sm items-start">
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-input
+                label="From Date"
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                v-model="deleteFromDate"
+                placeholder="dd/mm/yyyy"
+              />
             </div>
-            <div class="col-6">
-              <span class="field-label">To Date</span>
-              <q-input square dense outlined bg-color="blue-1" v-model="deleteToDate" placeholder="dd/mm/yyyy" />
+            <div class="col-12 col-sm-6 col-md-3">
+              <q-input
+                label="To Date"
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                v-model="deleteToDate"
+                placeholder="dd/mm/yyyy"
+              />
             </div>
           </div>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn unelevated color="negative" label="Delete" @click="deleteByDate" />
+          <q-btn
+            unelevated
+            color="negative"
+            label="Delete"
+            @click="deleteByDate"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -225,7 +290,9 @@ function apiGetLogs(search) {
       if (search) {
         const s = search.toLowerCase();
         result = result.filter(
-          (l) => l.BookingNo.toLowerCase().includes(s) || (l.UserName || "").toLowerCase().includes(s)
+          (l) =>
+            l.BookingNo.toLowerCase().includes(s) ||
+            (l.UserName || "").toLowerCase().includes(s)
         );
       }
       resolve(result);
@@ -235,7 +302,10 @@ function apiGetLogs(search) {
 
 function apiGetLogById(id) {
   return new Promise((resolve) => {
-    setTimeout(() => resolve(MOCK_LOGS.find((l) => l.LogId === id) || null), 100);
+    setTimeout(
+      () => resolve(MOCK_LOGS.find((l) => l.LogId === id) || null),
+      100
+    );
   });
 }
 
@@ -263,12 +333,27 @@ export default {
 
       tableColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "BookingNo", label: "Booking No.", field: "BookingNo", sortable: true },
+        {
+          name: "BookingNo",
+          label: "Booking No.",
+          field: "BookingNo",
+          sortable: true,
+        },
         { name: "Date", label: "Log Date/Time", field: "Date", sortable: true },
-        { name: "OperationType", label: "Operation", field: "OperationType", align: "center" },
+        {
+          name: "OperationType",
+          label: "Operation",
+          field: "OperationType",
+          align: "center",
+        },
         { name: "OperationFrom", label: "From", field: "OperationFrom" },
         { name: "UserName", label: "User", field: "UserName" },
-        { name: "NetAmount", label: "Net Amt.", field: "NetAmount", align: "right" },
+        {
+          name: "NetAmount",
+          label: "Net Amt.",
+          field: "NetAmount",
+          align: "right",
+        },
       ],
     };
   },
@@ -300,13 +385,20 @@ export default {
 
     viewLog(row) {
       if (this.openTab) {
-        this.openTab(`/DMSBookingLogView?logId=${row.LogId}`, `Log ${row.BookingNo || ""}`.trim());
+        this.openTab(
+          `/DMSBookingLogView?logId=${row.LogId}`,
+          `Log ${row.BookingNo || ""}`.trim()
+        );
       }
     },
 
     deleteByDate() {
       if (!this.deleteFromDate || !this.deleteToDate) {
-        this.$q.notify({ message: "From Date and To Date are required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "From Date and To Date are required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       this.$q.notify({

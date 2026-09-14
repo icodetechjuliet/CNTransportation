@@ -5,12 +5,24 @@
         <div class="row header-style items-center">
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
-              <span class="header_text1">Booking Office Wise Received Collection</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="header_text1">
+                Booking Office Wise Received Collection
+              </span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Voucher No." v-model="form.VoucherNo" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Voucher No."
+                v-model="form.VoucherNo"
+              />
             </div>
           </div>
 
@@ -34,15 +46,35 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" readonly label="Voucher No." v-model="form.VoucherNo" />
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Voucher No."
+                  v-model="form.VoucherNo"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Voucher Date" v-model="form.VoucherDate" placeholder="dd/mm/yyyy">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Voucher Date"
+                  v-model="form.VoucherDate"
+                  placeholder="dd/mm/yyyy"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="voucherDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="voucherDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.VoucherDate"
                           mask="DD/MM/YYYY"
@@ -55,7 +87,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -70,12 +102,27 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Total Amount" type="number" v-model="form.TotalAmount" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Total Amount"
+                  type="number"
+                  v-model="form.TotalAmount"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                />
               </div>
             </div>
           </q-card-section>
@@ -86,9 +133,15 @@
 </template>
 
 <script>
-import { apiGetVoucherById, apiSaveVoucher, MOCK_DATA } from "./DMSBookingOfficeWiseReceivedCollection.vue";
+import entryNavigation from "src/mixins/entryNavigation.js";
+import {
+  apiGetReceivedVoucherById as apiGetVoucherById,
+  apiSaveReceivedVoucher as apiSaveVoucher,
+  MOCK_DATA_WISE_RECEIVED_COLLECTION as MOCK_DATA,
+} from "src/data/bookingOfficeData.js";
 
 export default {
+  mixins: [entryNavigation],
   name: "DMSBookingOfficeWiseReceivedCollectionView",
 
   props: {
@@ -145,14 +198,23 @@ export default {
 
     async saveVoucher() {
       if (!this.form.VoucherDate || !this.form.BookingOfficeName) {
-        this.$q.notify({ message: "Voucher Date and Booking Office are required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Voucher Date and Booking Office are required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       const res = await apiSaveVoucher({ ...this.form });
       if (res.success) {
+        this.notifyEntrySaved();
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Received Collection saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Received Collection saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },

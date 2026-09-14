@@ -1,6 +1,4 @@
-<template>
-  <component :is="loginComponent" />
-</template>
+<template><component :is="loginComponent" /></template>
 
 <script setup>
 // Router route.component() resolvers are only invoked once — Vue Router

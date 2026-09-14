@@ -1,6 +1,4 @@
-<template>
-  <!-- ══════════════ MOBILE PHONE PREVIEW ══════════════ -->
-  <q-dialog
+<template><!-- ══════════════ MOBILE PHONE PREVIEW ══════════════ --><q-dialog
     :model-value="modelValue"
     @update:model-value="$emit('update:modelValue', $event)"
     persistent
@@ -119,8 +117,7 @@
         </div>
       </div>
     </div>
-  </q-dialog>
-</template>
+  </q-dialog></template>
 
 <script>
 export default {

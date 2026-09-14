@@ -1,5 +1,4 @@
-<template>
-  <q-card class="branch-filter-card">
+<template><q-card class="branch-filter-card">
     <q-expansion-item
       icon="layers"
       class="branch-filter-card-header"
@@ -27,8 +26,7 @@
         </div>
       </div>
     </q-expansion-item>
-  </q-card>
-</template>
+  </q-card></template>
 
 <script>
 import axios from "axios";

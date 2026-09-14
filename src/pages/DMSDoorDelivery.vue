@@ -21,7 +21,6 @@
                GET-POST-PUT /api/Delivery/door-delivery. ── -->
           <q-table
             square
-            dense
             :rows="rows"
             :columns="tableColumns"
             row-key="DoorDeliveryID"
@@ -85,7 +84,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-action="props">
@@ -97,8 +98,9 @@
                   outline
                   class="edit-icon-style mody"
                   @click="openEdit(props.row)"
-                  ><q-tooltip>Edit</q-tooltip></q-btn
                 >
+                  <q-tooltip>Edit</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
@@ -106,95 +108,20 @@
                   outline
                   class="edit-icon-style q-ml-xs"
                   @click="deleteRow(props.row)"
-                  ><q-tooltip>Delete</q-tooltip></q-btn
                 >
+                  <q-tooltip>Delete</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
         </q-card>
       </div>
     </q-page>
-
-    <!-- ══════════════════════════════════════
-         Door Delivery Add / Edit Dialog — canonical compact-dialog shape.
-    ══════════════════════════════════════ -->
-    <q-dialog v-model="showDialog">
-      <q-card style="min-width: 560px">
-        <q-card-section class="row items-center">
-          <div class="text-h6">{{ dialogMode === "add" ? "New Door Delivery" : "Edit Door Delivery" }}</div>
-          <q-space />
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-separator />
-        <q-card-section>
-          <div class="row q-col-gutter-sm">
-            <div class="col-6">
-              <span class="field-label">Door Delivery Date</span>
-              <q-input v-model="form.DoorDeliveryDate" dense outlined bg-color="blue-1" placeholder="dd-mm-yyyy">
-                <template v-slot:append>
-                  <q-icon name="event" class="cursor-pointer">
-                    <q-popup-proxy ref="ddDateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="form.DoorDeliveryDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.ddDateProxy.hide()" />
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-            </div>
-            <div class="col-6">
-              <span class="field-label">Door Delivery Name</span>
-              <q-input v-model="form.DoorDeliveryName" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Vehicle</span>
-              <q-select v-model="form.Vehicle" :options="mockData.vehicles" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Transporter Account</span>
-              <q-select v-model="form.TransporterAccount" :options="mockData.transporters" dense outlined bg-color="blue-1" use-input fill-input display-value="" input-debounce="0" />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Rate Type</span>
-              <q-select v-model="form.RateType" :options="mockData.rateTypes" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Door Delivery Rate</span>
-              <q-input v-model="form.DoorDeliveryRate" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Receivable Amount</span>
-              <q-input v-model="form.ReceivableAmount" type="number" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <span class="field-label">Vehicle Amount</span>
-              <q-input v-model="form.VehicleAmount" type="number" dense outlined bg-color="blue-1" />
-            </div>
-            <div class="col-6">
-              <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                <q-item-section avatar>
-                  <q-checkbox dense v-model="form.IsDoorCollection" />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label dense>Door Collection</q-item-label>
-                </q-item-section>
-              </q-item>
-            </div>
-            <div class="col-12">
-              <span class="field-label">Remarks</span>
-              <q-input v-model="form.Remarks" dense outlined bg-color="blue-1" type="textarea" :rows="2" autogrow />
-            </div>
-          </div>
-        </q-card-section>
-        <q-separator />
-        <q-card-actions align="right" class="q-gutter-sm q-pt-none q-pb-none q-pr-none">
-          <q-btn label="Cancel" v-close-popup />
-          <q-btn color="primary" class="m-btn-style" label="Save" @click="save" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
+import entryNavigation from "src/mixins/entryNavigation.js";
 import {
   apiGetDoorDeliveries,
   apiSaveDoorDelivery,
@@ -203,6 +130,8 @@ import {
 } from "src/data/deliveryData.js";
 
 export default {
+  mixins: [entryNavigation],
+  entryReload: "loadRows",
   name: "DMSDoorDelivery",
 
   data() {
@@ -216,13 +145,37 @@ export default {
       form: this.emptyForm(),
 
       baseColumns: [
-        { name: "DoorDeliveryNo", label: "Door Delivery No.", field: "DoorDeliveryNo", sortable: true },
-        { name: "DoorDeliveryDate", label: "Date", field: "DoorDeliveryDate", sortable: true },
+        {
+          name: "DoorDeliveryNo",
+          label: "Door Delivery No.",
+          field: "DoorDeliveryNo",
+          sortable: true,
+        },
+        {
+          name: "DoorDeliveryDate",
+          label: "Date",
+          field: "DoorDeliveryDate",
+          sortable: true,
+        },
         { name: "DoorDeliveryName", label: "Name", field: "DoorDeliveryName" },
         { name: "Vehicle", label: "Vehicle", field: "Vehicle" },
-        { name: "TransporterAccount", label: "Transporter", field: "TransporterAccount" },
-        { name: "ReceivableAmount", label: "Receivable", field: "ReceivableAmount", align: "right" },
-        { name: "VehicleAmount", label: "Vehicle Amt.", field: "VehicleAmount", align: "right" },
+        {
+          name: "TransporterAccount",
+          label: "Transporter",
+          field: "TransporterAccount",
+        },
+        {
+          name: "ReceivableAmount",
+          label: "Receivable",
+          field: "ReceivableAmount",
+          align: "right",
+        },
+        {
+          name: "VehicleAmount",
+          label: "Vehicle Amt.",
+          field: "VehicleAmount",
+          align: "right",
+        },
         { name: "action", label: "Action", field: "action" },
       ],
     };
@@ -271,45 +224,74 @@ export default {
     openAdd() {
       this.form = this.emptyForm();
       this.dialogMode = "add";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSDoorDeliveryForm?mode=${this.dialogMode}&id=${
+            this.form.DoorDeliveryID || ""
+          }`,
+          "Door Delivery"
+        );
+      }
     },
 
     openEdit(row) {
       this.form = { ...row };
       this.dialogMode = "edit";
-      this.showDialog = true;
+      if (this.entryPage) {
+        this.showDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSDoorDeliveryForm?mode=${this.dialogMode}&id=${
+            this.form.DoorDeliveryID || ""
+          }`,
+          "Door Delivery"
+        );
+      }
     },
 
     async save() {
       try {
         const res = await apiSaveDoorDelivery({ ...this.form });
         if (res.success) {
-          this.$q.notify({ message: "Door delivery saved!", color: "positive", position: "top" });
+          if (this.entryPage && res.data) {
+            this.form = { ...res.data };
+            this.dialogMode = "edit";
+          }
+          this.$q.notify({
+            message: "Door delivery saved!",
+            color: "positive",
+            position: "top",
+          });
           this.showDialog = false;
+          this.notifyEntrySaved();
           await this.loadRows();
         }
       } catch (err) {
-        this.$q.notify({ message: err.message, color: "negative", position: "top" });
+        this.$q.notify({
+          message: err.message,
+          color: "negative",
+          position: "top",
+        });
       }
     },
 
     async deleteRow(row) {
       const res = await apiDeleteDoorDelivery(row.DoorDeliveryID);
       if (res.success) {
-        this.$q.notify({ message: "Door delivery deleted.", color: "positive", position: "top" });
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
+        this.$q.notify({
+          message: "Door delivery deleted.",
+          color: "positive",
+          position: "top",
+        });
         await this.loadRows();
       }
     },
   },
 };
 </script>
-
-<style scoped>
-.field-label {
-  display: block;
-  font-size: 11px;
-  color: #555;
-  margin-bottom: 2px;
-  font-weight: 500;
-}
-</style>

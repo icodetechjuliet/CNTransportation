@@ -1,5 +1,4 @@
-<template>
-  <q-select
+<template><q-select
     square
     outlined
     dense
@@ -9,8 +8,7 @@
     option-label="label"
     option-value="value"
     :label="label"
-  />
-</template>
+  /></template>
 
 <script>
 export default {

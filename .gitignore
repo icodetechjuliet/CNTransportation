@@ -34,7 +34,4 @@ yarn-error.log*
 
 cypress/screenshots
 cypress/videos
-
-/src/IPConfig
-
-
+scratch_screens

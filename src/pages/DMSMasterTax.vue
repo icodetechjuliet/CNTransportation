@@ -1,6 +1,4 @@
-<template>
-  <GenericMasterList entity="tax" />
-</template>
+<template><GenericMasterList entity="tax" /></template>
 
 <script>
 import GenericMasterList from "components/GenericMasterList.vue";

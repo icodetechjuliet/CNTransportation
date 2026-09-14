@@ -1,5 +1,4 @@
-<template>
-  <q-select
+<template><q-select
     square
     outlined
     dense
@@ -13,8 +12,7 @@
     option-value="value"
     :label="label"
     @update:model-value="$emit('change', $event)"
-  />
-</template>
+  /></template>
 
 <script>
 export default {

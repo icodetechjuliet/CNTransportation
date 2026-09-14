@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="rptcoveringletter" />
-</template>
+<template><GenericReportList report-key="rptcoveringletter" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

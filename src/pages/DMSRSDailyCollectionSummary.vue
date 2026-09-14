@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="rsdailycollectionsummary" />
-</template>
+<template><GenericReportList report-key="rsdailycollectionsummary" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

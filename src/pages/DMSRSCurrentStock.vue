@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="rscurrentstock" />
-</template>
+<template><GenericReportList report-key="rscurrentstock" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

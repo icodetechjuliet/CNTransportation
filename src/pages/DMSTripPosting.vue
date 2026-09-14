@@ -22,7 +22,6 @@
                from the legacy EagleParcel WinForms app). ── -->
           <q-table
             square
-            dense
             :rows="filteredTrips"
             :columns="tableColumns"
             row-key="TripId"
@@ -67,6 +66,7 @@
                   </div>
 
                   <q-select
+                    square=""
                     v-model="postedFilter"
                     :options="['Pending Posting', 'Posted', 'All']"
                     dense
@@ -113,18 +113,27 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-Status="props">
               <q-td :props="props">
-                <q-badge :color="statusColor(props.value)" :label="props.value" />
+                <q-badge
+                  :color="statusColor(props.value)"
+                  :label="props.value"
+                />
               </q-td>
             </template>
 
             <template v-slot:body-cell-Posted="props">
               <q-td :props="props" class="button-container">
-                <q-badge v-if="props.row.Posted" color="positive" label="Posted" />
+                <q-badge
+                  v-if="props.row.Posted"
+                  color="positive"
+                  label="Posted"
+                />
                 <q-btn
                   v-else
                   unelevated
@@ -153,7 +162,11 @@
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge v-if="props.row.Posted" color="positive" label="Posted" />
+                    <q-badge
+                      v-if="props.row.Posted"
+                      color="positive"
+                      label="Posted"
+                    />
                     <q-btn
                       v-else
                       unelevated
@@ -171,11 +184,15 @@
                   <div class="mjc-details-grid">
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Route</span>
-                      <span class="mjc-detail-value">{{ props.row.FromCity }} → {{ props.row.ToCity }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.FromCity }} → {{ props.row.ToCity }}
+                      </span>
                     </div>
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Total Amt.</span>
-                      <span class="mjc-detail-value">{{ props.row.TotalTripAmount }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.TotalTripAmount }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -207,8 +224,18 @@ export default {
         { name: "Status", label: "Status", field: "Status", align: "center" },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
-        { name: "FromBookingOffice", label: "Booking Office", field: "FromBookingOffice" },
-        { name: "Quantity", label: "Quantity", field: "Quantity", align: "right", sortable: true },
+        {
+          name: "FromBookingOffice",
+          label: "Booking Office",
+          field: "FromBookingOffice",
+        },
+        {
+          name: "Quantity",
+          label: "Quantity",
+          field: "Quantity",
+          align: "right",
+          sortable: true,
+        },
         { name: "Posted", label: "Posting", field: "Posted", align: "center" },
       ],
     };

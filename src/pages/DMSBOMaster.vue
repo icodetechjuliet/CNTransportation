@@ -1,6 +1,4 @@
-<template>
-  <GenericMasterList entity="bookingoffice" />
-</template>
+<template><GenericMasterList entity="bookingoffice" /></template>
 
 <script>
 import GenericMasterList from "components/GenericMasterList.vue";

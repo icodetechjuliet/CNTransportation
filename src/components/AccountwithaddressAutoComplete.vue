@@ -1,5 +1,4 @@
-<template>
-  <q-select
+<template><q-select
     dense
     square
     outlined
@@ -49,8 +48,7 @@
         </q-item-section>
       </q-item>
     </template>
-  </q-select>
-  <q-input
+  </q-select><q-input
     square
     dense
     outlined
@@ -67,20 +65,17 @@
         title="Search company addresses"
         @click="openMultipleAddressDialog(localValue)"
       /> </template
-  ></q-input>
-  <MultipleAddress
+  ></q-input><MultipleAddress
     ref="multipleAddress"
     :shipper="Shipper"
     @address-selected="
       (selectedAddress, party) => updateMultipleAddress(selectedAddress, party)
     "
-  />
-  <ChargesControl
+  /><ChargesControl
     ref="chargesControl"
     :ShowOld="this.ShowOldPartyDetailsFlag === 'O' ? true : false"
     @selected-party="Updateparty"
-  />
-</template>
+  /></template>
 
 <script>
 import { ref } from "vue";

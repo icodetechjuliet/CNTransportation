@@ -13,9 +13,7 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="swap_horiz" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{
-                  filteredTrips.length
-                }}</span>
+                <span class="total-stat-count">{{ filteredTrips.length }}</span>
                 <span class="total-stat-label">Total Stock Transfer Trips</span>
               </div>
             </div>
@@ -27,7 +25,6 @@
           <!-- ── Grid ── -->
           <q-table
             square
-            dense
             :rows="filteredTrips"
             :columns="tableColumns"
             row-key="TripId"
@@ -76,12 +73,13 @@
                     flat
                     dense
                     no-caps
-                    label="New Stock Transfer Trip"
-                    class="add_new_job m_add_newjob bg-dblue-lblue"
+                    accesskey="n"
+                    class="add_new_stocktransfer m_add_newjob bg-dblue-lblue"
                     @click="openAddTrip"
                   />
 
                   <q-select
+                    square=""
                     v-model="statusFilter"
                     :options="['All', 'Loaded', 'Unloaded']"
                     dense
@@ -128,14 +126,17 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md"
-                >Page {{ pagination.page }} of {{ maxPages }}</span
-              >
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-Status="props">
               <q-td :props="props">
-                <q-badge :color="statusColor(props.value)" :label="props.value" />
+                <q-badge
+                  :color="statusColor(props.value)"
+                  :label="props.value"
+                />
               </q-td>
             </template>
 
@@ -148,8 +149,9 @@
                   outline
                   class="edit-icon-style vw"
                   @click="viewTrip(props.row)"
-                  ><q-tooltip>View</q-tooltip></q-btn
                 >
+                  <q-tooltip>View</q-tooltip>
+                </q-btn>
                 <q-btn
                   icon="fa-solid fa-pen-to-square"
                   color="primary"
@@ -157,14 +159,18 @@
                   outline
                   class="edit-icon-style mody"
                   @click="editTrip(props.row)"
-                  ><q-tooltip>Edit</q-tooltip></q-btn
                 >
+                  <q-tooltip>Edit</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
             <template v-slot:item="props">
               <div class="mobile-job-card">
-                <div class="mjc-header" @click="toggleMobileCard(props.row.TripId)">
+                <div
+                  class="mjc-header"
+                  @click="toggleMobileCard(props.row.TripId)"
+                >
                   <div class="mjc-header-left">
                     <div class="mjc-job-badge">
                       <q-icon name="swap_horiz" size="14px" />
@@ -175,7 +181,10 @@
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge class="mjc-status-badge" :color="statusColor(props.row.Status)">
+                    <q-badge
+                      class="mjc-status-badge"
+                      :color="statusColor(props.row.Status)"
+                    >
                       {{ props.row.Status }}
                     </q-badge>
                     <q-icon
@@ -190,24 +199,48 @@
                   </div>
                 </div>
                 <div class="mjc-actions">
-                  <q-btn dense unelevated icon="fa-solid fa-eye" label="View" class="mjc-btn mjc-btn-view" @click="viewTrip(props.row)" />
-                  <q-btn dense unelevated icon="fa-solid fa-pen-to-square" label="Edit" class="mjc-btn mjc-btn-edit" @click="editTrip(props.row)" />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-eye"
+                    label="View"
+                    class="mjc-btn mjc-btn-view"
+                    @click="viewTrip(props.row)"
+                  />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-pen-to-square"
+                    label="Edit"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="editTrip(props.row)"
+                  />
                 </div>
                 <transition name="mobile-expand">
-                  <div v-if="expandedMobileCards.includes(props.row.TripId)" class="mjc-details">
+                  <div
+                    v-if="expandedMobileCards.includes(props.row.TripId)"
+                    class="mjc-details"
+                  >
                     <q-separator class="mjc-divider" />
                     <div class="mjc-details-grid">
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Route</span>
-                        <span class="mjc-detail-value">{{ props.row.FromCity }} → {{ props.row.ToCity }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.FromCity }} → {{ props.row.ToCity }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Booking Office</span>
-                        <span class="mjc-detail-value">{{ props.row.FromBookingOffice }} → {{ props.row.ToBookingOffice }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.FromBookingOffice }} →
+                          {{ props.row.ToBookingOffice }}
+                        </span>
                       </div>
                       <div class="mjc-detail-row">
                         <span class="mjc-detail-label">Vehicle</span>
-                        <span class="mjc-detail-value">{{ props.row.VehicleNo || "—" }}</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.VehicleNo || "—" }}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -218,309 +251,11 @@
         </q-card>
       </div>
     </q-page>
-
-    <!-- ══════════════════════════════════════
-         Stock Transfer Trip Add / Edit / View Dialog — same shape as
-         DMSTrip.vue's own dialog, minus the Transporter field (an
-         inter-branch stock transfer has no paid carrier) and with
-         IsStockTransferTrip locked on.
-    ══════════════════════════════════════ -->
-    <q-dialog v-model="showTripDialog" persistent maximized>
-      <q-card style="display: flex; flex-direction: column; height: 100%">
-        <q-toolbar
-          style="background: linear-gradient(to right, #0178bc 0%, #00bdda 100%);"
-          class="text-white"
-        >
-          <q-toolbar-title class="text-body2">
-            <span class="q-mr-md">Status: <b>{{ form.Status }}</b></span>
-            <span class="q-mr-md">Route: <b>{{ form.FromCity || "—" }} → {{ form.ToCity || "—" }}</b></span>
-            <span v-if="form.TripNo" class="q-ml-lg text-weight-bold">{{ form.TripNo }}</span>
-          </q-toolbar-title>
-          <q-space />
-          <template v-if="dialogMode !== 'view'">
-            <q-btn dense flat icon="save" label="Save" class="q-mr-xs" @click="saveTrip" />
-          </template>
-          <q-btn dense flat icon="close" v-close-popup @click="closeDialog" />
-        </q-toolbar>
-
-        <q-card-section class="q-pa-sm col" style="overflow-y: auto">
-          <div class="row q-col-gutter-sm">
-            <div class="col-xs-12 col-md-6">
-              <q-card flat bordered>
-                <q-card-section class="q-pa-sm">
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-4">
-                      <span class="field-label">Trip No.</span>
-                      <q-input v-model="form.TripNo" dense outlined bg-color="yellow-1" readonly />
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Trip Date</span>
-                      <q-input
-                        v-model="form.TripDate"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        placeholder="dd/mm/yyyy"
-                        :readonly="dialogMode === 'view'"
-                      >
-                        <template v-slot:append>
-                          <q-icon name="event" class="cursor-pointer" v-if="dialogMode !== 'view'">
-                            <q-popup-proxy ref="tripDateProxy" transition-show="scale" transition-hide="scale">
-                              <q-date
-                                v-model="form.TripDate"
-                                mask="DD/MM/YYYY"
-                                minimal
-                                style="width: 280px"
-                                @update:model-value="$refs.tripDateProxy.hide()"
-                              />
-                            </q-popup-proxy>
-                          </q-icon>
-                        </template>
-                      </q-input>
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Status</span>
-                      <q-select
-                        v-model="form.Status"
-                        :options="['Loaded', 'Unloaded']"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-6">
-                      <span class="field-label">From Branch (City)</span>
-                      <q-select
-                        v-model="form.FromCity"
-                        :options="mockData.cities"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-6">
-                      <span class="field-label">To Branch (City)</span>
-                      <q-select
-                        v-model="form.ToCity"
-                        :options="mockData.cities"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-6">
-                      <span class="field-label">Booking Office</span>
-                      <q-select
-                        v-model="form.BookingOffice"
-                        :options="mockData.bookingOffices"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-6">
-                      <span class="field-label">To Booking Office</span>
-                      <q-select
-                        v-model="form.ToBookingOffice"
-                        :options="mockData.bookingOffices"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-6">
-                      <span class="field-label">Trip Start Time</span>
-                      <q-input
-                        v-model="form.TripStartTime"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        placeholder="hh:mm AM/PM"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-6">
-                      <span class="field-label">Trip Complete Date Time</span>
-                      <q-input
-                        v-model="form.TripCompleteDateTime"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        placeholder="dd/mm/yyyy hh:mm"
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
-                        <q-item-section avatar>
-                          <q-checkbox dense v-model="form.IsStockTransferTrip" disable />
-                        </q-item-section>
-                        <q-item-section>
-                          <q-item-label dense>Stock Transfer Trip</q-item-label>
-                        </q-item-section>
-                      </q-item>
-                    </div>
-                  </div>
-
-                  <div class="row q-mb-xs">
-                    <div class="col-12">
-                      <span class="field-label">Remarks</span>
-                      <q-input
-                        v-model="form.Remarks"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        type="textarea"
-                        :rows="2"
-                        autogrow
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-
-            <div class="col-xs-12 col-md-6">
-              <q-card v-for="n in 3" :key="n" flat bordered class="q-mb-sm">
-                <q-card-section class="q-pa-sm">
-                  <div class="field-label text-weight-bold q-mb-xs">
-                    Vehicle {{ n }}{{ n === 1 ? " (Primary)" : " (Optional)" }}
-                  </div>
-                  <div class="row q-col-gutter-xs q-mb-xs">
-                    <div class="col-6">
-                      <span class="field-label">Vehicle No.</span>
-                      <q-select
-                        v-model="form['Vehicle' + n + 'No']"
-                        :options="mockData.vehicles"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        clearable
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-6">
-                      <span class="field-label">Driver</span>
-                      <q-select
-                        v-model="form['Vehicle' + n + 'Driver']"
-                        :options="mockData.drivers"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        clearable
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                  </div>
-                  <div class="row q-col-gutter-xs">
-                    <div class="col-4">
-                      <span class="field-label">From City</span>
-                      <q-select
-                        v-model="form['Vehicle' + n + 'FromCity']"
-                        :options="mockData.cities"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        clearable
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">To City</span>
-                      <q-select
-                        v-model="form['Vehicle' + n + 'ToCity']"
-                        :options="mockData.cities"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        use-input
-                        fill-input
-                        display-value=""
-                        input-debounce="0"
-                        clearable
-                        :readonly="dialogMode === 'view'"
-                      />
-                    </div>
-                    <div class="col-4">
-                      <span class="field-label">Amount</span>
-                      <q-input
-                        v-model="form['Vehicle' + n + 'Amount']"
-                        type="number"
-                        dense
-                        outlined
-                        bg-color="blue-1"
-                        :readonly="dialogMode === 'view'"
-                        @update:model-value="calcTotal"
-                      />
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-
-              <q-card flat bordered>
-                <q-card-section class="q-pa-sm">
-                  <div class="row items-center">
-                    <div class="col-6"><span class="field-label">Total Trip Amount</span></div>
-                    <div class="col-6">
-                      <q-input
-                        v-model="form.TotalTripAmount"
-                        dense
-                        outlined
-                        bg-color="yellow-1"
-                        readonly
-                        input-class="text-weight-bold"
-                      />
-                    </div>
-                  </div>
-                </q-card-section>
-              </q-card>
-            </div>
-          </div>
-        </q-card-section>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
+import entryNavigation from "src/mixins/entryNavigation.js";
 // Reuses DMSTrip.vue's mock "backend" — a stock transfer trip is just a
 // Trip row with IsStockTransferTrip = true, same as the legacy EagleParcel
 // TRP_Trip table's own IsStockTransferTrip column. Keeping one shared
@@ -534,6 +269,8 @@ import {
 } from "src/data/tripData.js";
 
 export default {
+  mixins: [entryNavigation],
+  entryReload: "loadTrips",
   name: "DMSTripStockTransfer",
 
   inject: {
@@ -568,14 +305,34 @@ export default {
 
       baseColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "Status", label: "Status", field: "Status", align: "center", sortable: true },
+        {
+          name: "Status",
+          label: "Status",
+          field: "Status",
+          align: "center",
+          sortable: true,
+        },
         { name: "TripNo", label: "Trip No.", field: "TripNo", sortable: true },
         { name: "TripDate", label: "Date", field: "TripDate", sortable: true },
-        { name: "FromCity", label: "From Branch", field: "FromCity", sortable: true },
+        {
+          name: "FromCity",
+          label: "From Branch",
+          field: "FromCity",
+          sortable: true,
+        },
         { name: "ToCity", label: "To Branch", field: "ToCity", sortable: true },
         { name: "VehicleNo", label: "Vehicle", field: "VehicleNo" },
-        { name: "Quantity", label: "Quantity", field: "Quantity", align: "right" },
-        { name: "FromBookingOffice", label: "Booking Office", field: "FromBookingOffice" },
+        {
+          name: "Quantity",
+          label: "Quantity",
+          field: "Quantity",
+          align: "right",
+        },
+        {
+          name: "FromBookingOffice",
+          label: "Booking Office",
+          field: "FromBookingOffice",
+        },
       ],
     };
   },
@@ -671,12 +428,24 @@ export default {
     openAddTrip() {
       this.form = this.emptyForm();
       this.dialogMode = "add";
-      this.showTripDialog = true;
+      if (this.entryPage) {
+        this.showTripDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSTripStockTransferForm?mode=${this.dialogMode}&id=${
+            this.form.TripId || ""
+          }`,
+          "Trip - Stock Transfer"
+        );
+      }
     },
 
     viewTrip(row) {
       if (this.openTab) {
-        this.openTab(`/DMSTripView?tripId=${row.TripId}`, `Trip ${row.TripNo}`.trim());
+        this.openTab(
+          `/DMSTripView?tripId=${row.TripId}`,
+          `Trip ${row.TripNo}`.trim()
+        );
         return;
       }
       this.editTrip(row, "view");
@@ -686,7 +455,16 @@ export default {
       const data = await apiGetTripById(row.TripId);
       this.form = { ...data };
       this.dialogMode = mode;
-      this.showTripDialog = true;
+      if (this.entryPage) {
+        this.showTripDialog = true;
+      } else {
+        this.openEntryPage(
+          `/DMSTripStockTransferForm?mode=${this.dialogMode}&id=${
+            this.form.TripId || ""
+          }`,
+          "Trip - Stock Transfer"
+        );
+      }
     },
 
     async saveTrip() {
@@ -694,12 +472,17 @@ export default {
       this.form.IsStockTransferTrip = true;
       const res = await apiSaveTrip({ ...this.form });
       if (res.success) {
+        if (this.entryPage && res.data) {
+          this.form = { ...res.data };
+          this.dialogMode = "edit";
+        }
         this.$q.notify({
           message: "Stock transfer trip saved!",
           color: "positive",
           position: "top",
         });
         this.showTripDialog = false;
+        this.notifyEntrySaved();
         await this.loadTrips();
       }
     },
@@ -710,13 +493,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.field-label {
-  display: block;
-  font-size: 11px;
-  color: #555;
-  margin-bottom: 2px;
-  font-weight: 500;
-}
-</style>

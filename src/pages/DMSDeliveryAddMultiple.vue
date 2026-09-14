@@ -26,29 +26,78 @@
 
           <!-- ── Shared delivery details applied to every selected booking ── -->
           <q-card-section class="q-pa-sm">
-            <div class="row q-col-gutter-sm items-end">
-              <div class="col-xs-12 col-sm-6 col-md-3">
-                <q-input square dense outlined bg-color="blue-1" label="Delivery Date" placeholder="dd-mm-yyyy" v-model="sharedFields.DeliveryDate">
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Delivery Date"
+                  placeholder="dd-mm-yyyy"
+                  v-model="sharedFields.DeliveryDate"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="dateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="sharedFields.DeliveryDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.dateProxy.hide()" />
+                      <q-popup-proxy
+                        ref="dateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date
+                          v-model="sharedFields.DeliveryDate"
+                          mask="DD-MM-YYYY"
+                          minimal
+                          style="width: 280px"
+                          @update:model-value="$refs.dateProxy.hide()"
+                        />
                       </q-popup-proxy>
                     </q-icon>
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3">
-                <q-input square dense outlined bg-color="blue-1" label="Receiver Name" v-model="sharedFields.ReceiverName" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Receiver Name"
+                  v-model="sharedFields.ReceiverName"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3">
-                <q-select square dense outlined bg-color="blue-1" label="Payment Mode" :options="mockData.paymentModes" v-model="sharedFields.PaymentMode" clearable />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-select
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Payment Mode"
+                  :options="mockData.paymentModes"
+                  v-model="sharedFields.PaymentMode"
+                  clearable
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3">
-                <q-select square dense outlined bg-color="blue-1" label="Delivered By" :options="mockData.users" v-model="sharedFields.DeliveredBy" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-select
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Delivered By"
+                  :options="mockData.users"
+                  v-model="sharedFields.DeliveredBy"
+                />
               </div>
-              <div class="col-12">
-                <q-input square dense outlined bg-color="blue-1" label="Narration" v-model="sharedFields.Narration" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Narration"
+                  v-model="sharedFields.Narration"
+                />
               </div>
             </div>
             <div class="row justify-end q-mt-sm">
@@ -71,7 +120,6 @@
           <!-- ── Pending bookings pool ── -->
           <q-table
             square
-            dense
             :rows="pendingRows"
             :columns="tableColumns"
             row-key="PreDeliveryID"
@@ -135,7 +183,11 @@
 </template>
 
 <script>
-import { apiGetPreDeliveryList, apiBulkDeliver, MOCK_DATA } from "src/data/deliveryData.js";
+import {
+  apiGetPreDeliveryList,
+  apiBulkDeliver,
+  MOCK_DATA,
+} from "src/data/deliveryData.js";
 
 export default {
   name: "DMSDeliveryAddMultiple",
@@ -158,13 +210,28 @@ export default {
       },
 
       baseColumns: [
-        { name: "BookingNo", label: "Booking No", field: "BookingNo", sortable: true },
-        { name: "BookingDate", label: "Booking Date", field: "BookingDate", sortable: true },
+        {
+          name: "BookingNo",
+          label: "Booking No",
+          field: "BookingNo",
+          sortable: true,
+        },
+        {
+          name: "BookingDate",
+          label: "Booking Date",
+          field: "BookingDate",
+          sortable: true,
+        },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
         { name: "FromPartyName", label: "Consignor", field: "FromPartyName" },
         { name: "ToPartyName", label: "Consignee", field: "ToPartyName" },
-        { name: "NetAmount", label: "Net Amt.", field: "NetAmount", align: "right" },
+        {
+          name: "NetAmount",
+          label: "Net Amt.",
+          field: "NetAmount",
+          align: "right",
+        },
       ],
     };
   },
@@ -217,7 +284,9 @@ export default {
         });
         return;
       }
-      const res = await apiBulkDeliver(this.selectedIds, { ...this.sharedFields });
+      const res = await apiBulkDeliver(this.selectedIds, {
+        ...this.sharedFields,
+      });
       if (res.success) {
         this.$q.notify({
           message: `${res.count} booking(s) marked delivered.`,

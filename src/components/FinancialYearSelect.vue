@@ -1,5 +1,4 @@
-<template>
-  <q-select
+<template><q-select
     square
     outlined
     dense
@@ -7,8 +6,7 @@
     v-model="selectedValue"
     :options="options"
     :label="label"
-  />
-</template>
+  /></template>
 
 <script>
 export default {

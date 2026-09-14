@@ -1,5 +1,4 @@
-<template>
-  <q-select
+<template><q-select bg-color="blue-1"
     square
     dense
     outlined
@@ -39,13 +38,11 @@
         </q-item-section>
       </q-item>
     </template>
-  </q-select>
-  <ChargesControl
+  </q-select><ChargesControl
     ref="chargesControl"
     :ShowOld="this.ShowOldPartyDetailsFlag === 'O' ? true : false"
     @selected-party="Updateparty"
-  />
-</template>
+  /></template>
 
 <script>
 import { readonly, ref } from "vue";

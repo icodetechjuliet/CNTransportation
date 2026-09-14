@@ -1,9 +1,7 @@
-<template>
-  <div class="qn-loader">
+<template><div class="qn-loader">
     <div class="qn-loader__logo"></div>
     <div class="qn-loader__pct">{{ loadingPercentage }}%</div>
-  </div>
-</template>
+  </div></template>
 
 <script>
 export default {

@@ -1,6 +1,4 @@
-<template>
-  <GenericReportList report-key="rsuchakreceivedlist" />
-</template>
+<template><GenericReportList report-key="rsuchakreceivedlist" /></template>
 
 <script>
 import GenericReportList from "components/GenericReportList.vue";

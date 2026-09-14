@@ -1,5 +1,4 @@
-<template>
-  <div class="hide-overflow">
+<template><div class="hide-overflow">
     <div v-if="loading" class="loader-container">
       <span class="loader"></span>
       <!-- <span class="loader_txt_P"
@@ -25,7 +24,7 @@
               novalidate="novalidate"
               @submit="login"
             >
-              <q-input
+              <q-input bg-color="blue-1"
                 outlined
                 class="login-field"
                 v-model="email"
@@ -37,7 +36,7 @@
                 </template>
               </q-input>
 
-              <q-input
+              <q-input bg-color="blue-1"
                 outlined
                 class="login-field"
                 v-model.trim="password"
@@ -143,8 +142,7 @@
         </div>
       </q-page>
     </div>
-  </div>
-</template>
+  </div></template>
 
 <script>
 import axios from "axios";

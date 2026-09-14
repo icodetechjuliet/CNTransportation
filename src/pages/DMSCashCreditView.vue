@@ -6,14 +6,32 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Cash Credit</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Voucher No." v-model="form.VoucherNo" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Voucher No."
+                v-model="form.VoucherNo"
+              />
             </div>
             <div class="header-field-group header-field-group-sm">
-              <q-input square dense outlined bg-color="blue-1" readonly label="Pending Amount" v-model="form.PendingAmount" />
+              <q-input
+                square
+                dense
+                outlined
+                bg-color="blue-1"
+                readonly
+                label="Pending Amount"
+                v-model="form.PendingAmount"
+              />
             </div>
           </div>
 
@@ -37,12 +55,23 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Voucher Date" v-model="form.VoucherDate">
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Voucher Date"
+                  v-model="form.VoucherDate"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="voucherDateProxy" transition-show="scale" transition-hide="scale">
+                      <q-popup-proxy
+                        ref="voucherDateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
                         <q-date
                           v-model="form.VoucherDate"
                           mask="DD/MM/YYYY"
@@ -55,7 +84,7 @@
                   </template>
                 </q-input>
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -70,14 +99,28 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Reference User Name" v-model="form.ReferenceUserName" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Reference User Name"
+                  v-model="form.ReferenceUserName"
+                />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" label="Booking No." v-model="form.BookingNo" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Booking No."
+                  v-model="form.BookingNo"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -88,7 +131,7 @@
                   :options="mockData.bookingOffices"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -100,7 +143,7 @@
                   @update:model-value="calcPending"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-input
                   square
                   dense
@@ -112,20 +155,48 @@
                   @update:model-value="calcPending"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-input square dense outlined bg-color="blue-1" readonly label="Pending Amount" v-model="form.PendingAmount" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  readonly
+                  label="Pending Amount"
+                  v-model="form.PendingAmount"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsClear" val="orange" color="orange" intermediate-icon="black" />
+                    <q-checkbox
+                      dense
+                      v-model="form.IsClear"
+                      val="orange"
+                      color="orange"
+                      intermediate-icon="black"
+                    />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Is Clear</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Is Clear</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Narration" v-model="form.Narration" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Narration"
+                  v-model="form.Narration"
+                />
               </div>
             </div>
           </q-card-section>
@@ -136,9 +207,15 @@
 </template>
 
 <script>
-import { apiGetCreditById, apiSaveCredit, MOCK_DATA } from "./DMSCashCredit.vue";
+import entryNavigation from "src/mixins/entryNavigation.js";
+import {
+  apiGetCreditById,
+  apiSaveCredit,
+  MOCK_DATA_CASH_CREDIT as MOCK_DATA,
+} from "src/data/bookingData.js";
 
 export default {
+  mixins: [entryNavigation],
   name: "DMSCashCreditView",
 
   // Set by DynamicTab.vue's openTab() from the `?mode=...&creditId=...`
@@ -210,15 +287,24 @@ export default {
 
     async saveCredit() {
       if (!this.form.PartyAccountName) {
-        this.$q.notify({ message: "Party Account Name is required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Party Account Name is required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       this.calcPending();
       const res = await apiSaveCredit({ ...this.form });
       if (res.success) {
+        this.notifyEntrySaved();
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Cash Credit saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Cash Credit saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },

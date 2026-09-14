@@ -29,7 +29,6 @@
                the legacy EagleParcel WinForms app. ── -->
           <q-table
             square
-            dense
             :rows="filteredTrips"
             :columns="tableColumns"
             row-key="TripId"
@@ -74,6 +73,7 @@
                   </div>
 
                   <q-select
+                    square=""
                     v-model="transporterFilter"
                     :options="transporterOptions"
                     dense
@@ -121,12 +121,17 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-Status="props">
               <q-td :props="props">
-                <q-badge :color="statusColor(props.value)" :label="props.value" />
+                <q-badge
+                  :color="statusColor(props.value)"
+                  :label="props.value"
+                />
               </q-td>
             </template>
 
@@ -139,11 +144,16 @@
                     </div>
                     <div class="mjc-header-info">
                       <span class="mjc-job-no">{{ props.row.TripNo }}</span>
-                      <span class="mjc-job-date">{{ props.row.Transporter }}</span>
+                      <span class="mjc-job-date">
+                        {{ props.row.Transporter }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge class="mjc-status-badge" :color="statusColor(props.row.Status)">
+                    <q-badge
+                      class="mjc-status-badge"
+                      :color="statusColor(props.row.Status)"
+                    >
                       {{ props.row.Status }}
                     </q-badge>
                   </div>
@@ -152,11 +162,15 @@
                   <div class="mjc-details-grid">
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Route</span>
-                      <span class="mjc-detail-value">{{ props.row.FromCity }} → {{ props.row.ToCity }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.FromCity }} → {{ props.row.ToCity }}
+                      </span>
                     </div>
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Quantity</span>
-                      <span class="mjc-detail-value">{{ props.row.Quantity }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.Quantity }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -185,14 +199,25 @@ export default {
       pagination: { page: 1, rowsPerPage: 15 },
 
       baseColumns: [
-        { name: "Transporter", label: "Transporter", field: "Transporter", sortable: true },
+        {
+          name: "Transporter",
+          label: "Transporter",
+          field: "Transporter",
+          sortable: true,
+        },
         { name: "TripNo", label: "Trip No.", field: "TripNo", sortable: true },
         { name: "TripDate", label: "Date", field: "TripDate", sortable: true },
         { name: "Status", label: "Status", field: "Status", align: "center" },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
         { name: "VehicleNo", label: "Vehicle", field: "VehicleNo" },
-        { name: "Quantity", label: "Quantity", field: "Quantity", align: "right", sortable: true },
+        {
+          name: "Quantity",
+          label: "Quantity",
+          field: "Quantity",
+          align: "right",
+          sortable: true,
+        },
       ],
     };
   },

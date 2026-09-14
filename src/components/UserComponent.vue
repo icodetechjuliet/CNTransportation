@@ -1,5 +1,4 @@
-<template>
-  <q-select
+<template><q-select
     square
     dense
     outlined
@@ -25,9 +24,7 @@
     <template v-slot:append>
       <q-icon name="search" @mousedown.stop="handleIconClick(name)" />
     </template>
-  </q-select>
-
-  <q-dialog v-model="dialogVisible">
+  </q-select><q-dialog v-model="dialogVisible">
     <q-card>
       <q-card-section>
         <div class="row">
@@ -80,8 +77,7 @@
         </div>
       </q-card-section>
     </q-card>
-  </q-dialog>
-</template>
+  </q-dialog></template>
 
 <script>
 import { readonly, ref } from "vue";

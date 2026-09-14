@@ -787,6 +787,18 @@
                       </template>
 
                       <q-card>
+                        <div v-if="parent.ShortCode === 'DMS'" class="child-item">
+                          <q-card-section style="padding: 7px 12px">
+                            <router-link
+                              to="/DMSMenu"
+                              class="menu-link tooltip-wrapper"
+                              @click.prevent="handleLinkClick({ Link: '/DMSMenu', MenuDesc: 'Menu Directory', Modulecode: 'DMS' }, parent.MenuName)"
+                            >
+                              DMS Menu Directory
+                              <q-tooltip class="custom-tooltip">DMS Menu Directory</q-tooltip>
+                            </router-link>
+                          </q-card-section>
+                        </div>
                         <template
                           v-for="child in parent.children"
                           :key="child.id"

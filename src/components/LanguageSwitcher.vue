@@ -1,5 +1,4 @@
-<template>
-  <q-btn-dropdown
+<template><q-btn-dropdown
     :flat="variant === 'ml2'"
     :round="variant === 'ml2'"
     :dense="true"
@@ -80,8 +79,7 @@
         </q-item-section>
       </q-item>
     </q-list>
-  </q-btn-dropdown>
-</template>
+  </q-btn-dropdown></template>
 
 <script>
 // Language switcher — UI control only for now. This app has no i18n

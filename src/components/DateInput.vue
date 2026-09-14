@@ -1,5 +1,4 @@
-<template>
-  <q-input
+<template><q-input
     square
     dense
     outlined
@@ -53,8 +52,7 @@
         </q-popup-proxy>
       </q-icon>
     </template>
-  </q-input>
-</template>
+  </q-input></template>
 
 <script>
 import { date } from "quasar";

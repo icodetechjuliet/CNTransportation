@@ -8,7 +8,9 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="pending_actions" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{ filteredBookingWebs.length }}</span>
+                <span class="total-stat-count">
+                  {{ filteredBookingWebs.length }}
+                </span>
                 <span class="total-stat-label">Total Pending</span>
               </div>
             </div>
@@ -87,25 +89,41 @@
                   no-caps
                   class="edit-icon-style"
                   @click="confirmConvert(props.row)"
-                  ><q-tooltip>Add Booking</q-tooltip></q-btn
                 >
+                  <q-tooltip>Add Booking</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
             <template v-slot:item="props">
               <div class="mobile-job-card">
-                <div class="mjc-header" @click="toggleMobileCard(props.row.BookingWebId)">
+                <div
+                  class="mjc-header"
+                  @click="toggleMobileCard(props.row.BookingWebId)"
+                >
                   <div class="mjc-header-left">
-                    <div class="mjc-job-badge"><q-icon name="pending_actions" size="14px" /></div>
+                    <div class="mjc-job-badge">
+                      <q-icon name="pending_actions" size="14px" />
+                    </div>
                     <div class="mjc-header-info">
-                      <span class="mjc-job-no">{{ props.row.BookingWebNo }}</span>
-                      <span class="mjc-job-date">{{ props.row.BookingWebDate }}</span>
+                      <span class="mjc-job-no">
+                        {{ props.row.BookingWebNo }}
+                      </span>
+                      <span class="mjc-job-date">
+                        {{ props.row.BookingWebDate }}
+                      </span>
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge class="mjc-status-badge" color="orange">Pending</q-badge>
+                    <q-badge class="mjc-status-badge" color="orange">
+                      Pending
+                    </q-badge>
                     <q-icon
-                      :name="expandedMobileCards.includes(props.row.BookingWebId) ? 'expand_less' : 'expand_more'"
+                      :name="
+                        expandedMobileCards.includes(props.row.BookingWebId)
+                          ? 'expand_less'
+                          : 'expand_more'
+                      "
                       size="20px"
                       color="grey-6"
                     />
@@ -113,21 +131,71 @@
                 </div>
 
                 <div class="mjc-actions">
-                  <q-btn dense unelevated icon="fa-solid fa-plus" label="Convert" class="mjc-btn mjc-btn-edit" @click="confirmConvert(props.row)" />
+                  <q-btn
+                    dense
+                    unelevated
+                    icon="fa-solid fa-plus"
+                    label="Convert"
+                    class="mjc-btn mjc-btn-edit"
+                    @click="confirmConvert(props.row)"
+                  />
                 </div>
 
                 <transition name="mobile-expand">
-                  <div v-if="expandedMobileCards.includes(props.row.BookingWebId)" class="mjc-details">
+                  <div
+                    v-if="expandedMobileCards.includes(props.row.BookingWebId)"
+                    class="mjc-details"
+                  >
                     <q-separator class="mjc-divider" />
                     <div class="mjc-details-grid">
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">From City</span><span class="mjc-detail-value">{{ props.row.FromCity || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">To City</span><span class="mjc-detail-value">{{ props.row.ToCity || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignor</span><span class="mjc-detail-value">{{ props.row.ConsignorAccount || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Consignee</span><span class="mjc-detail-value">{{ props.row.ConsigneeAccount || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Item</span><span class="mjc-detail-value">{{ props.row.ItemName || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Quantity</span><span class="mjc-detail-value">{{ props.row.Quantity || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Bill Value</span><span class="mjc-detail-value">{{ props.row.BillValue || "—" }}</span></div>
-                      <div class="mjc-detail-row"><span class="mjc-detail-label">Payment Type</span><span class="mjc-detail-value">{{ props.row.PaymentType || "—" }}</span></div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">From City</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.FromCity || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">To City</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ToCity || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignor</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsignorAccount || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Consignee</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ConsigneeAccount || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Item</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.ItemName || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Quantity</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.Quantity || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Bill Value</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.BillValue || "—" }}
+                        </span>
+                      </div>
+                      <div class="mjc-detail-row">
+                        <span class="mjc-detail-label">Payment Type</span>
+                        <span class="mjc-detail-value">
+                          {{ props.row.PaymentType || "—" }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </transition>
@@ -222,12 +290,30 @@ export default {
 
       tableColumns: [
         { name: "action", label: "Action", field: "action" },
-        { name: "BookingWebNo", label: "Booking Web No.", field: "BookingWebNo", sortable: true },
-        { name: "BookingWebDate", label: "Date", field: "BookingWebDate", sortable: true },
+        {
+          name: "BookingWebNo",
+          label: "Booking Web No.",
+          field: "BookingWebNo",
+          sortable: true,
+        },
+        {
+          name: "BookingWebDate",
+          label: "Date",
+          field: "BookingWebDate",
+          sortable: true,
+        },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
-        { name: "ConsignorAccount", label: "Consignor", field: "ConsignorAccount" },
-        { name: "ConsigneeAccount", label: "Consignee", field: "ConsigneeAccount" },
+        {
+          name: "ConsignorAccount",
+          label: "Consignor",
+          field: "ConsignorAccount",
+        },
+        {
+          name: "ConsigneeAccount",
+          label: "Consignee",
+          field: "ConsigneeAccount",
+        },
       ],
     };
   },
@@ -249,7 +335,9 @@ export default {
     },
 
     async loadBookingWebs() {
-      this.filteredBookingWebs = await apiGetPendingBookingWebs(this.searchText);
+      this.filteredBookingWebs = await apiGetPendingBookingWebs(
+        this.searchText
+      );
     },
 
     confirmConvert(row) {
@@ -262,10 +350,13 @@ export default {
           persistent: true,
         })
         .onOk(() => {
-          const idx = MOCK_PENDING_BOOKING_WEBS.findIndex((b) => b.BookingWebId === row.BookingWebId);
+          const idx = MOCK_PENDING_BOOKING_WEBS.findIndex(
+            (b) => b.BookingWebId === row.BookingWebId
+          );
           if (idx !== -1) MOCK_PENDING_BOOKING_WEBS.splice(idx, 1);
           this.$q.notify({
-            message: "Converted to Booking (mock) — not yet wired to DMSBooking.vue",
+            message:
+              "Converted to Booking (mock) — not yet wired to DMSBooking.vue",
             color: "positive",
             position: "top",
           });

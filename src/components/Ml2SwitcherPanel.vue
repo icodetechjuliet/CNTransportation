@@ -1,5 +1,4 @@
-<template>
-  <div v-if="modelValue" class="ml2-switcher-backdrop" @click.self="close">
+<template><div v-if="modelValue" class="ml2-switcher-backdrop" @click.self="close">
     <div class="ml2-switcher-panel">
       <div class="ml2-switcher-head">
         <span class="ml2-switcher-title">Switcher</span>
@@ -157,8 +156,7 @@
         <button class="ml2-reset-btn" @click="reset">Reset</button>
       </div>
     </div>
-  </div>
-</template>
+  </div></template>
 
 <script>
 const STORAGE_PREFIX = "ml2Theme_";

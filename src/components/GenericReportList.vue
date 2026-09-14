@@ -21,7 +21,6 @@
                screen from the legacy EagleParcel WinForms app. ── -->
           <q-table
             square
-            dense
             :rows="filteredRows"
             :columns="tableColumns"
             row-key="__rowKey"
@@ -101,7 +100,9 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-if="def.actionLabel" v-slot:body-cell-action="props">
@@ -152,7 +153,9 @@ export default {
   computed: {
     tableColumns() {
       const cols = this.def.columns;
-      return this.def.actionLabel ? [...cols, { name: "action", label: "Action", field: "action" }] : cols;
+      return this.def.actionLabel
+        ? [...cols, { name: "action", label: "Action", field: "action" }]
+        : cols;
     },
     maxPages() {
       const rows = this.pagination.rowsPerPage || 15;
@@ -196,7 +199,9 @@ export default {
       this.filteredRows = this.allRows.filter((row) =>
         this.def.columns.some((c) => {
           if (typeof c.field !== "string") return false;
-          return String(row[c.field] ?? "").toLowerCase().includes(s);
+          return String(row[c.field] ?? "")
+            .toLowerCase()
+            .includes(s);
         })
       );
     },
@@ -211,7 +216,9 @@ export default {
         window.print();
       } else {
         this.$q.notify({
-          message: `${this.def.actionLabel} — ${row.BookingNo || row.SINo || ""} done.`,
+          message: `${this.def.actionLabel} — ${
+            row.BookingNo || row.SINo || ""
+          } done.`,
           color: "positive",
           position: "top",
         });

@@ -21,7 +21,6 @@
                link is set from the booking side, not here. ── -->
           <q-table
             square
-            dense
             :rows="filteredRows"
             :columns="tableColumns"
             row-key="BookingTripId"
@@ -66,6 +65,7 @@
                   </div>
 
                   <q-select
+                    square=""
                     v-model="tripFilter"
                     :options="tripOptions"
                     dense
@@ -78,6 +78,7 @@
                   />
 
                   <q-select
+                    square=""
                     v-model="statusFilter"
                     :options="['All', 'Loaded', 'Unloaded', 'Delivered']"
                     dense
@@ -124,12 +125,17 @@
                 dense
                 @update:model-value="handlePageChange"
               />
-              <span class="q-ml-md">Page {{ pagination.page }} of {{ maxPages }}</span>
+              <span class="q-ml-md">
+                Page {{ pagination.page }} of {{ maxPages }}
+              </span>
             </template>
 
             <template v-slot:body-cell-Status="props">
               <q-td :props="props">
-                <q-badge :color="statusColor(props.value)" :label="props.value" />
+                <q-badge
+                  :color="statusColor(props.value)"
+                  :label="props.value"
+                />
               </q-td>
             </template>
 
@@ -146,7 +152,10 @@
                     </div>
                   </div>
                   <div class="mjc-header-right">
-                    <q-badge class="mjc-status-badge" :color="statusColor(props.row.Status)">
+                    <q-badge
+                      class="mjc-status-badge"
+                      :color="statusColor(props.row.Status)"
+                    >
                       {{ props.row.Status }}
                     </q-badge>
                   </div>
@@ -155,15 +164,21 @@
                   <div class="mjc-details-grid">
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Route</span>
-                      <span class="mjc-detail-value">{{ props.row.FromCity }} → {{ props.row.ToCity }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.FromCity }} → {{ props.row.ToCity }}
+                      </span>
                     </div>
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Consignee</span>
-                      <span class="mjc-detail-value">{{ props.row.ConsigneeName }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.ConsigneeName }}
+                      </span>
                     </div>
                     <div class="mjc-detail-row">
                       <span class="mjc-detail-label">Tran Date</span>
-                      <span class="mjc-detail-value">{{ props.row.TranDate }}</span>
+                      <span class="mjc-detail-value">
+                        {{ props.row.TranDate }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -252,9 +267,25 @@ export default {
 
       baseColumns: [
         { name: "TripNo", label: "Trip No.", field: "TripNo", sortable: true },
-        { name: "BookingNo", label: "Booking No.", field: "BookingNo", sortable: true },
-        { name: "Status", label: "Status", field: "Status", align: "center", sortable: true },
-        { name: "TranDate", label: "Tran Date", field: "TranDate", sortable: true },
+        {
+          name: "BookingNo",
+          label: "Booking No.",
+          field: "BookingNo",
+          sortable: true,
+        },
+        {
+          name: "Status",
+          label: "Status",
+          field: "Status",
+          align: "center",
+          sortable: true,
+        },
+        {
+          name: "TranDate",
+          label: "Tran Date",
+          field: "TranDate",
+          sortable: true,
+        },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
         { name: "ConsigneeName", label: "Consignee", field: "ConsigneeName" },

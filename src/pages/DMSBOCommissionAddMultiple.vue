@@ -4,7 +4,9 @@
       <div class="folder">
         <q-card class="notab-container-report">
           <div class="row items-center no-wrap q-px-sm">
-            <span class="header_text1">Booking Office Commission Add Multiple</span>
+            <span class="header_text1">
+              Booking Office Commission Add Multiple
+            </span>
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="checklist" size="16px" />
               <div class="total-stat-text">
@@ -19,19 +21,57 @@
 
           <!-- ── Shared commission rate applied to every selected booking ── -->
           <q-card-section class="q-pa-sm">
-            <div class="row q-col-gutter-sm items-end">
-              <div class="col-xs-12 col-sm-4 col-md-3">
-                <q-select square dense outlined bg-color="blue-1" label="Commission Type" :options="['Percentage', 'Fixed']" v-model="sharedFields.CommissionType" />
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-select
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Commission Type"
+                  :options="['Percentage', 'Fixed']"
+                  v-model="sharedFields.CommissionType"
+                />
               </div>
-              <div class="col-xs-12 col-sm-4 col-md-3">
-                <q-input square dense outlined bg-color="blue-1" :label="sharedFields.CommissionType === 'Fixed' ? 'Amount' : 'Rate %'" type="number" v-model="sharedFields.Rate" />
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  :label="
+                    sharedFields.CommissionType === 'Fixed'
+                      ? 'Amount'
+                      : 'Rate %'
+                  "
+                  type="number"
+                  v-model="sharedFields.Rate"
+                />
               </div>
-              <div class="col-xs-12 col-sm-4 col-md-3">
-                <q-input square dense outlined bg-color="blue-1" label="Applied Date" placeholder="dd-mm-yyyy" v-model="sharedFields.AppliedDate">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Applied Date"
+                  placeholder="dd-mm-yyyy"
+                  v-model="sharedFields.AppliedDate"
+                >
                   <template v-slot:append>
                     <q-icon name="event" class="cursor-pointer">
-                      <q-popup-proxy ref="dateProxy" transition-show="scale" transition-hide="scale">
-                        <q-date v-model="sharedFields.AppliedDate" mask="DD-MM-YYYY" minimal style="width: 280px" @update:model-value="$refs.dateProxy.hide()" />
+                      <q-popup-proxy
+                        ref="dateProxy"
+                        transition-show="scale"
+                        transition-hide="scale"
+                      >
+                        <q-date
+                          v-model="sharedFields.AppliedDate"
+                          mask="DD-MM-YYYY"
+                          minimal
+                          style="width: 280px"
+                          @update:model-value="$refs.dateProxy.hide()"
+                        />
                       </q-popup-proxy>
                     </q-icon>
                   </template>
@@ -58,7 +98,6 @@
           <!-- ── Delivered bookings eligible for commission ── -->
           <q-table
             square
-            dense
             :rows="bookingRows"
             :columns="tableColumns"
             row-key="PreDeliveryID"
@@ -88,12 +127,17 @@
 
           <!-- ── Commission entries applied so far (this session) ── -->
           <div class="row items-center q-px-sm q-pt-md q-pb-xs">
-            <q-icon name="fact_check" size="18px" class="q-mr-xs text-primary" />
-            <span class="text-subtitle2 text-weight-bold">Applied Commission Entries</span>
+            <q-icon
+              name="fact_check"
+              size="18px"
+              class="q-mr-xs text-primary"
+            />
+            <span class="text-subtitle2 text-weight-bold">
+              Applied Commission Entries
+            </span>
           </div>
           <q-table
             square
-            dense
             flat
             bordered
             :rows="appliedEntries"
@@ -135,19 +179,45 @@ export default {
       },
 
       baseColumns: [
-        { name: "BookingNo", label: "Booking No", field: "BookingNo", sortable: true },
-        { name: "BookingDate", label: "Booking Date", field: "BookingDate", sortable: true },
+        {
+          name: "BookingNo",
+          label: "Booking No",
+          field: "BookingNo",
+          sortable: true,
+        },
+        {
+          name: "BookingDate",
+          label: "Booking Date",
+          field: "BookingDate",
+          sortable: true,
+        },
         { name: "FromPartyName", label: "Consignor", field: "FromPartyName" },
         { name: "ToPartyName", label: "Consignee", field: "ToPartyName" },
-        { name: "NetAmount", label: "Net Amt.", field: "NetAmount", align: "right", sortable: true },
+        {
+          name: "NetAmount",
+          label: "Net Amt.",
+          field: "NetAmount",
+          align: "right",
+          sortable: true,
+        },
       ],
 
       appliedColumns: [
         { name: "BookingNo", label: "Booking No", field: "BookingNo" },
-        { name: "NetAmount", label: "Net Amt.", field: "NetAmount", align: "right" },
+        {
+          name: "NetAmount",
+          label: "Net Amt.",
+          field: "NetAmount",
+          align: "right",
+        },
         { name: "CommissionType", label: "Type", field: "CommissionType" },
         { name: "Rate", label: "Rate", field: "Rate", align: "right" },
-        { name: "CommissionAmount", label: "Commission Amt.", field: "CommissionAmount", align: "right" },
+        {
+          name: "CommissionAmount",
+          label: "Commission Amt.",
+          field: "CommissionAmount",
+          align: "right",
+        },
         { name: "AppliedDate", label: "Applied Date", field: "AppliedDate" },
       ],
     };
@@ -177,7 +247,9 @@ export default {
       this.selectedRows.forEach((row) => {
         const netAmount = parseFloat(row.NetAmount) || 0;
         const commissionAmount =
-          this.sharedFields.CommissionType === "Fixed" ? rate : (netAmount * rate) / 100;
+          this.sharedFields.CommissionType === "Fixed"
+            ? rate
+            : (netAmount * rate) / 100;
         this.appliedEntries.push({
           EntryID: nextId++,
           BookingNo: row.BookingNo,

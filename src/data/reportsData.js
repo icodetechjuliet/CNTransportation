@@ -529,6 +529,25 @@ export const REPORT_DEFS = {
       { BookingNo: "RKG21040009", DeletedBy: "Admin", DeletedOn: "28-03-2026 11:20 AM", Reason: "Duplicate entry" },
     ],
   },
+
+  // ── Security ─────────────────────────────────────────────────────────
+  seclogin: {
+    title: "User Login Log",
+    icon: "history",
+    columns: [
+      { name: "UserName", label: "User Name", field: "UserName", sortable: true },
+      { name: "LoginTime", label: "Login Time", field: "LoginTime", sortable: true },
+      { name: "LogoutTime", label: "Logout Time", field: "LogoutTime" },
+      { name: "IPAddress", label: "IP Address", field: "IPAddress" },
+      { name: "Status", label: "Status", field: "Status", align: "center" },
+    ],
+    rows: [
+      { UserName: "admin", LoginTime: "01-04-2026 09:02 AM", LogoutTime: "01-04-2026 06:15 PM", IPAddress: "192.168.12.10", Status: "Success" },
+      { UserName: "ketan.patel", LoginTime: "01-04-2026 09:20 AM", LogoutTime: "01-04-2026 05:45 PM", IPAddress: "192.168.12.21", Status: "Success" },
+      { UserName: "suresh.rao", LoginTime: "01-04-2026 10:05 AM", LogoutTime: "", IPAddress: "192.168.12.34", Status: "Success" },
+      { UserName: "devuser", LoginTime: "31-03-2026 08:55 PM", LogoutTime: "", IPAddress: "192.168.12.55", Status: "Failed" },
+    ],
+  },
 };
 
 export function getReportDef(reportKey) {

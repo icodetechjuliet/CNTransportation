@@ -6,7 +6,9 @@
           <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 header-inner">
             <div class="header-title">
               <span class="header_text1">Booking Office Wise To City</span>
-              <span class="arrow_right_icon"><i class="fa fa-chevron-right"></i></span>
+              <span class="arrow_right_icon">
+                <i class="fa fa-chevron-right"></i>
+              </span>
               <span class="header_text2">{{ modeLabel }}</span>
             </div>
             <div class="header-field-group header-field-group-sm">
@@ -42,8 +44,8 @@
         <q-card class="notab-container">
           <q-inner-loading :showing="loading" color="primary" />
           <q-card-section>
-            <div class="row q-col-gutter-sm">
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+            <div class="row q-col-gutter-sm items-start">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -54,7 +56,7 @@
                   :options="mockData.bookingOffices"
                 />
               </div>
-              <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">
+              <div class="col-12 col-sm-6 col-md-3">
                 <q-select
                   square
                   dense
@@ -69,16 +71,36 @@
                   input-debounce="0"
                 />
               </div>
-              <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-                <q-input square dense outlined bg-color="blue-1" label="Remarks" v-model="form.Remarks" />
+              <div class="col-12 col-sm-6 col-md-6">
+                <q-input
+                  square
+                  dense
+                  outlined
+                  bg-color="blue-1"
+                  label="Remarks"
+                  v-model="form.Remarks"
+                />
               </div>
 
-              <div class="col-xs-12 col-sm-4 col-md-2 col-lg-2">
-                <q-item tag="label" v-ripple bg-color="blue-1" class="chckbx-style full-width">
+              <div class="col-12 col-sm-6 col-md-3">
+                <q-item
+                  tag="label"
+                  v-ripple
+                  bg-color="blue-1"
+                  class="chckbx-style full-width"
+                >
                   <q-item-section avatar>
-                    <q-checkbox dense v-model="form.IsActive" val="orange" color="orange" intermediate-icon="black" />
+                    <q-checkbox
+                      dense
+                      v-model="form.IsActive"
+                      val="orange"
+                      color="orange"
+                      intermediate-icon="black"
+                    />
                   </q-item-section>
-                  <q-item-section><q-item-label dense>Active</q-item-label></q-item-section>
+                  <q-item-section>
+                    <q-item-label dense>Active</q-item-label>
+                  </q-item-section>
                 </q-item>
               </div>
             </div>
@@ -90,9 +112,15 @@
 </template>
 
 <script>
-import { apiGetWiseToCityById, apiSaveWiseToCity, MOCK_DATA } from "./DMSBookingOfficeWiseToCity.vue";
+import entryNavigation from "src/mixins/entryNavigation.js";
+import {
+  apiGetWiseToCityById,
+  apiSaveWiseToCity,
+  MOCK_DATA_WISE_TO_CITY as MOCK_DATA,
+} from "src/data/bookingOfficeData.js";
 
 export default {
+  mixins: [entryNavigation],
   name: "DMSBookingOfficeWiseToCityView",
 
   props: {
@@ -148,14 +176,23 @@ export default {
 
     async saveWiseToCity() {
       if (!this.form.BookingOfficeName || !this.form.ToCityName) {
-        this.$q.notify({ message: "Booking Office and To City are required", color: "negative", position: "top" });
+        this.$q.notify({
+          message: "Booking Office and To City are required",
+          color: "negative",
+          position: "top",
+        });
         return;
       }
       const res = await apiSaveWiseToCity({ ...this.form });
       if (res.success) {
+        this.notifyEntrySaved();
         this.form = { ...res.data };
         this.dialogMode = "edit";
-        this.$q.notify({ message: "Wise To City saved!", color: "positive", position: "top" });
+        this.$q.notify({
+          message: "Wise To City saved!",
+          color: "positive",
+          position: "top",
+        });
       }
     },
   },
