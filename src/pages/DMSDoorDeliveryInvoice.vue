@@ -162,6 +162,18 @@ export default {
           align: "right",
           sortable: true,
         },
+        {
+          name: "TDSAmount",
+          label: "TDS",
+          field: "TDSAmount",
+          align: "right",
+        },
+        {
+          name: "NetAmount",
+          label: "Net Amount",
+          field: "NetAmount",
+          align: "right",
+        },
         { name: "Status", label: "Status", field: "Status", align: "center" },
       ],
 
@@ -243,6 +255,8 @@ export default {
           <tr><th>Transporter</th><td>${row.Transporter}</td></tr>
           <tr><th>Vehicle</th><td>${row.Vehicle}</td></tr>
           <tr><th>Amount</th><td>${row.Amount}</td></tr>
+          <tr><th>TDS</th><td>${row.TDSAmount || 0}</td></tr>
+          <tr><th>Net Amount</th><td>${row.NetAmount ?? row.Amount}</td></tr>
         </tbody></table>
         </body></html>`;
       const win = window.open("", "_blank");

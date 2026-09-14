@@ -151,12 +151,69 @@
                 >
                   <q-tooltip>Delete</q-tooltip>
                 </q-btn>
+                <q-btn
+                  v-if="def.printable"
+                  icon="print"
+                  color="primary"
+                  dense
+                  outline
+                  class="edit-icon-style prt q-ml-xs"
+                  @click="printRow(props.row)"
+                >
+                  <q-tooltip>Print</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
         </q-card>
       </div>
     </q-page>
+
+    <!-- ── Print preview — same windowed blob+iframe dialog as
+         GenericReportList.vue's (auto-height iframe, real PDF download via
+         downloadIframeAsPdf, print via contentWindow.print()) — only shown
+         for entities that opt in via `printable: true` (accountvoucher). ── -->
+    <q-dialog
+      v-if="def.printable"
+      v-model="showPrintDialog"
+      @before-hide="closePrintDialog"
+    >
+      <q-card
+        style="
+          display: flex;
+          flex-direction: column;
+          width: 1200px;
+          max-width: 95vw;
+          max-height: 92vh;
+          overflow: hidden;
+        "
+      >
+        <q-toolbar class="bg-primary text-white">
+          <q-icon :name="def.icon" size="22px" class="q-mr-sm" />
+          <q-toolbar-title>{{ def.title }} Print Preview</q-toolbar-title>
+          <q-badge v-if="printRecordNo" class="q-mr-sm print-preview-badge">
+            {{ printRecordNo }}
+          </q-badge>
+          <q-btn flat round icon="download" @click="downloadPDF">
+            <q-tooltip>Download</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="print" @click="printFrame">
+            <q-tooltip>Print</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="close" @click="closePrintDialog">
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
+        </q-toolbar>
+        <div style="overflow-y: auto; flex: 1 1 auto">
+          <iframe
+            ref="printFrameEl"
+            :src="printBlobUrl"
+            style="border: none; width: 100%; display: block"
+            @load="onPrintFrameLoad"
+          />
+        </div>
+      </q-card>
+    </q-dialog>
 
     <!-- ══════════════════════════════════════
          Add / Edit Dialog — canonical compact-dialog shape
@@ -267,6 +324,13 @@ import {
   apiSaveMasterRow,
   apiDeleteMasterRow,
 } from "src/data/mastersData.js";
+import {
+  getCompanyProfile,
+  getCompanyLogoDataUrl,
+  buildPrintHeaderHtml,
+  PRINT_HEADER_CSS,
+} from "src/data/companyProfile.js";
+import { downloadIframeAsPdf } from "src/Utils/downloadIframePdf.js";
 
 export default {
   name: "GenericMasterList",
@@ -289,6 +353,10 @@ export default {
       showDialog: false,
       dialogMode: "add",
       form: {},
+
+      showPrintDialog: false,
+      printBlobUrl: null,
+      printRecordNo: "",
     };
   },
 
@@ -410,6 +478,102 @@ export default {
         await this.loadRows();
       }
     },
+
+    // ── Print preview (entities with `printable: true` only) — mirrors
+    // GenericReportList.vue's printRow/buildPrintHtml/downloadPDF/printFrame/
+    // onPrintFrameLoad/closePrintDialog mechanism as closely as possible. ──
+    async printRow(row) {
+      this.printRecordNo = row[this.def.idField] ?? "";
+      const [logoDataUrl, company] = await Promise.all([
+        getCompanyLogoDataUrl(),
+        getCompanyProfile(),
+      ]);
+      const html = this.buildPrintHtml(row, logoDataUrl, company);
+      const blob = new Blob([html], { type: "text/html" });
+      if (this.printBlobUrl) URL.revokeObjectURL(this.printBlobUrl);
+      this.printBlobUrl = URL.createObjectURL(blob);
+      this.showPrintDialog = true;
+    },
+
+    downloadPDF() {
+      downloadIframeAsPdf(
+        this.$refs.printFrameEl,
+        `${this.def.title}-${this.printRecordNo}`
+      );
+    },
+
+    printFrame() {
+      if (!this.$refs.printFrameEl) return;
+      this.$refs.printFrameEl.contentWindow.focus();
+      this.$refs.printFrameEl.contentWindow.print();
+    },
+
+    onPrintFrameLoad() {
+      const frame = this.$refs.printFrameEl;
+      if (!frame || !frame.contentDocument) return;
+      const height = frame.contentDocument.documentElement.scrollHeight;
+      frame.style.height = `${height}px`;
+    },
+
+    closePrintDialog() {
+      this.showPrintDialog = false;
+      setTimeout(() => {
+        if (this.printBlobUrl) {
+          URL.revokeObjectURL(this.printBlobUrl);
+          this.printBlobUrl = null;
+        }
+      }, 500);
+    },
+
+    buildPrintHtml(row, logoDataUrl = "", company = {}) {
+      const fields = this.def.fields;
+      const cellValue = (f) => row[f.name] ?? "";
+
+      const headerCells = fields
+        .map((f) => `<th>${f.label}</th>`)
+        .join("");
+      const valueCells = fields
+        .map((f) => `<td>${cellValue(f)}</td>`)
+        .join("");
+
+      return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>${this.def.title} — ${this.printRecordNo}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;font-size:9pt;color:#000;padding:10px 14px;background:#fff}
+  ${PRINT_HEADER_CSS}
+  .title{font-size:12pt;font-weight:bold;border-top:2px solid #0178bc;border-bottom:1px solid #0178bc;padding:4px 0;margin-bottom:8px}
+  table.data{width:100%;border-collapse:collapse;border:1px solid #000}
+  table.data th,table.data td{border:1px solid #000;padding:4px 6px;text-align:left;font-size:8.5pt}
+  table.data th{background:#f2f9ff}
+  @page{size:A4;margin:10mm}
+  @media print{ body{padding:0;margin:0} }
+</style>
+</head>
+<body>
+${buildPrintHeaderHtml(logoDataUrl, company)}
+
+<div class="title">${this.def.title} &mdash; ${this.printRecordNo}</div>
+
+<table class="data">
+  <tr>${headerCells}</tr>
+  <tr>${valueCells}</tr>
+</table>
+</body>
+</html>`;
+    },
   },
 };
 </script>
+
+<style scoped>
+.print-preview-badge {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #fff;
+  font-weight: 500;
+}
+</style>

@@ -67,6 +67,16 @@
                   <q-tooltip>Edit</q-tooltip>
                 </q-btn>
                 <q-btn
+                  icon="print"
+                  color="primary"
+                  dense
+                  outline
+                  class="edit-icon-style prt q-ml-xs"
+                  @click="printSI(props.row)"
+                >
+                  <q-tooltip>Print</q-tooltip>
+                </q-btn>
+                <q-btn
                   icon="fa-solid fa-trash"
                   color="negative"
                   dense
@@ -250,6 +260,14 @@ export default {
           "Sale SI"
         );
       }
+    },
+
+    // The full print-preview document (letterhead, line items, GST/Service
+    // Tax breakdown) lives on the dedicated SI Print screen — this list's
+    // own mock rows are a simpler shape, so "Print" hands off to that
+    // screen rather than duplicating the print-document logic here.
+    printSI(row) {
+      this.openEntryPage("/DMSSaleSIPrint", `Print — ${row.SINo}`);
     },
 
     openEdit(row) {

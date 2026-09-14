@@ -168,11 +168,15 @@ export default {
           field: "BookingNo",
           sortable: true,
         },
+        { name: "BookingDate", label: "Booking Date", field: "BookingDate" },
+        { name: "ReceivedDate", label: "Received Date", field: "ReceivedDate" },
         { name: "FromPartyName", label: "Consignor", field: "FromPartyName" },
         { name: "ToPartyName", label: "Consignee", field: "ToPartyName" },
         { name: "FromCity", label: "From City", field: "FromCity" },
         { name: "ToCity", label: "To City", field: "ToCity" },
         { name: "ReceiverName", label: "Receiver", field: "ReceiverName" },
+        { name: "ItemName", label: "Item", field: "ItemName" },
+        { name: "Qty", label: "Qty.", field: "Qty", align: "right" },
         {
           name: "NetAmount",
           label: "Net Amt.",
@@ -252,12 +256,14 @@ export default {
         th,td{border:1px solid #ccc;padding:6px 10px;text-align:left}
         h2{margin-bottom:4px}</style></head><body>
         <h2>Delivery Register — ${row.DeliveryNo}</h2>
-        <div>Date: ${row.DeliveryDate} &nbsp; Booking No: ${row.BookingNo}</div>
+        <div>Date: ${row.DeliveryDate} &nbsp; Booking No: ${row.BookingNo} &nbsp; Booking Date: ${row.BookingDate || "—"}</div>
         <table><tbody>
           <tr><th>Consignor</th><td>${row.FromPartyName}</td></tr>
           <tr><th>Consignee</th><td>${row.ToPartyName}</td></tr>
           <tr><th>Route</th><td>${row.FromCity} → ${row.ToCity}</td></tr>
           <tr><th>Receiver</th><td>${row.ReceiverName || "—"}</td></tr>
+          <tr><th>Received Date</th><td>${row.ReceivedDate || "—"}</td></tr>
+          <tr><th>Item</th><td>${row.ItemName || "—"} (Qty: ${row.Qty || 0})</td></tr>
           <tr><th>Net Amount</th><td>${row.NetAmount}</td></tr>
           <tr><th>Received Amount</th><td>${row.ReceivedAmount}</td></tr>
         </tbody></table>

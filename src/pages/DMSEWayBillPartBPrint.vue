@@ -98,33 +98,41 @@
       </div>
     </q-page>
 
-    <q-dialog
-      v-model="showPrintDialog"
-      maximized
-      @before-hide="closePrintDialog"
-    >
-      <q-card style="display: flex; flex-direction: column; height: 100%">
+    <q-dialog v-model="showPrintDialog" @before-hide="closePrintDialog">
+      <q-card
+        style="
+          display: flex;
+          flex-direction: column;
+          width: 1200px;
+          max-width: 95vw;
+          max-height: 92vh;
+          overflow: hidden;
+        "
+      >
         <q-toolbar class="bg-primary text-white">
           <q-icon name="receipt_long" size="22px" class="q-mr-sm" />
           <q-toolbar-title>E-Way Bill Part B Preview</q-toolbar-title>
-          <q-btn
-            unelevated
-            icon="picture_as_pdf"
-            label="Download PDF"
-            color="white"
-            text-color="primary"
-            size="sm"
-            class="q-mr-sm"
-            no-caps
-            @click="downloadPDF"
-          />
-          <q-btn flat round icon="close" @click="closePrintDialog" />
+          <q-badge v-if="printEWayBillNo" class="q-mr-sm print-preview-badge">
+            {{ printEWayBillNo }}
+          </q-badge>
+          <q-btn flat round icon="download" @click="downloadPDF">
+            <q-tooltip>Download</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="print" @click="printFrame">
+            <q-tooltip>Print</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="close" @click="closePrintDialog">
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
         </q-toolbar>
-        <iframe
-          ref="reportFrame"
-          :src="printBlobUrl"
-          style="flex: 1; border: none; width: 100%; background: #f4f4f4"
-        />
+        <div style="overflow-y: auto; flex: 1 1 auto">
+          <iframe
+            ref="reportFrame"
+            :src="printBlobUrl"
+            style="border: none; width: 100%; display: block"
+            @load="onPrintFrameLoad"
+          />
+        </div>
       </q-card>
     </q-dialog>
   </div>
@@ -132,6 +140,13 @@
 
 <script>
 import { apiGetPartBLog } from "src/data/ewayBillData.js";
+import {
+  getCompanyProfile,
+  getCompanyLogoDataUrl,
+  buildPrintHeaderHtml,
+  PRINT_HEADER_CSS,
+} from "src/data/companyProfile.js";
+import { downloadIframeAsPdf } from "src/Utils/downloadIframePdf.js";
 
 export default {
   name: "DMSEWayBillPartBPrint",
@@ -143,6 +158,7 @@ export default {
       pagination: { page: 1, rowsPerPage: 15 },
       showPrintDialog: false,
       printBlobUrl: null,
+      printEWayBillNo: "",
 
       tableColumns: [
         { name: "action", label: "Action", field: "action" },
@@ -174,8 +190,13 @@ export default {
       this.filteredBills = await apiGetPartBLog(this.searchText);
     },
 
-    printBill(bill) {
-      const html = this.buildSlipHtml(bill);
+    async printBill(bill) {
+      this.printEWayBillNo = bill.EWayBillNo;
+      const [logoDataUrl, company] = await Promise.all([
+        getCompanyLogoDataUrl(),
+        getCompanyProfile(),
+      ]);
+      const html = this.buildSlipHtml(bill, logoDataUrl, company);
       const blob = new Blob([html], { type: "text/html" });
       if (this.printBlobUrl) URL.revokeObjectURL(this.printBlobUrl);
       this.printBlobUrl = URL.createObjectURL(blob);
@@ -183,9 +204,20 @@ export default {
     },
 
     downloadPDF() {
+      downloadIframeAsPdf(this.$refs.reportFrame, `EWayBill-${this.printEWayBillNo}`);
+    },
+
+    printFrame() {
       if (!this.$refs.reportFrame) return;
       this.$refs.reportFrame.contentWindow.focus();
       this.$refs.reportFrame.contentWindow.print();
+    },
+
+    onPrintFrameLoad() {
+      const frame = this.$refs.reportFrame;
+      if (!frame || !frame.contentDocument) return;
+      const height = frame.contentDocument.documentElement.scrollHeight;
+      frame.style.height = `${height}px`;
     },
 
     closePrintDialog() {
@@ -198,7 +230,7 @@ export default {
       }, 500);
     },
 
-    buildSlipHtml(bill) {
+    buildSlipHtml(bill, logoDataUrl = "", company = {}) {
       return `<!DOCTYPE html>
 <html>
 <head>
@@ -207,6 +239,7 @@ export default {
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:Arial,sans-serif;font-size:10pt;color:#000;padding:16px}
+  ${PRINT_HEADER_CSS}
   .title{font-size:14pt;font-weight:bold;text-align:center;margin-bottom:10px;text-transform:uppercase}
   table.kv{width:100%;border-collapse:collapse;border:1px solid #000}
   table.kv td{border:1px solid #000;padding:5px 8px}
@@ -215,6 +248,7 @@ export default {
 </style>
 </head>
 <body>
+${buildPrintHeaderHtml(logoDataUrl, company)}
 <div class="title">E-Way Bill — Part B</div>
 <table class="kv">
   <tr><td class="lbl">E-Way Bill No.</td><td>${bill.EWayBillNo}</td></tr>
@@ -237,3 +271,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.print-preview-badge {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #fff;
+  font-weight: 500;
+}
+</style>

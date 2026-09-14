@@ -1269,33 +1269,41 @@
     <!-- ══════════════════════════════════════
          Print / PDF Preview Dialog
     ══════════════════════════════════════ -->
-    <q-dialog
-      v-model="showPrintDialog"
-      maximized
-      @before-hide="closePrintDialog"
-    >
-      <q-card style="display: flex; flex-direction: column; height: 100%">
+    <q-dialog v-model="showPrintDialog" @before-hide="closePrintDialog">
+      <q-card
+        style="
+          display: flex;
+          flex-direction: column;
+          width: 1200px;
+          max-width: 95vw;
+          max-height: 92vh;
+          overflow: hidden;
+        "
+      >
         <q-toolbar class="bg-primary text-white">
           <q-icon name="receipt_long" size="22px" class="q-mr-sm" />
           <q-toolbar-title>Booking Report Preview</q-toolbar-title>
-          <q-btn
-            unelevated
-            icon="picture_as_pdf"
-            label="Download PDF"
-            color="white"
-            text-color="primary"
-            size="sm"
-            class="q-mr-sm"
-            no-caps
-            @click="downloadPDF"
-          />
-          <q-btn flat round icon="close" @click="closePrintDialog" />
+          <q-badge v-if="form.BookingNo" class="q-mr-sm print-preview-badge">
+            {{ form.BookingNo }}
+          </q-badge>
+          <q-btn flat round icon="download" @click="downloadPDF">
+            <q-tooltip>Download</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="print" @click="printFrame">
+            <q-tooltip>Print</q-tooltip>
+          </q-btn>
+          <q-btn flat round icon="close" @click="closePrintDialog">
+            <q-tooltip>Close</q-tooltip>
+          </q-btn>
         </q-toolbar>
-        <iframe
-          ref="reportFrame"
-          :src="printBlobUrl"
-          style="flex: 1; border: none; width: 100%; background: #f4f4f4"
-        />
+        <div style="overflow-y: auto; flex: 1 1 auto">
+          <iframe
+            ref="reportFrame"
+            :src="printBlobUrl"
+            style="border: none; width: 100%; display: block"
+            @load="onPrintFrameLoad"
+          />
+        </div>
       </q-card>
     </q-dialog>
   </div>
@@ -1307,7 +1315,13 @@ import {
   apiSaveBooking,
   MOCK_DATA_BOOKING as MOCK_DATA,
 } from "src/data/bookingData.js";
-import ictLogoUrl from "src/assets/ICT-logo.png";
+import {
+  getCompanyProfile,
+  getCompanyLogoDataUrl,
+  buildPrintHeaderHtml,
+  PRINT_HEADER_CSS,
+} from "src/data/companyProfile.js";
+import { downloadIframeAsPdf } from "src/Utils/downloadIframePdf.js";
 
 export default {
   name: "DMSTruckBookingView",
@@ -1530,33 +1544,35 @@ export default {
     },
 
     async printBooking(includeFreight) {
-      const logoDataUrl = await this.getLogoDataUrl();
-      const html = this.buildReceiptHtml(includeFreight, logoDataUrl);
+      const [logoDataUrl, company] = await Promise.all([
+        getCompanyLogoDataUrl(),
+        getCompanyProfile(),
+      ]);
+      const html = this.buildReceiptHtml(includeFreight, logoDataUrl, company);
       const blob = new Blob([html], { type: "text/html" });
       if (this.printBlobUrl) URL.revokeObjectURL(this.printBlobUrl);
       this.printBlobUrl = URL.createObjectURL(blob);
       this.showPrintDialog = true;
     },
 
-    async getLogoDataUrl() {
-      try {
-        const res = await fetch(ictLogoUrl);
-        const blob = await res.blob();
-        return await new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-      } catch {
-        return "";
-      }
+    downloadPDF() {
+      downloadIframeAsPdf(
+        this.$refs.reportFrame,
+        `TruckBooking-${this.form.BookingNo || "receipt"}`
+      );
     },
 
-    downloadPDF() {
+    printFrame() {
       if (!this.$refs.reportFrame) return;
       this.$refs.reportFrame.contentWindow.focus();
       this.$refs.reportFrame.contentWindow.print();
+    },
+
+    onPrintFrameLoad() {
+      const frame = this.$refs.reportFrame;
+      if (!frame || !frame.contentDocument) return;
+      const height = frame.contentDocument.documentElement.scrollHeight;
+      frame.style.height = `${height}px`;
     },
 
     closePrintDialog() {
@@ -1573,7 +1589,7 @@ export default {
     // this family keeps its own independent copy (see the
     // dms-booking-page-pattern skill's "copy, don't parametrize" note)
     // rather than sharing one across files.
-    buildReceiptHtml(includeFreight, logoDataUrl = "") {
+    buildReceiptHtml(includeFreight, logoDataUrl = "", company = {}) {
       const f = this.form;
       const deliveryType = f.IsDoorDelivery ? "Door Delivery" : "Ware House";
 
@@ -1649,14 +1665,7 @@ export default {
   *{box-sizing:border-box;margin:0;padding:0}
   body{font-family:Arial,sans-serif;font-size:9pt;color:#000;padding:10px 14px;background:#fff}
 
-  .hdr{width:100%;border-collapse:collapse;margin-bottom:6px}
-  .hdr-logo{width:150px;vertical-align:middle;padding-right:10px;text-align:left}
-  .hdr-logo img{width:140px;height:auto;display:inline-block}
-  .hdr-info{vertical-align:middle;text-align:center}
-  .hdr-company{font-size:13pt;font-weight:bold;text-transform:uppercase;color:#0178bc;letter-spacing:.5px}
-  .hdr-sub{font-size:8.5pt;color:#0178bc;letter-spacing:.3px;margin:1px 0 2px}
-  .hdr-addr{font-size:8pt;color:#333;line-height:1.6}
-  .hdr-contact{font-size:8pt;color:#333;margin-top:1px}
+  ${PRINT_HEADER_CSS}
 
   .top-band{display:table;width:100%;border-collapse:collapse;border:1px solid #000;margin-bottom:0}
   .top-cell{display:table-cell;border:1px solid #000;padding:2px 5px;vertical-align:top}
@@ -1699,23 +1708,7 @@ export default {
 </head>
 <body>
 
-<table class="hdr">
-  <tr>
-    <td class="hdr-logo">
-      ${
-        logoDataUrl
-          ? `<img src="${logoDataUrl}" alt="iCode Technologies" />`
-          : ""
-      }
-    </td>
-    <td class="hdr-info">
-      <div class="hdr-company">I CODE TECHNOLOGIES PVT LTD</div>
-      <div class="hdr-sub">CargoNet &mdash; Cargo Management System</div>
-      <div class="hdr-addr">23/7, CHRISTA KRUPA, 1ST CROSS, CSI COMPOUND, LALBAGH ROAD, BANGALORE - 560027, KARNATAKA, INDIA</div>
-      <div class="hdr-contact">Tel: +91-80-25970728 &nbsp;|&nbsp; Email: INFO@ICODETECH.COM &nbsp;|&nbsp; Web: WWW.ICODETECH.COM</div>
-    </td>
-  </tr>
-</table>
+${buildPrintHeaderHtml(logoDataUrl, company)}
 
 <div class="top-band">
   <div class="top-cell top-cell-lr">
@@ -1889,3 +1882,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.print-preview-badge {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  color: #fff;
+  font-weight: 500;
+}
+</style>

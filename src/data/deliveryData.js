@@ -237,6 +237,10 @@ const SEED_DOOR_DELIVERY_INVOICES = [
     Transporter: "Eagle Tradelinks Pvt Ltd",
     Vehicle: "GJ3BW0003",
     Amount: 350,
+    // TDS/Net Amount below mirror the Amount/TDS/Net Amount summary block
+    // both DEL_DoorDeliveryInvoicePrint_InvoiceWise and _TripWise show.
+    TDSAmount: 7,
+    NetAmount: 343,
     Status: "Unpaid",
   },
 ];
@@ -461,10 +465,19 @@ export function apiGetDeliveryRegister(fromDate = "", toDate = "", search = "") 
         return {
           ...d,
           BookingNo: booking.BookingNo || "",
+          // Booking Date/Item/Qty/Weight/Payment Type below aren't captured
+          // on DEL_DeliveryENT itself but are joined in from the booking —
+          // same as EagleParcel's PP_DEL_Delivery_SelectDeliveryRegister,
+          // which the DeliveryRegister/PartyCopy RDLCs both read from.
+          BookingDate: booking.BookingDate || "",
           FromPartyName: booking.FromPartyName || "",
           ToPartyName: booking.ToPartyName || "",
           FromCity: booking.FromCity || "",
           ToCity: booking.ToCity || "",
+          ItemName: booking.ItemName || "",
+          Qty: booking.Qty || 0,
+          Weight: booking.Weight || 0,
+          PaymentType: booking.PaymentType || "",
           NetAmount: booking.NetAmount || 0,
         };
       });
@@ -617,6 +630,8 @@ export function apiGenerateInvoiceFromDoorDelivery(doorDeliveryId) {
         Transporter: dd.TransporterAccount,
         Vehicle: dd.Vehicle,
         Amount: dd.VehicleAmount,
+        TDSAmount: 0,
+        NetAmount: dd.VehicleAmount,
         Status: "Unpaid",
       };
       MOCK_DOOR_DELIVERY_INVOICES.push(invoice);

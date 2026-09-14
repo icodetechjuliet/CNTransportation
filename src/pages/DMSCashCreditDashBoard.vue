@@ -3,7 +3,12 @@
     <!-- Old app: BUK_CashButDebit_DashBoard — a monitoring/summary view of
          outstanding cash-credit exposure, distinct from DMSCashCredit.vue
          (that one is the voucher list + Add/Edit companion). This page is
-         read-only: stat tiles + a per-reference-user breakdown table. -->
+         read-only: stat tiles + a per-reference-user breakdown table.
+         Also covers BUK_CashButDebit_AccountLedger.rdlc (Voucher No/Date/
+         Narration/Debit/Received/Pending Amt. — the "Recent Cash Credit
+         Vouchers" table below) and BUK_CashButDebit_PartyWiseDebitList.rdlc
+         (Account/Reference User/Pending Amt. — the "Reference User Wise
+         Outstanding" table). -->
     <q-page padding class="page hide-overflow">
       <div class="folder">
         <div class="row header-style items-center">
@@ -110,6 +115,8 @@ const MOCK_VOUCHERS = [
     VoucherDate: "01/04/2026",
     PartyAccountName: "Balaji xxx Co.",
     ReferenceUserName: "Ketan Patel",
+    // BUK_CashButDebit_AccountLedger.rdlc's Narration column.
+    Narration: "Cash booking collected as credit",
     DebitAmount: 5000,
     ReceivedAmount: 3000,
     IsClear: false,
@@ -120,6 +127,7 @@ const MOCK_VOUCHERS = [
     VoucherDate: "02/04/2026",
     PartyAccountName: "Rajsani xxx Polymers",
     ReferenceUserName: "Suresh Rao",
+    Narration: "Cash delivery collected as credit",
     DebitAmount: 2000,
     ReceivedAmount: 2000,
     IsClear: true,
@@ -130,6 +138,7 @@ const MOCK_VOUCHERS = [
     VoucherDate: "03/04/2026",
     PartyAccountName: "Ring xxx Ltd",
     ReferenceUserName: "Ketan Patel",
+    Narration: "Cash booking collected as credit",
     DebitAmount: 1500,
     ReceivedAmount: 500,
     IsClear: false,
@@ -153,6 +162,11 @@ export default {
           name: "ReferenceUserName",
           label: "Reference User",
           field: "ReferenceUserName",
+        },
+        {
+          name: "Narration",
+          label: "Narration",
+          field: "Narration",
         },
         {
           name: "DebitAmount",
