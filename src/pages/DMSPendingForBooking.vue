@@ -85,8 +85,6 @@
                   color="positive"
                   dense
                   outline
-                  label="Convert"
-                  no-caps
                   class="edit-icon-style"
                   @click="confirmConvert(props.row)"
                 >

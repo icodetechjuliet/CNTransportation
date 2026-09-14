@@ -82,16 +82,15 @@
             <template v-slot:body-cell-action="props">
               <q-td :props="props" class="button-container">
                 <q-btn
-                  unelevated
-                  no-caps
-                  dense
-                  size="sm"
                   icon="local_shipping"
-                  label="Generate Part B"
                   color="primary"
-                  class="m-btn-style"
+                  dense
+                  outline
+                  class="edit-icon-style"
                   @click="openGenerate(props.row)"
-                />
+                >
+                  <q-tooltip>Generate Part B</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
@@ -214,6 +213,7 @@ export default {
       fromPlace: "",
 
       tableColumns: [
+        { name: "action", label: "Action", field: "action" },
         {
           name: "EWayBillNo",
           label: "E-Way Bill No.",
@@ -231,7 +231,6 @@ export default {
         { name: "ConsignorName", label: "Consignor", field: "ConsignorName" },
         { name: "ConsigneeName", label: "Consignee", field: "ConsigneeName" },
         { name: "DocValue", label: "Value", field: "DocValue", align: "right" },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },

@@ -82,16 +82,15 @@
             <template v-slot:body-cell-action="props">
               <q-td :props="props" class="button-container">
                 <q-btn
-                  unelevated
-                  no-caps
-                  dense
-                  size="sm"
                   icon="print"
-                  label="Print"
                   color="primary"
-                  class="m-btn-style"
+                  dense
+                  outline
+                  class="edit-icon-style prt"
                   @click="printBill(props.row)"
-                />
+                >
+                  <q-tooltip>Print</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
@@ -146,6 +145,7 @@ export default {
       printBlobUrl: null,
 
       tableColumns: [
+        { name: "action", label: "Action", field: "action" },
         {
           name: "EWayBillNo",
           label: "E-Way Bill No.",
@@ -156,7 +156,6 @@ export default {
         { name: "VehicleNo", label: "Vehicle No.", field: "VehicleNo" },
         { name: "FromPlace", label: "From Place", field: "FromPlace" },
         { name: "PartBDate", label: "Generated On", field: "PartBDate" },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },

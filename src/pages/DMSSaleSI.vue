@@ -167,6 +167,7 @@ export default {
       form: this.emptyForm(),
 
       baseColumns: [
+        { name: "action", label: "Action", field: "action" },
         { name: "SINo", label: "SI No.", field: "SINo", sortable: true },
         { name: "SIDate", label: "Date", field: "SIDate", sortable: true },
         { name: "InvoiceType", label: "Invoice Type", field: "InvoiceType" },
@@ -195,7 +196,6 @@ export default {
           align: "right",
           sortable: true,
         },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },

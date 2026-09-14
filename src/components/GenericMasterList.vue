@@ -307,8 +307,8 @@ export default {
         sortable: f.type !== "checkbox",
       }));
       return [
-        ...fieldColumns,
         { name: "action", label: "Action", field: "action" },
+        ...fieldColumns,
       ];
     },
     checkboxFields() {

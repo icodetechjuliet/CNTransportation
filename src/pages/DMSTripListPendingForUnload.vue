@@ -111,16 +111,15 @@
             <template v-slot:body-cell-action="props">
               <q-td :props="props" class="button-container">
                 <q-btn
-                  unelevated
-                  no-caps
-                  dense
-                  size="sm"
                   icon="inventory_2"
-                  label="Mark Unloaded"
                   color="primary"
-                  class="m-btn-style"
+                  dense
+                  outline
+                  class="edit-icon-style"
                   @click="markUnloaded(props.row)"
-                />
+                >
+                  <q-tooltip>Mark Unloaded</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
 
@@ -199,6 +198,7 @@ export default {
       pagination: { page: 1, rowsPerPage: 15 },
 
       baseColumns: [
+        { name: "action", label: "Action", field: "action", align: "center" },
         { name: "TripNo", label: "Trip No.", field: "TripNo", sortable: true },
         { name: "TripDate", label: "Date", field: "TripDate", sortable: true },
         { name: "FromCity", label: "From City", field: "FromCity" },
@@ -210,7 +210,6 @@ export default {
           label: "Booking Office",
           field: "FromBookingOffice",
         },
-        { name: "action", label: "Action", field: "action", align: "center" },
       ],
     };
   },

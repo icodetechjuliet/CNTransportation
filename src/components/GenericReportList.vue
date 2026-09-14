@@ -108,16 +108,18 @@
             <template v-if="def.actionLabel" v-slot:body-cell-action="props">
               <q-td :props="props" class="button-container">
                 <q-btn
-                  unelevated
-                  no-caps
-                  dense
-                  size="sm"
                   :icon="def.actionIcon"
-                  :label="def.actionLabel"
                   color="primary"
-                  class="m-btn-style"
+                  dense
+                  outline
+                  :class="[
+                    'edit-icon-style',
+                    def.actionIcon === 'print' ? 'prt' : '',
+                  ]"
                   @click="runAction(props.row)"
-                />
+                >
+                  <q-tooltip>{{ def.actionLabel }}</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
           </q-table>
@@ -154,7 +156,7 @@ export default {
     tableColumns() {
       const cols = this.def.columns;
       return this.def.actionLabel
-        ? [...cols, { name: "action", label: "Action", field: "action" }]
+        ? [{ name: "action", label: "Action", field: "action" }, ...cols]
         : cols;
     },
     maxPages() {

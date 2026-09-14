@@ -109,6 +109,7 @@ export default {
       form: this.emptyForm(),
 
       baseColumns: [
+        { name: "action", label: "Action", field: "action" },
         {
           name: "RateName",
           label: "Rate Name",
@@ -131,7 +132,6 @@ export default {
           field: "EffectiveDate",
           sortable: true,
         },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },

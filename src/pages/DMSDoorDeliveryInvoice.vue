@@ -95,15 +95,15 @@
             <template v-slot:body-cell-action="props">
               <q-td :props="props" class="button-container">
                 <q-btn
-                  unelevated
-                  no-caps
-                  dense
-                  size="sm"
-                  label="Generate Invoice"
+                  icon="receipt_long"
                   color="primary"
-                  class="m-btn-style"
+                  dense
+                  outline
+                  class="edit-icon-style"
                   @click="generateInvoice(props.row)"
-                />
+                >
+                  <q-tooltip>Generate Invoice</q-tooltip>
+                </q-btn>
               </q-td>
             </template>
             <template v-slot:no-data>
@@ -135,6 +135,7 @@ export default {
       pagination: { page: 1, rowsPerPage: 15 },
 
       invoiceColumns: [
+        { name: "action", label: "Action", field: "action" },
         {
           name: "InvoiceNo",
           label: "Invoice No.",
@@ -162,10 +163,10 @@ export default {
           sortable: true,
         },
         { name: "Status", label: "Status", field: "Status", align: "center" },
-        { name: "action", label: "Action", field: "action" },
       ],
 
       pendingColumns: [
+        { name: "action", label: "Action", field: "action" },
         {
           name: "DoorDeliveryNo",
           label: "Door Delivery No.",
@@ -184,7 +185,6 @@ export default {
           field: "VehicleAmount",
           align: "right",
         },
-        { name: "action", label: "Action", field: "action" },
       ],
     };
   },
