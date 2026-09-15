@@ -16,7 +16,6 @@
         </p>
         <div class="hero-stats">
           <span>{{ total }} {{ t("menus", "मेनू") }}</span
-          ><span>{{ groups.length }} {{ t("categories", "श्रेणियाँ") }}</span
           ><span>English + हिन्दी</span>
         </div>
       </div>
@@ -57,40 +56,16 @@
       >
     </div>
     <div class="directory-body">
-      <aside class="category-panel">
-        <h2>{{ t("CATEGORIES", "श्रेणियाँ") }}</h2>
-        <button :class="{ selected: !category }" @click="category = ''">
-          <q-icon name="grid_view" /><span>{{
-            t("All menus", "सभी मेनू")
-          }}</span
-          ><small>{{ total }}</small>
-        </button>
-        <button
-          v-for="group in groups"
-          :key="group.id"
-          :class="{ selected: category === group.id }"
-          :aria-pressed="category === group.id"
-          @click="category = group.id"
-        >
-          <q-icon :name="group.icon" /><span
-            >{{ label(group.name)
-            }}<small
-              class="secondary-label"
-              :lang="language === 'en' ? 'hi' : 'en'"
-              >{{ secondary(group.name) }}</small
-            ></span
-          ><small>{{ group.items.length }}</small>
-        </button>
-      </aside>
       <main class="menu-content">
         <section
           v-for="group in visibleGroups"
           :key="group.id"
           class="menu-section"
+          :style="sectionStyle(group.id)"
         >
           <div class="section-heading">
             <div class="section-icon">
-              <q-icon :name="group.icon" size="23px" />
+              <q-icon :name="group.icon" size="22px" />
             </div>
             <div>
               <h2>{{ label(group.name) }}</h2>
@@ -108,7 +83,10 @@
               @click.prevent="openMenu(item)"
               class="menu-link"
             >
-              <div>
+              <div class="menu-link-icon">
+                <q-icon :name="group.icon" size="17px" />
+              </div>
+              <div class="menu-link-body">
                 <small v-if="item.subgroup" class="subgroup">{{
                   label(item.subgroup)
                 }}</small
@@ -117,7 +95,7 @@
                   secondary(item.MenuDesc)
                 }}</span>
               </div>
-              <q-icon name="arrow_forward" size="18px" />
+              <q-icon name="arrow_forward" size="16px" class="go-icon" />
             </router-link>
           </div>
         </section>
@@ -127,8 +105,8 @@
           <p>
             {{
               t(
-                "Try another keyword or choose a different category.",
-                "दूसरा शब्द खोजें या कोई अन्य श्रेणी चुनें।"
+                "Try another keyword.",
+                "दूसरा शब्द खोजें।"
               )
             }}
           </p>
@@ -136,11 +114,8 @@
             outline
             color="primary"
             no-caps
-            :label="t('Reset filters', 'फ़िल्टर रीसेट करें')"
-            @click="
-              search = '';
-              category = '';
-            "
+            :label="t('Reset search', 'खोज रीसेट करें')"
+            @click="search = ''"
           />
         </div>
       </main>
@@ -186,10 +161,25 @@ for (const item of buildMockChildMenu("DMS")) {
   }
 }
 
+// Muted accents identify categories consistently, including during search.
+const palette = [
+  { from: "#1765c9", to: "#2f9fdb", bg: "#eaf3fd", border: "#bcd8f7" },
+  { from: "#188a5c", to: "#38b28a", bg: "#e9f7f1", border: "#b7e6d2" },
+  { from: "#c65a1f", to: "#e0863f", bg: "#fdefe7", border: "#f4cdb6" },
+  { from: "#7238c9", to: "#a165e8", bg: "#f2eefb", border: "#d9cbf3" },
+  { from: "#c4266f", to: "#e2569a", bg: "#fdeef3", border: "#f4c4d6" },
+  { from: "#0e7ea3", to: "#2fb0d6", bg: "#eaf6fb", border: "#bce3f0" },
+  { from: "#a9781a", to: "#d0a53f", bg: "#fbf4e3", border: "#f0dba0" },
+  { from: "#4c7a2e", to: "#78a854", bg: "#eff5ec", border: "#c8dcc2" },
+  { from: "#5b4bb8", to: "#8676dd", bg: "#f0eef8", border: "#cfc7ea" },
+  { from: "#c5342f", to: "#e2635e", bg: "#fdecec", border: "#f3c4c4" },
+  { from: "#2b6e88", to: "#4f9bb6", bg: "#eaf3f6", border: "#bfd9e3" },
+];
+
 export default {
   name: "DMSMenu",
   inject: { openTab: { default: null } },
-  data: () => ({ language: "en", search: "", category: "", groups }),
+  data: () => ({ language: "en", search: "", groups }),
   computed: {
     total() {
       return this.groups.reduce((sum, group) => sum + group.items.length, 0);
@@ -197,7 +187,6 @@ export default {
     visibleGroups() {
       const query = (this.search || "").trim().toLocaleLowerCase();
       return this.groups
-        .filter((group) => !this.category || group.id === this.category)
         .map((group) => ({
           ...group,
           items: group.items.filter((item) =>
@@ -241,13 +230,26 @@ export default {
     secondary(name) {
       return this.language === "hi" ? name : hindi[name] || name;
     },
+    accent(index) {
+      return palette[index % palette.length];
+    },
+    sectionStyle(id) {
+      const c = this.accent(this.groups.findIndex(group => group.id === id));
+      return {
+        "--accent-from": c.from,
+        "--accent-to": c.to,
+        "--accent-bg": c.bg,
+        "--accent-border": c.border,
+      };
+    },
+
   },
 };
 </script>
 
 <style scoped>
 .dms-directory {
-  background: #f4f7fb;
+  background: #f5f7fb;
   padding: 20px 24px 40px;
   color: #23354d;
   letter-spacing: normal;
@@ -259,9 +261,9 @@ export default {
   gap: 20px;
   padding: 24px 28px;
   border-radius: 12px;
-  color: white;
-  background: radial-gradient(ellipse at top right, #287d91 0, transparent 58%),
-    linear-gradient(120deg, #132e50, #185377);
+  color: #172b4d;
+  border: 1px solid #dce6f2;
+  background: linear-gradient(110deg, #ffffff 30%, #edf4ff);
 }
 .eyebrow {
   display: flex;
@@ -269,7 +271,7 @@ export default {
   gap: 9px;
   font-size: 11px;
   letter-spacing: 2px;
-  color: #c4e4ef;
+  color: #46709c;
   font-weight: 600;
 }
 h1 {
@@ -280,7 +282,7 @@ h1 {
   letter-spacing: -0.5px;
 }
 .directory-hero p {
-  color: #d4e7f1;
+  color: #64748b;
   margin: 0;
   font-size: 14px;
 }
@@ -290,18 +292,19 @@ h1 {
   flex-wrap: wrap;
   margin-top: 16px;
   font-size: 12px;
-  color: #e4f1f9;
+  color: #536780;
 }
 .hero-stats span {
   padding: 4px 10px;
-  border: 1px solid #ffffff24;
+  border: 1px solid #dfe7f0;
   border-radius: 6px;
-  background: #ffffff0a;
+  background: #ffffff;
 }
 .language-toggle {
-  background: #ffffff20;
+  background: #e6edf7;
+  color: #536780;
   padding: 4px;
-  border: 1px solid #ffffff35;
+  border: 1px solid #d8e2ef;
   border-radius: 9px;
   flex-shrink: 0;
 }
@@ -330,87 +333,36 @@ h1 {
   height: 44px;
 }
 .directory-body {
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  gap: 18px;
-  align-items: start;
-}
-.category-panel {
-  background: white;
-  border: 1px solid #e1e7ef;
-  padding: 16px 10px;
-  border-radius: 12px;
-}
-.category-panel h2 {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1.4px;
-  margin: 0 12px 14px;
-  line-height: 1.5;
-  color: #718096;
-}
-.category-panel button {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  width: 100%;
-  background: transparent;
-  border: 0;
-  text-align: left;
-  padding: 9px 12px;
-  color: #526176;
-  border-radius: 8px;
-  cursor: pointer;
-  font: inherit;
-  font-size: 13px;
-  margin-bottom: 3px;
-}
-.category-panel button > span {
-  flex: 1;
-}
-.category-panel .q-icon {
-  font-size: 19px;
-}
-.category-panel button.selected {
-  background: #eaf3fc;
-  color: #1765a9;
-  font-weight: 600;
-}
-.category-panel button:hover {
-  background: #f0f5fa;
-}
-.secondary-label {
   display: block;
-  font-size: 11px;
-  font-weight: 400;
-  margin-top: 2px;
 }
 .menu-section {
-  background: white;
-  border: 1px solid #e1e7ef;
-  border-radius: 12px;
-  margin-bottom: 16px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-top: 3px solid var(--accent-from);
+  border-radius: 14px;
+  margin-bottom: 18px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(20, 40, 70, 0.025);
 }
 .section-heading {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 14px 18px;
-  background: linear-gradient(100deg, #e6f0fc 0%, #f1f7fd 100%);
-  border-bottom: 1px solid #d5e4f4;
-  border-left: 4px solid #2877b8;
+  background: var(--accent-bg);
+  border-bottom: 1px solid var(--accent-border);
+  color: #243650;
 }
 .section-icon {
-  background: #fff;
-  color: #216ba6;
-  border: 1px solid #d0e2f3;
-  box-shadow: 0 2px 4px #174d7b08;
+  background: var(--accent-bg);
+  color: var(--accent-from);
+  border: 1px solid var(--accent-border);
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 9px;
+  display: flex;
 }
 .section-heading h2 {
-  color: #173e65;
+  color: #243650;
   font-size: 16px;
   font-weight: 650;
   line-height: 1.4;
@@ -419,37 +371,52 @@ h1 {
 .section-heading p {
   margin: 3px 0 0;
   font-size: 12px;
-  color: #506c89;
+  color: #718096;
 }
 .count-badge {
   margin-left: auto;
-  background: #fff;
-  border: 1px solid #cbddf0;
-  padding: 3px 10px;
+  background: var(--accent-bg);
+  border: 1px solid var(--accent-border);
+  padding: 3px 12px;
   border-radius: 20px;
-  color: #245d91;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 12px;
+  color: var(--accent-from);
 }
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  padding: 12px;
-  gap: 10px;
+  padding: 14px;
+  gap: 12px;
 }
 .menu-link {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 12px;
   text-decoration: none;
   color: #30445f;
-  border: 1px solid #e8edf3;
+  border: 1px solid var(--accent-border);
   background: #fff;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 12px 14px;
   min-height: 72px;
-  transition: background 0.15s, border-color 0.15s;
+  box-shadow: none;
+  transition: box-shadow 0.15s, border-color 0.15s, transform 0.15s;
+}
+.menu-link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  flex-shrink: 0;
+  background: var(--accent-bg);
+  color: var(--accent-from);
+}
+.menu-link-body {
+  flex: 1;
+  min-width: 0;
 }
 .menu-link strong {
   display: block;
@@ -466,18 +433,21 @@ h1 {
   margin-top: 3px;
   line-height: 1.6;
 }
-.menu-link > .q-icon {
+.go-icon {
   color: #8297b0;
   flex-shrink: 0;
 }
 .menu-link:hover {
-  background: #f1f7fd;
-  border-color: #d5e5f4;
-  color: #1765a9;
+  border-color: var(--accent-from, #1765a9);
+  background: var(--accent-bg);
+  box-shadow: 0 4px 12px rgba(20, 40, 70, 0.06);
+  transform: translateY(-1px);
 }
-.menu-link:focus-visible,
-.category-panel button:focus-visible {
-  outline: 2px solid #287db9;
+.menu-link:hover .go-icon {
+  color: var(--accent-from, #1765a9);
+}
+.menu-link:focus-visible {
+  outline: 2px solid var(--accent-from);
   outline-offset: -2px;
 }
 .subgroup {
@@ -497,7 +467,11 @@ h1 {
   font-size: 20px;
   line-height: 1.5;
 }
-@media (min-width: 1700px) {
+@media (prefers-reduced-motion: reduce) {
+  .menu-link { transition: none; }
+  .menu-link:hover { transform: none; }
+}
+@media (min-width: 1500px) {
   .menu-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -505,10 +479,6 @@ h1 {
 @media (max-width: 1150px) {
   .menu-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .directory-body {
-    grid-template-columns: 210px minmax(0, 1fr);
-    gap: 16px;
   }
 }
 @media (max-width: 750px) {
@@ -521,25 +491,6 @@ h1 {
   }
   h1 {
     font-size: 25px;
-  }
-  .directory-body {
-    grid-template-columns: 1fr;
-  }
-  .category-panel {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-  }
-  .category-panel h2 {
-    display: none;
-  }
-  .category-panel button {
-    width: auto;
-    flex-shrink: 0;
-    margin: 0;
-  }
-  .secondary-label {
-    display: none;
   }
   .directory-tools {
     flex-direction: column;

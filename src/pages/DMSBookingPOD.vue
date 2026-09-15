@@ -74,6 +74,80 @@
                     @click="openAddPod"
                   />
 
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    style="width: 150px"
+                    class="q-mx-xs"
+                    @update:model-value="loadPods"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="fromDate"
+                            mask="YYYY-MM-DD"
+                            @update:model-value="loadPods"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    style="width: 150px"
+                    class="q-mx-xs"
+                    @update:model-value="loadPods"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="toDate"
+                            mask="YYYY-MM-DD"
+                            @update:model-value="loadPods"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
                   <q-btn
                     unelevated
                     icon="refresh"
@@ -257,6 +331,8 @@ export default {
       pods: [],
       filteredPods: [],
       searchText: "",
+      fromDate: this.defaultFromDate(),
+      toDate: this.defaultToDate(),
       pagination: { page: 1, rowsPerPage: 15 },
       expandedMobileCards: [],
 
@@ -303,8 +379,34 @@ export default {
       this.loadPods();
     },
 
+    defaultFromDate() {
+      return "2026-04-03";
+    },
+
+    defaultToDate() {
+      return "2026-04-03";
+    },
+
+    // PodDate here is "DD/MM/YYYY" — convert to a lexically-comparable
+    // "YYYY-MM-DD" to compare against fromDate/toDate.
+    parseDMYDate(str) {
+      if (!str) return null;
+      const parts = String(str).split("/");
+      if (parts.length !== 3) return null;
+      const [d, m, y] = parts;
+      return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+    },
+
     async loadPods() {
-      this.filteredPods = await apiGetPods(this.searchText);
+      let result = await apiGetPods(this.searchText);
+      result = result.filter((p) => {
+        const pd = this.parseDMYDate(p.PodDate);
+        if (!pd) return true;
+        if (this.fromDate && pd < this.fromDate) return false;
+        if (this.toDate && pd > this.toDate) return false;
+        return true;
+      });
+      this.filteredPods = result;
     },
 
     openAddPod() {

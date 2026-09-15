@@ -99,6 +99,89 @@
                         <q-item-label>Print</q-item-label>
                       </q-item-section>
                     </q-item>
+
+                    <!-- Matches the legacy view form's separate "Print
+                         Sticker" toolbar button (tsbPrintSticker_Click ->
+                         BUK_Booking_BookingStickerPrint in
+                         BUK_BookingList.cs) — a compact parcel-label
+                         printout, distinct from the full LR receipt. -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      class="desktop-actions-item"
+                      @click="printSticker"
+                    >
+                      <q-item-section avatar>
+                        <div class="action-icon-badge bg-export">
+                          <q-icon name="sell" color="white" />
+                        </div>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>Print Sticker</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <!-- Matches the legacy view form's "View EWay Bill No"
+                         toolbar button (btnViewEWayBillNo_Click ->
+                         BUK_BookingEWayBillNoView.cs in
+                         BUK_BookingView.cs/BUK_BookingViewSimple.cs) — a
+                         read-only grid of e-way bill numbers logged
+                         against this booking. -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      class="desktop-actions-item"
+                      @click="showEWayBillDialog = true"
+                    >
+                      <q-item-section avatar>
+                        <div class="action-icon-badge bg-report">
+                          <q-icon name="confirmation_number" color="white" />
+                        </div>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>View E-Way Bill No</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <!-- Matches the legacy view form's admin-only "Booking
+                         Log Details" grid (BUK_BookingLogBAL in
+                         BUK_BookingView.cs) — a read-only audit trail. -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      class="desktop-actions-item"
+                      @click="showLogDialog = true"
+                    >
+                      <q-item-section avatar>
+                        <div class="action-icon-badge bg-save-new">
+                          <q-icon name="history" color="white" />
+                        </div>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>View Log</q-item-label>
+                      </q-item-section>
+                    </q-item>
+
+                    <!-- Matches the legacy list grid's "Send Email" toolbar
+                         button (tsbSendEmail_Click ->
+                         BUK_BookingSendEmail.cs) — emails the LR copy to
+                         the consignor/consignee; doesn't mutate the
+                         booking itself. -->
+                    <q-item
+                      clickable
+                      v-close-popup
+                      class="desktop-actions-item"
+                      @click="openSendEmail"
+                    >
+                      <q-item-section avatar>
+                        <div class="action-icon-badge bg-reset">
+                          <q-icon name="email" color="white" />
+                        </div>
+                      </q-item-section>
+                      <q-item-section>
+                        <q-item-label>Send Email</q-item-label>
+                      </q-item-section>
+                    </q-item>
                   </q-list>
                 </q-btn-dropdown>
               </div>
@@ -1037,6 +1120,135 @@
         </div>
       </q-card>
     </q-dialog>
+
+    <!-- ══════════════════════════════════════
+         View E-Way Bill No Dialog — read-only grid, matches the legacy
+         BUK_BookingEWayBillNoView.cs form opened from the view form's
+         "View EWay Bill No" toolbar button.
+    ══════════════════════════════════════ -->
+    <q-dialog v-model="showEWayBillDialog">
+      <q-card style="min-width: 420px; max-width: 90vw">
+        <q-toolbar class="bg-primary text-white">
+          <q-icon name="confirmation_number" size="20px" class="q-mr-sm" />
+          <q-toolbar-title class="text-body1">E-Way Bill No.</q-toolbar-title>
+          <q-btn flat round dense icon="close" v-close-popup />
+        </q-toolbar>
+        <q-card-section>
+          <q-table
+            square
+            dense
+            flat
+            bordered
+            :rows="eWayBillRows"
+            :columns="eWayBillColumns"
+            row-key="EWayBillNo"
+            hide-pagination
+            :rows-per-page-options="[0]"
+          >
+            <template v-slot:body-cell-IsValid="props">
+              <q-td :props="props">
+                <q-badge
+                  :color="props.value ? 'positive' : 'negative'"
+                  :label="props.value ? 'Valid' : 'Invalid'"
+                />
+              </q-td>
+            </template>
+          </q-table>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <!-- ══════════════════════════════════════
+         View Booking Log Dialog — read-only audit trail, matches the
+         legacy view form's admin-only "Booking Log Details" grid
+         (BUK_BookingLogBAL.SelectByBookingID in BUK_BookingView.cs).
+    ══════════════════════════════════════ -->
+    <q-dialog v-model="showLogDialog">
+      <q-card style="min-width: 480px; max-width: 90vw">
+        <q-toolbar class="bg-primary text-white">
+          <q-icon name="history" size="20px" class="q-mr-sm" />
+          <q-toolbar-title class="text-body1">Booking Log</q-toolbar-title>
+          <q-btn flat round dense icon="close" v-close-popup />
+        </q-toolbar>
+        <q-card-section>
+          <q-table
+            square
+            dense
+            flat
+            bordered
+            :rows="bookingLogRows"
+            :columns="bookingLogColumns"
+            row-key="LogId"
+            hide-pagination
+            :rows-per-page-options="[0]"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <!-- ══════════════════════════════════════
+         Send Email Dialog — matches the legacy BUK_BookingSendEmail.cs
+         form: emails the LR copy (with/without freight) to the
+         consignor/consignee. Mock-only here — no real send, just a
+         success notification, consistent with this app's mock-data
+         conventions.
+    ══════════════════════════════════════ -->
+    <q-dialog v-model="showSendEmailDialog">
+      <q-card style="min-width: 360px; max-width: 90vw">
+        <q-toolbar class="bg-primary text-white">
+          <q-icon name="email" size="20px" class="q-mr-sm" />
+          <q-toolbar-title class="text-body1">Send Email</q-toolbar-title>
+          <q-btn flat round dense icon="close" v-close-popup />
+        </q-toolbar>
+        <q-card-section class="q-gutter-sm">
+          <q-input
+            square
+            dense
+            outlined
+            bg-color="blue-1"
+            label="Consignor Email"
+            v-model="emailForm.consignorEmail"
+          />
+          <q-input
+            square
+            dense
+            outlined
+            bg-color="blue-1"
+            label="Consignee Email"
+            v-model="emailForm.consigneeEmail"
+          />
+          <q-item
+            tag="label"
+            v-ripple
+            bg-color="blue-1"
+            class="chckbx-style full-width"
+          >
+            <q-item-section avatar>
+              <q-checkbox
+                dense
+                v-model="emailForm.withFreight"
+                val="orange"
+                color="orange"
+                intermediate-icon="black"
+              />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label dense>Send LR with Freight</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-card-section>
+        <q-card-section class="q-pt-none text-right">
+          <q-btn
+            unelevated
+            no-caps
+            color="primary"
+            label="Send"
+            icon="send"
+            @click="sendEmail"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -1070,12 +1282,100 @@ export default {
       form: {},
       showPrintDialog: false,
       printBlobUrl: null,
+
+      // View E-Way Bill No dialog (read-only) — see printSticker()'s
+      // sibling actions below.
+      showEWayBillDialog: false,
+
+      // View Booking Log dialog (read-only audit trail).
+      showLogDialog: false,
+
+      // Send Email dialog.
+      showSendEmailDialog: false,
+      emailForm: {
+        consignorEmail: "",
+        consigneeEmail: "",
+        withFreight: false,
+      },
     };
   },
 
   computed: {
     tabIndex() {
       return this.tabOrder.indexOf(this.activeTab);
+    },
+
+    // Mock e-way bill log for this booking — legacy
+    // BUK_BookingEWayBillNoView.cs reads this from
+    // BUK_BookingEWayBillNoBAL.SelectGrid(BookingID); this app is
+    // mock-data only, so it's derived straight from the loaded form's own
+    // EWayBillNo instead of a separate backing table.
+    eWayBillColumns() {
+      return [
+        { name: "EWayBillNo", label: "E-Way Bill No.", field: "EWayBillNo" },
+        {
+          name: "GeneratedDate",
+          label: "Generated Date",
+          field: "GeneratedDate",
+        },
+        { name: "ValidUpto", label: "Valid Upto", field: "ValidUpto" },
+        { name: "IsValid", label: "Status", field: "IsValid" },
+      ];
+    },
+    eWayBillRows() {
+      if (!this.form.EWayBillNo) return [];
+      return [
+        {
+          EWayBillNo: this.form.EWayBillNo,
+          GeneratedDate: this.form.BookingDate || "",
+          ValidUpto: this.form.BookingDate || "",
+          IsValid: String(this.form.EWayBillNo).length >= 12,
+        },
+      ];
+    },
+
+    bookingLogColumns() {
+      return [
+        { name: "LogDate", label: "Date", field: "LogDate" },
+        { name: "LogUser", label: "User", field: "LogUser" },
+        { name: "LogAction", label: "Action", field: "LogAction" },
+        { name: "LogRemarks", label: "Remarks", field: "LogRemarks" },
+      ];
+    },
+    // Mock audit trail — legacy BUK_BookingView.cs fills this (admin-only)
+    // from BUK_BookingLogBAL.SelectByBookingID(BookingID); approximated
+    // here with entries derived from this booking's own known fields since
+    // there's no real change-history table in this mock-data app.
+    bookingLogRows() {
+      if (!this.form.BookingNo) return [];
+      const rows = [
+        {
+          LogId: 1,
+          LogDate: this.form.BookingDate || "",
+          LogUser: this.form.RefUser || "Admin",
+          LogAction: "Created",
+          LogRemarks: `Booking ${this.form.BookingNo} created`,
+        },
+      ];
+      if (this.form.LockDate) {
+        rows.push({
+          LogId: 2,
+          LogDate: this.form.LockDate,
+          LogUser: this.form.LockBy || "System",
+          LogAction: "Locked",
+          LogRemarks: "Booking locked after trip load",
+        });
+      }
+      if (this.form.PayReceived) {
+        rows.push({
+          LogId: 3,
+          LogDate: this.form.PayReceivedDate || "",
+          LogUser: this.form.RefUser || "Admin",
+          LogAction: "Payment Received",
+          LogRemarks: `Amount received: ${this.form.Received || 0}`,
+        });
+      }
+      return rows;
     },
   },
 
@@ -1121,6 +1421,93 @@ export default {
       if (this.printBlobUrl) URL.revokeObjectURL(this.printBlobUrl);
       this.printBlobUrl = URL.createObjectURL(blob);
       this.showPrintDialog = true;
+    },
+
+    // Matches the legacy view form's separate "Print Sticker" toolbar
+    // button (tsbPrintSticker_Click -> BUK_Booking_BookingStickerPrint in
+    // BUK_BookingList.cs) — a compact parcel-label printout, reusing the
+    // same print-dialog/iframe pattern as the LR receipt above but with a
+    // much smaller sticker layout.
+    async printSticker() {
+      const html = this.buildStickerHtml();
+      const blob = new Blob([html], { type: "text/html" });
+      if (this.printBlobUrl) URL.revokeObjectURL(this.printBlobUrl);
+      this.printBlobUrl = URL.createObjectURL(blob);
+      this.showPrintDialog = true;
+    },
+
+    buildStickerHtml() {
+      const f = this.form;
+      return `<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Sticker – ${f.BookingNo || "NEW"}</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;font-size:10pt;color:#000;padding:10px}
+  .sticker{width:320px;border:2px solid #000;padding:8px;margin:0 auto}
+  .sticker h2{font-size:12pt;text-align:center;margin-bottom:6px}
+  .row{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dashed #999}
+  .row .lbl{font-weight:700}
+  @page{size:A6;margin:5mm}
+  @media print{body{padding:0;margin:0}}
+</style>
+</head>
+<body>
+<div class="sticker">
+  <h2>${f.BookedFrom || "Eagle Logistics"}</h2>
+  <div class="row"><span class="lbl">LR No.</span><span>${
+    f.BookingNo || ""
+  }</span></div>
+  <div class="row"><span class="lbl">Date</span><span>${
+    f.BookingDate || ""
+  }</span></div>
+  <div class="row"><span class="lbl">From</span><span>${
+    f.FromCity || ""
+  }</span></div>
+  <div class="row"><span class="lbl">To</span><span>${
+    f.ToCity || ""
+  }</span></div>
+  <div class="row"><span class="lbl">Consignee</span><span>${
+    f.ConsigneeName || ""
+  }</span></div>
+  <div class="row"><span class="lbl">Qty</span><span>${
+    f.Quantity || ""
+  }</span></div>
+  <div class="row"><span class="lbl">Weight</span><span>${
+    f.Weight || ""
+  }</span></div>
+  <div class="row"><span class="lbl">Delivery</span><span>${
+    f.IsDoorDelivery ? "Door Delivery" : "Ware House"
+  }</span></div>
+</div>
+</body>
+</html>`;
+    },
+
+    // Matches the legacy list grid's "Send Email" toolbar button
+    // (tsbSendEmail_Click -> BUK_BookingSendEmail.cs) — pre-fills the
+    // dialog from this booking's own party fields, same as the legacy
+    // form's FillControls() reading the booking record first.
+    openSendEmail() {
+      this.emailForm = {
+        consignorEmail: "",
+        consigneeEmail: "",
+        withFreight: false,
+      };
+      this.showSendEmailDialog = true;
+    },
+
+    // Mock-only send (no real backend/API in this app) — just confirms to
+    // the user, matching this app's mock-data conventions elsewhere.
+    sendEmail() {
+      this.showSendEmailDialog = false;
+      this.$q.notify({
+        message: `LR ${this.form.BookingNo || ""} emailed successfully.`,
+        color: "positive",
+        position: "top",
+      });
     },
 
     downloadPDF() {

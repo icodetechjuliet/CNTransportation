@@ -328,9 +328,9 @@ const ENTITY_DEFS = {
   },
 
   // ── Master > Tax submenu (old app's TAX_ServiceTaxConfig/TAX_TaxSystem/
-  // TAX_TaxApplyOnTax/TAX_TaxSystemWiseTax tables) — flyout group under the
-  // "Tax" row alongside the plain "tax" entity above (see the "Tax" group
-  // in src/IPConfig/mockData.js's DMS array). ──────────────────────────────
+  // TAX_TaxApplyOnTax/TAX_TaxSystemWiseTax tables) — flat items under the
+  // "Master Tax" header alongside the plain "tax" entity above (see the
+  // "Master Tax" header + items in src/IPConfig/mockData.js's DMS array). ──
   servicetaxconfig: {
     title: "Service Tax Config",
     icon: "settings",

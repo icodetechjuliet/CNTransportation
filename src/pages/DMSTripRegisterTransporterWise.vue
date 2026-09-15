@@ -99,6 +99,74 @@
                     @update:model-value="applyFilters"
                   />
 
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    style="width: 140px"
+                    class="q-ml-sm"
+                    @update:model-value="applyFilters"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="fromDate" mask="DD-MM-YYYY" color="black">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    style="width: 140px"
+                    class="q-ml-xs"
+                    @update:model-value="applyFilters"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="toDate" mask="DD-MM-YYYY" color="black">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
                   <q-btn
                     unelevated
                     icon="refresh"
@@ -210,6 +278,8 @@ export default {
       transporterFilter: "All",
       transporterOptions: ["All", ...MOCK_DATA.transporters],
       searchText: "",
+      fromDate: "01-04-2026",
+      toDate: "30-04-2026",
       pagination: { page: 1, rowsPerPage: 15 },
 
       // Weight/Rate/FreightAmount/HamaliAmount/OtherAmount/ExpenseAmount/
@@ -344,6 +414,14 @@ export default {
       return map[status] || "grey";
     },
 
+    // TripDate is stored as a "DD-MM-YYYY" display string.
+    parseDMY(value) {
+      if (!value) return null;
+      const [d, m, y] = value.split("-").map(Number);
+      if (!d || !m || !y) return null;
+      return new Date(y, m - 1, d);
+    },
+
     applyFilters() {
       let result = [...this.allTrips];
       if (this.transporterFilter && this.transporterFilter !== "All")
@@ -357,6 +435,15 @@ export default {
             (t.VehicleNo || "").toLowerCase().includes(s)
         );
       }
+      const from = this.parseDMY(this.fromDate);
+      const to = this.parseDMY(this.toDate);
+      result = result.filter((t) => {
+        const d = this.parseDMY(t.TripDate);
+        if (!d) return true;
+        if (from && d < from) return false;
+        if (to && d > to) return false;
+        return true;
+      });
       this.filteredTrips = result.sort((a, b) =>
         (a.Transporter || "").localeCompare(b.Transporter || "")
       );

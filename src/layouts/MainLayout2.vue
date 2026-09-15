@@ -1025,7 +1025,7 @@ export default defineComponent({
       this.Logout();
     },
     goHome() {
-      this.$refs.dynamicTabs.openTab("/DashboardPage", "Home");
+      this.$refs.dynamicTabs.openTab("/DMSDashboard", "Home");
     },
     // Looks up a menu entry (e.g. "Customer Analysis") by its label across
     // the already-loaded sidebar menu tree, and opens it the same way a

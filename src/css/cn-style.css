@@ -821,7 +821,7 @@ body {
 .child-item {
   /*MN padding-left: 20px; */
   font-weight: normal;
-  border-bottom: 1px solid #d8d8d8;
+  border-bottom: 1px solid #e5e5e5;
   color: #5f5f5f;
   transition: transform 0.3s ease;
   /* background-image: linear-gradient(to right, #00bdda, #0178bc); */
@@ -842,18 +842,26 @@ body {
   border: none !important;
 }
 
-.child-item:hover {
+/* :not(.child-group) — .child-item is also reused as the wrapper around
+   an entire nested group (e.g. DMS > Booking, see ".child-item.child-group"
+   in MainLayout1.vue). Without this exclusion, hovering ANY row inside an
+   open group puts that outer wrapper into :hover too (ancestor hover is
+   normal bubbling), and the descendant selector below then matched every
+   grandchild <a> in the group — not just the one actually under the
+   cursor — turning the whole list white-on-white. Excluding .child-group
+   here keeps this hover recolor scoped to an actual single leaf row. */
+.child-item:not(.child-group):hover {
   /* background-image: linear-gradient(to right, #ffffff, #1976d2); */
   transition: 0.5s;
   padding-left: 10px;
   color: #fff;
 }
 
-.child-item:hover a {
+.child-item:not(.child-group):hover a {
   text-decoration: none; /* Remove underline on hover */
   color: #ffffff; /* Inherit the color from the parent menu item */
 }
-.child-item:active a {
+.child-item:not(.child-group):active a {
   text-decoration: none; /* Remove underline on hover */
   color: #ffffff; /* Inherit the color from the parent menu item */
 }
@@ -11503,12 +11511,12 @@ td.align-right {
 } */
 
 .charge-addbtn {
-    margin-right: 30px;
-    margin-top: 0px;
-    margin-bottom: -28px;
-    z-index: 9999;
-    position: absolute;
-    right: 0;
+  margin-right: 30px;
+  margin-top: 0px;
+  margin-bottom: -28px;
+  z-index: 9999;
+  position: absolute;
+  right: 0;
 }
 
 .charge-addbtn .q-btn--dense.q-btn--round {
@@ -12343,7 +12351,14 @@ option {
   letter-spacing: 0.6px;
 }
 
-.q-item.dashboard-menu .q-expansion-item .q-item {
+/* :not(.child-group-header) — this top-level module-row sizing (fixed
+   250px width, 50px min-height) also matched the nested "Booking"/"Trip"/
+   etc. group headers, since they render as a plain Quasar .q-item too,
+   and it won on plain specificity over their own compact
+   ".child-group-header" rule further below — forcing them wider than
+   their panel (hiding the expand chevron off the edge) and taller than
+   intended. Excluded here so the dedicated rule owns their sizing. */
+.q-item.dashboard-menu .q-expansion-item .q-item:not(.child-group-header) {
   width: 250px;
   margin-left: 0 !important;
   background-color: transparent;
@@ -12361,7 +12376,7 @@ option {
 .q-item.dashboard-menu .q-expansion-item.seperator {
   box-shadow: none;
   margin-bottom: 0px !important;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #d8d8d8;
   padding: 2px 0;
   background: transparent;
 }
@@ -12377,7 +12392,10 @@ option {
   box-shadow: none;
 }
 
-.q-item.dashboard-menu .q-expansion-item .q-item:hover:not(.child-group-header) .q-icon {
+.q-item.dashboard-menu
+  .q-expansion-item
+  .q-item:hover:not(.child-group-header)
+  .q-icon {
   color: #fff;
 }
 
@@ -12398,12 +12416,16 @@ option {
    matches the nested "Booking" group header, since that's rendered as a
    plain Quasar .q-item too; the group header gets its own lighter hover
    treatment below instead. */
-.q-item.dashboard-menu .q-expansion-item .q-item:hover:not(.child-group-header) {
+.q-item.dashboard-menu
+  .q-expansion-item
+  .q-item:hover:not(.child-group-header) {
   background-image: linear-gradient(to bottom, #21b0f3, #1976d2);
   color: #ffffff;
 }
 
-.q-item.dashboard-menu .q-expansion-item.active-menu .q-item:not(.child-group-header) {
+.q-item.dashboard-menu
+  .q-expansion-item.active-menu
+  .q-item:not(.child-group-header) {
   background-image: linear-gradient(to bottom, #21b0f3, #1976d2);
   color: #ffffff;
 }
@@ -12429,7 +12451,7 @@ option {
 
 .q-item.dashboard-menu .q-expansion-item__content {
   width: 250px;
-  padding: 5px 15px;
+  padding: 5px 12px;
   background-color: #fff;
 }
 
@@ -12484,6 +12506,20 @@ option {
   font-size: 13px;
   font-family: "Jost", sans-serif;
 }
+
+/* Long labels (e.g. "Booking List - Pending For Invoice") were wrapping
+   onto a second line instead of staying a single row like every other
+   menu item. Truncate with an ellipsis instead — the existing
+   <q-tooltip class="custom-tooltip"> on these links already shows the
+   full text on hover, so nothing is lost. */
+.q-item.dashboard-menu .menu-link {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .q-item.dashboard-menu .child-item {
   text-decoration: none;
   transition: all 0.4s;
@@ -12491,7 +12527,10 @@ option {
   overflow: hidden;
   z-index: 1;
 }
-.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):not(.dms-flat-group):hover {
+.q-item.dashboard-menu
+  .child-item:not(.child-group):not(.child-item--nested):not(
+    .dms-flat-group
+  ):hover {
   background-color: rgba(166, 166, 166, 0.1);
   cursor: pointer;
 }
@@ -12508,7 +12547,10 @@ option {
    plain leaf row; the group header gets its own hover treatment, nested
    rows get theirs via .child-item--nested:hover below, and DMS's flat
    items get theirs via .dms-flat-link:hover. */
-.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):not(.dms-flat-group)::before {
+.q-item.dashboard-menu
+  .child-item:not(.child-group):not(.child-item--nested):not(
+    .dms-flat-group
+  )::before {
   content: "";
   position: absolute;
   width: 0;
@@ -12520,16 +12562,29 @@ option {
   z-index: -1;
 }
 
-.q-item.dashboard-menu .child-item:not(.child-group):not(.child-item--nested):not(.dms-flat-group):hover::before {
+.q-item.dashboard-menu
+  .child-item:not(.child-group):not(.child-item--nested):not(
+    .dms-flat-group
+  ):hover::before {
   width: 100%;
 }
 
 /* ---- Nested group menu (DMS > Booking > BBooking/Truck Booking/...) ----
-   .child-group is the collapsible "Booking" row inside a module panel;
-   .child-item--nested is each leaf row shown once that group is opened. */
+   .child-group is the collapsible "Booking" row inside a module panel —
+   kept as plain/simple as any other menu row: no icon, no persistent
+   color fill, just the same expand-separator hairline + dropdown arrow
+   every other expansion item in the menu uses. Its own children (rendered
+   as plain .child-item rows once open) pick up the ordinary .child-item
+   look automatically — same border-bottom, same hover — nothing
+   group-specific needed for them any more. */
 .q-item.dashboard-menu .child-item.child-group {
-  border-bottom: none;
+  border-bottom: 1px solid #e5e5e5;
   padding: 2px 0;
+  margin-bottom: 0;
+}
+
+.q-item.dashboard-menu .child-item.child-group:last-child {
+  border-bottom: none;
 }
 
 /* Neutralize the generic .child-item:hover shift/recolor (meant for plain
@@ -12540,99 +12595,125 @@ option {
   color: inherit;
 }
 
+/* Full-width row, rounded on all 4 corners — with the child list sitting
+   flush underneath (no gap), only the top corners actually read as
+   rounded once the group is open; that's expected, not a bug. The
+   ".child-group" divider above already separates it from its next
+   sibling group, so no extra border-bottom is added here. Width is set
+   explicitly (rather than left to inherit) because the generic top-level
+   module-row rule above forces a fixed 250px on every plain .q-item,
+   which is now excluded for this header specifically — this is what it
+   falls back to instead. */
 .q-item.dashboard-menu .child-group-header {
+  width: 100%;
   border-radius: 8px;
-  min-height: 36px;
-  padding: 6px 10px !important;
+  min-height: 38px;
+  padding: 6px 12px !important;
   font-size: 13px;
   font-weight: 600;
-  font-family: "poppins", sans-serif;
+  font-family: "Jost", sans-serif;
   color: var(--font-Mblue);
-  transition: background-color 0.2s ease;
-}
-
-.q-item.dashboard-menu .child-group-header:hover {
-  background-color: var(--bg-blue-1);
-}
-
-.q-item.dashboard-menu .child-group.child-group--open .child-group-header {
-  background-color: var(--bg-blue-2);
 }
 
 .q-item.dashboard-menu .child-group-header .q-icon,
 .q-item.dashboard-menu .child-group-header .q-expansion-item__toggle-icon {
-  color: var(--font-Mblue);
+  color: var(--font-Mblue) !important;
+  opacity: 1 !important;
+}
+
+/* Hard reset: neither the dynamic theme-color gradient nor Quasar's own
+   ".q-expansion-item--expanded" default background (both meant for a
+   module's own top-level row) should ever paint the nested group or its
+   open child list — header, container and content all forced transparent
+   in every state (default/hover/expanded), so this second dropdown never
+   shows a persistent color fill the way a top-level module row does. */
+.q-item.dashboard-menu .child-group,
+.q-item.dashboard-menu .child-group.q-expansion-item--expanded,
+.q-item.dashboard-menu .child-group .q-expansion-item,
+.q-item.dashboard-menu .child-group .q-expansion-item--expanded,
+.q-item.dashboard-menu .child-group .q-expansion-item__container,
+.q-item.dashboard-menu .child-group .child-group-header,
+.q-item.dashboard-menu .child-group .child-group-header:hover {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
 }
 
 .q-item.dashboard-menu .child-group .q-expansion-item__content {
   width: auto;
-  padding: 2px 0 2px 4px;
+  padding: 2px 8px 2px 8px;
   background-color: transparent;
 }
 
-.q-item.dashboard-menu .child-item--nested {
-  position: relative;
+/* Dark highlight while this nested group is open — the hard reset above
+   keeps it transparent by default/hover, but an expanded "Booking" should
+   still read as clearly active, same as a top-level module row does when
+   open. Text/icon flip to white here since they sit on a solid dark fill
+   now instead of the plain white panel background. */
+.q-item.dashboard-menu
+  .child-group
+  .q-expansion-item--expanded
+  .child-group-header {
+  background-color: var(--bg-dblue) !important;
+  color: #ffffff !important;
+}
+
+.q-item.dashboard-menu
+  .child-group
+  .q-expansion-item--expanded
+  .child-group-header
+  .q-icon,
+.q-item.dashboard-menu
+  .child-group
+  .q-expansion-item--expanded
+  .child-group-header
+  .q-expansion-item__toggle-icon {
+  color: #ffffff !important;
+}
+
+/* Hover feedback on top of the states above — same selector text as the
+   hard reset's own ":hover" line further up, so being later here is what
+   lets it win despite matching !important. Collapsed gets the light tint;
+   already-open gets one shade lighter than its solid dark fill so hovering
+   the active header still visibly reacts. */
+.q-item.dashboard-menu .child-group .child-group-header:hover {
+  background-color: var(--bg-blue-1) !important;
+}
+
+.q-item.dashboard-menu
+  .child-group
+  .q-expansion-item--expanded
+  .child-group-header:hover {
+  background-color: var(--bg-lblue) !important;
+}
+
+/* The generic ".q-expansion-item { min-width: 250px }" further above is
+   meant for a module's own top-level panel (so it never shrinks below the
+   dashboard menu's usual width). It also matches this nested group's own
+   q-expansion-item, forcing IT to be at least 250px wide too — wider than
+   the space actually left inside the parent panel once its padding is
+   subtracted, which pushed the expand chevron out past the panel's edge
+   (clipped by ".child-item"'s overflow: hidden). Nested groups should
+   just fill whatever width their parent panel already gives them. */
+.q-item.dashboard-menu .child-group .q-expansion-item {
+  min-width: 0;
+  width: 100%;
+}
+
+/* Divider line between each row of the open "Booking" dropdown
+   (BBooking / Truck Booking / ...) — these rows are plain sibling divs
+   with no separator of their own, unlike the top-level menu rows which
+   get Quasar's expand-separator hairline automatically. */
+.q-item.dashboard-menu .child-group .q-expansion-item__content .child-item {
+  width: 100%;
+  border-bottom: 1px solid #e5e5e5;
+}
+.q-item.dashboard-menu
+  .child-group
+  .q-expansion-item__content
+  .child-item:last-child {
   border-bottom: none;
-}
-
-.q-item.dashboard-menu .child-item--nested:hover {
-  padding-left: 0;
-  background-color: var(--bg-blue-1);
-  color: inherit;
-}
-
-/* Vertical tree line + node dot, drawn inside the 24px left-padding that
-   the row's q-card-section already reserves (see MainLayout1.vue). */
-.q-item.dashboard-menu .child-item--nested::before {
-  content: "";
-  position: absolute;
-  left: 10px;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: #d7e6f6;
-}
-
-.q-item.dashboard-menu .child-item--nested::after {
-  content: "";
-  position: absolute;
-  left: 7px;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #b7c9de;
-  transform: translateY(-50%);
-}
-
-.q-item.dashboard-menu .child-item--nested .menu-link {
-  color: #5f5f5f;
-  font-weight: 500;
-  font-size: 13px;
-}
-
-.q-item.dashboard-menu .child-item--nested:hover .menu-link {
-  color: var(--font-Mblue);
-}
-
-.q-item.dashboard-menu .child-item--nested.child-item--active {
-  background-color: var(--bg-blue-2);
-  border-radius: 0 18px 18px 0;
-}
-
-.q-item.dashboard-menu .child-item--nested.child-item--active::before {
-  background: var(--bg-lblue);
-  width: 2px;
-}
-
-.q-item.dashboard-menu .child-item--nested.child-item--active::after {
-  background: var(--bg-dblue);
-  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
-}
-
-.q-item.dashboard-menu .child-item--nested.child-item--active .menu-link {
-  color: var(--font-Mblue);
-  font-weight: 700;
 }
 /* ---- End nested group menu ---- */
 
@@ -17197,13 +17278,12 @@ thead .gridtableborder th:last-child {
 }
 
 .tb-app .apply-filter-btn .refresh-btn {
-    min-height: 34px;
-    padding: 0 6px;
-    background: var(--bg-white) !important;
-    color: var(--font-Mblue) !important;
-    border-radius: 28px;
+  min-height: 34px;
+  padding: 0 6px;
+  background: var(--bg-white) !important;
+  color: var(--font-Mblue) !important;
+  border-radius: 28px;
 }
-
 
 .tb-app .filter-bar-wrapper .search-combo-wrapper {
   display: flex;
