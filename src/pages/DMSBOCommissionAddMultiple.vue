@@ -98,7 +98,7 @@
           <!-- ── Delivered bookings eligible for commission ── -->
           <q-table
             square
-            :rows="bookingRows"
+            :rows="filteredBookingRows"
             :columns="tableColumns"
             row-key="PreDeliveryID"
             selection="multiple"
@@ -112,6 +112,70 @@
             <template v-slot:top>
               <div class="tb-app col">
                 <div class="filter-bar-wrapper accent-filter-bar">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    style="width: 150px"
+                    class="q-mx-xs"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="fromDate" mask="YYYY-MM-DD">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    style="width: 150px"
+                    class="q-mx-xs"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="toDate" mask="YYYY-MM-DD">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
                   <q-btn
                     unelevated
                     icon="refresh"
@@ -171,6 +235,8 @@ export default {
       selectedRows: [],
       appliedEntries: [],
       pagination: { page: 1, rowsPerPage: 15 },
+      fromDate: this.defaultFromDate(),
+      toDate: this.defaultToDate(),
 
       sharedFields: {
         CommissionType: "Percentage",
@@ -227,6 +293,16 @@ export default {
     tableColumns() {
       return this.baseColumns;
     },
+
+    filteredBookingRows() {
+      return this.bookingRows.filter((r) => {
+        const bd = this.parseDMYDate(r.BookingDate);
+        if (!bd) return true;
+        if (this.fromDate && bd < this.fromDate) return false;
+        if (this.toDate && bd > this.toDate) return false;
+        return true;
+      });
+    },
   },
 
   mounted() {
@@ -234,6 +310,24 @@ export default {
   },
 
   methods: {
+    defaultFromDate() {
+      return "2026-04-01";
+    },
+
+    defaultToDate() {
+      return "2026-04-04";
+    },
+
+    // BookingDate here is "DD-MM-YYYY" (deliveryData.js) — convert to a
+    // lexically-comparable "YYYY-MM-DD" to compare against fromDate/toDate.
+    parseDMYDate(str) {
+      if (!str) return null;
+      const parts = String(str).split("-");
+      if (parts.length !== 3) return null;
+      const [d, m, y] = parts;
+      return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+    },
+
     async loadRows() {
       // Commission is computed against already-delivered bookings.
       this.bookingRows = await apiGetPreDeliveryList("Delivered", "");

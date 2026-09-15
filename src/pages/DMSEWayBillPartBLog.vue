@@ -65,6 +65,74 @@
                     </q-btn>
                   </div>
 
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    style="width: 140px"
+                    class="q-ml-sm"
+                    @update:model-value="loadBills"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="fromDate" mask="DD-MM-YYYY" color="black">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    style="width: 140px"
+                    class="q-ml-xs"
+                    @update:model-value="loadBills"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="toDate" mask="DD-MM-YYYY" color="black">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
                   <q-btn
                     unelevated
                     icon="refresh"
@@ -104,6 +172,8 @@ export default {
     return {
       filteredBills: [],
       searchText: "",
+      fromDate: "01-01-2026",
+      toDate: "31-12-2026",
       pagination: { page: 1, rowsPerPage: 15 },
 
       tableColumns: [
@@ -147,8 +217,31 @@ export default {
       this.loadBills();
     },
 
+    // PartBDate mock values are either a fixed "DD-MM-YYYY hh:mm AM/PM"
+    // string or, for freshly generated bills, `new Date().toLocaleString()`
+    // (locale "M/D/YYYY, hh:mm:ss AM/PM") — handle both.
+    parsePartBDate(value) {
+      if (!value) return null;
+      const datePart = value.split(",")[0].trim().split(" ")[0];
+      if (datePart.includes("-")) {
+        const [d, m, y] = datePart.split("-").map(Number);
+        if (d && m && y) return new Date(y, m - 1, d);
+      }
+      const parsed = new Date(value);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    },
+
     async loadBills() {
-      this.filteredBills = await apiGetPartBLog(this.searchText);
+      const all = await apiGetPartBLog(this.searchText);
+      const from = this.fromDate ? this.parsePartBDate(this.fromDate) : null;
+      const to = this.toDate ? this.parsePartBDate(this.toDate) : null;
+      this.filteredBills = all.filter((b) => {
+        const d = this.parsePartBDate(b.PartBDate);
+        if (!d) return true;
+        if (from && d < from) return false;
+        if (to && d > to) return false;
+        return true;
+      });
     },
   },
 };

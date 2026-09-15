@@ -117,10 +117,28 @@ function persist() {
 }
 
 // ── Part A ──────────────────────────────────────────────────────────────
-export function apiGetEWayBills(search) {
+function parseDMDDate(dateStr) {
+  if (!dateStr) return null;
+  const [d, m, y] = dateStr.split("-").map(Number);
+  if (!d || !m || !y) return null;
+  return new Date(y, m - 1, d);
+}
+
+export function apiGetEWayBills(search, fromDate, toDate) {
   return new Promise((resolve) => {
     setTimeout(() => {
       let result = [...MOCK_EWAYBILLS];
+      const from = parseDMDDate(fromDate);
+      const to = parseDMDDate(toDate);
+      if (from || to) {
+        result = result.filter((e) => {
+          const eDate = parseDMDDate(e.BookingDate);
+          if (!eDate) return true;
+          if (from && eDate < from) return false;
+          if (to && eDate > to) return false;
+          return true;
+        });
+      }
       if (search) {
         const s = search.toLowerCase();
         result = result.filter(

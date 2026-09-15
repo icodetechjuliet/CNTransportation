@@ -70,6 +70,86 @@
                     </q-btn>
                   </div>
 
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    mask="##/##/####"
+                    style="width: 130px"
+                    class="q-mx-xs"
+                    @update:model-value="loadBookings"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="fromDate"
+                            mask="DD/MM/YYYY"
+                            color="black"
+                            @update:model-value="loadBookings"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    mask="##/##/####"
+                    style="width: 130px"
+                    class="q-mx-xs"
+                    @update:model-value="loadBookings"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="toDate"
+                            mask="DD/MM/YYYY"
+                            color="black"
+                            @update:model-value="loadBookings"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
                   <q-select
                     square=""
                     v-model="direction"
@@ -267,10 +347,28 @@ const MOCK_BOOKINGS = [
   },
 ];
 
-function apiGetBookings(direction, search) {
+function parseDMY(dateStr) {
+  if (!dateStr) return null;
+  const [d, m, y] = dateStr.split("/").map(Number);
+  if (!d || !m || !y) return null;
+  return new Date(y, m - 1, d);
+}
+
+function apiGetBookings(fromDate, toDate, direction, search) {
   return new Promise((resolve) => {
     setTimeout(() => {
       let result = [...MOCK_BOOKINGS];
+      const from = parseDMY(fromDate);
+      const to = parseDMY(toDate);
+      if (from || to) {
+        result = result.filter((b) => {
+          const bDate = parseDMY(b.BookingDate);
+          if (!bDate) return true;
+          if (from && bDate < from) return false;
+          if (to && bDate > to) return false;
+          return true;
+        });
+      }
       if (direction !== "All")
         result = result.filter((b) => b.BookingType === direction);
       if (search) {
@@ -298,6 +396,8 @@ export default {
     return {
       filteredBookings: [],
       searchText: "",
+      fromDate: "01/04/2026",
+      toDate: "02/04/2026",
       direction: "All",
       pagination: { page: 1, rowsPerPage: 15 },
       expandedMobileCards: [],
@@ -343,6 +443,8 @@ export default {
 
     async loadBookings() {
       this.filteredBookings = await apiGetBookings(
+        this.fromDate,
+        this.toDate,
         this.direction,
         this.searchText
       );

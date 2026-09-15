@@ -8,7 +8,7 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="receipt_long" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{ invoices.length }}</span>
+                <span class="total-stat-count">{{ filteredInvoices.length }}</span>
                 <span class="total-stat-label">Invoices</span>
               </div>
             </div>
@@ -20,7 +20,7 @@
           <!-- ── Invoices already generated ── -->
           <q-table
             square
-            :rows="invoices"
+            :rows="filteredInvoices"
             :columns="invoiceColumns"
             row-key="InvoiceID"
             :rows-per-page-options="[15, 25, 50, 100]"
@@ -33,6 +33,74 @@
             <template v-slot:top>
               <div class="tb-app col">
                 <div class="filter-bar-wrapper accent-filter-bar">
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    mask="##-##-####"
+                    style="width: 130px"
+                    class="q-mx-xs"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="fromDate" mask="DD-MM-YYYY" color="black">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    mask="##-##-####"
+                    style="width: 130px"
+                    class="q-mx-xs"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="toDate" mask="DD-MM-YYYY" color="black">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
                   <q-btn
                     unelevated
                     icon="refresh"
@@ -132,6 +200,8 @@ export default {
     return {
       doorDeliveries: [],
       invoices: [],
+      fromDate: "01-04-2026",
+      toDate: "04-04-2026",
       pagination: { page: 1, rowsPerPage: 15 },
 
       invoiceColumns: [
@@ -208,6 +278,18 @@ export default {
         (d) => !invoicedIds.has(d.DoorDeliveryID)
       );
     },
+    filteredInvoices() {
+      const from = this.parseDMDDate(this.fromDate);
+      const to = this.parseDMDDate(this.toDate);
+      if (!from && !to) return this.invoices;
+      return this.invoices.filter((i) => {
+        const iDate = this.parseDMDDate(i.InvoiceDate);
+        if (!iDate) return true;
+        if (from && iDate < from) return false;
+        if (to && iDate > to) return false;
+        return true;
+      });
+    },
   },
 
   mounted() {
@@ -215,6 +297,13 @@ export default {
   },
 
   methods: {
+    parseDMDDate(dateStr) {
+      if (!dateStr) return null;
+      const [d, m, y] = dateStr.split("-").map(Number);
+      if (!d || !m || !y) return null;
+      return new Date(y, m - 1, d);
+    },
+
     async loadAll() {
       this.doorDeliveries = await apiGetDoorDeliveries();
       this.invoices = await apiGetDoorDeliveryInvoices();

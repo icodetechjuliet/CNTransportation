@@ -129,6 +129,7 @@
                     outlined
                     bg-color="blue-1"
                     :readonly="dialogMode === 'view'"
+                    @update:model-value="calcFreight"
                   />
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
@@ -438,6 +439,7 @@
                     outlined
                     bg-color="blue-1"
                     :readonly="dialogMode === 'view'"
+                    @update:model-value="calcTotal"
                   />
                 </div>
                 <div class="col-12 col-sm-6 col-md-6">
@@ -565,6 +567,7 @@
                         color="orange"
                         intermediate-icon="black"
                         :disable="dialogMode === 'view'"
+                        @update:model-value="calcTotal"
                       />
                     </q-item-section>
                     <q-item-section>
@@ -670,6 +673,7 @@
                     outlined
                     bg-color="blue-1"
                     :readonly="dialogMode === 'view'"
+                    @update:model-value="autoDetectTaxType"
                   />
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
@@ -733,6 +737,7 @@
                     outlined
                     bg-color="blue-1"
                     :readonly="dialogMode === 'view'"
+                    @update:model-value="autoDetectTaxType"
                   />
                 </div>
               </div>
@@ -749,7 +754,20 @@
                     bg-color="blue-1"
                     type="number"
                     :readonly="dialogMode === 'view'"
-                    @update:model-value="calcTotal"
+                    @update:model-value="calcFreight"
+                  />
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                  <q-input
+                    square
+                    label="Min. Freight"
+                    v-model="form.MinimumFreight"
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    type="number"
+                    :readonly="dialogMode === 'view'"
+                    @update:model-value="calcFreight"
                   />
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
@@ -774,18 +792,22 @@
                     outlined
                     bg-color="blue-1"
                     :readonly="dialogMode === 'view'"
+                    @update:model-value="calcTotal"
                   />
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
                   <q-input
                     square
-                    label="Discount"
+                    label="Discount %/Flat"
                     v-model="form.DiscountLeft"
                     dense
                     outlined
                     bg-color="blue-1"
                     type="number"
-                    :readonly="dialogMode === 'view'"
+                    :readonly="
+                      dialogMode === 'view' || form.DiscountType === 'Select Value'
+                    "
+                    @update:model-value="calcTotal"
                   />
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
@@ -840,6 +862,7 @@
                     outlined
                     bg-color="blue-1"
                     :readonly="dialogMode === 'view'"
+                    @update:model-value="autoDetectTaxType"
                   />
                 </div>
                 <div class="col-12 col-sm-6 col-md-3">
@@ -1010,7 +1033,9 @@
                     outlined
                     bg-color="blue-1"
                     type="number"
-                    :readonly="dialogMode === 'view'"
+                    :readonly="
+                      dialogMode === 'view' || form.DiscountType !== 'Select Value'
+                    "
                     @update:model-value="calcTotal"
                   />
                 </div>

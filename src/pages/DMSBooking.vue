@@ -420,6 +420,15 @@ import {
   apiDeleteBooking,
   MOCK_DATA_BOOKING as MOCK_DATA,
 } from "src/data/bookingData.js";
+import {
+  calcFreightAmount,
+  determineTaxType,
+  determineServiceTaxPayableBy,
+  calcTaxAmounts,
+  calcDiscountAmount,
+  calcNetAmount,
+  calcKasarAndReceived,
+} from "src/data/bookingCalc.js";
 
 // Booking data/mock-"backend" now lives in its own module,
 // src/data/bookingData.js (localStorage-backed, so add/edit/delete persist
@@ -692,6 +701,7 @@ export default {
         Weight: 0,
         Rate: 0,
         FreightAmount: 0,
+        MinimumFreight: 0,
         IsDoorDelivery: false,
         DoorDeliveryAmt: 0,
         IsDoorCollection: false,
@@ -746,14 +756,19 @@ export default {
     },
 
     calcFreight() {
-      const rate = parseFloat(this.form.Rate) || 0;
-      const weight = parseFloat(this.form.Weight) || 0;
-      this.form.FreightAmount = (rate * weight).toFixed(2);
+      this.form.FreightAmount = calcFreightAmount(this.form);
+      this.calcTotal();
+    },
+
+    // See DMSBookingView.vue's identical method — re-derives CGST+SGST vs
+    // IGST from the relevant party's GSTIN vs the company's own GST state.
+    autoDetectTaxType() {
+      this.form.taxType = determineTaxType(this.form);
+      this.form.STBy = determineServiceTaxPayableBy(this.form);
       this.calcTotal();
     },
 
     calcTotal() {
-      const freight = parseFloat(this.form.FreightAmount) || 0;
       const dd = this.form.IsDoorDelivery
         ? parseFloat(this.form.DoorDeliveryAmt) || 0
         : 0;
@@ -763,27 +778,42 @@ export default {
       const other = this.form.HasOther
         ? parseFloat(this.form.OtherAmt) || 0
         : 0;
+      const freight = parseFloat(this.form.FreightAmount) || 0;
       const total = freight + dd + dc + other;
       this.form.TotalAmt = total.toFixed(2);
 
-      let tax = 0;
-      if (this.form.taxType === "CGST_SGST") {
-        const cgst = (total * (parseFloat(this.form.CGSTRate) || 0)) / 100;
-        const sgst = (total * (parseFloat(this.form.SGSTRate) || 0)) / 100;
-        this.form.CGSTAmt = cgst.toFixed(2);
-        this.form.SGSTAmt = sgst.toFixed(2);
-        this.form.IGSTAmt = "0.00";
-        tax = cgst + sgst;
-      } else {
-        const igst = (total * (parseFloat(this.form.IGSTRate) || 0)) / 100;
-        this.form.IGSTAmt = igst.toFixed(2);
-        this.form.CGSTAmt = "0.00";
-        this.form.SGSTAmt = "0.00";
-        tax = igst;
-      }
-      this.form.TotalTax = tax.toFixed(2);
-      const discount = parseFloat(this.form.Discount) || 0;
-      this.form.NetAmt = (total + tax - discount).toFixed(2);
+      const taxAmounts = calcTaxAmounts({
+        taxType: this.form.taxType,
+        AssessableAmount: total,
+        CGSTRate: this.form.CGSTRate,
+        SGSTRate: this.form.SGSTRate,
+        IGSTRate: this.form.IGSTRate,
+        STBy: this.form.STBy,
+      });
+      Object.assign(this.form, taxAmounts);
+
+      this.form.Discount = calcDiscountAmount({
+        DiscountType: this.form.DiscountType,
+        DiscountLeft: this.form.DiscountLeft,
+        AssessableAmount: total,
+        TotalTax: this.form.TotalTax,
+        manualDiscount: this.form.Discount,
+      });
+
+      this.form.NetAmt = calcNetAmount({
+        AssessableAmount: total,
+        TotalTax: this.form.TotalTax,
+        Discount: this.form.Discount,
+        STBy: this.form.STBy,
+      });
+
+      const { Kasar, Received } = calcKasarAndReceived({
+        PaymentType: this.form.PaymentType,
+        PayReceived: this.form.PayReceived,
+        NetAmt: this.form.NetAmt,
+      });
+      this.form.Kasar = Kasar;
+      this.form.Received = Received;
     },
 
     openAddBooking() {

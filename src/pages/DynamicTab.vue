@@ -483,7 +483,7 @@ export default {
           ? "Dashboard"
           : isNvoccUser
           ? "/NVOCCDashboard"
-          : "/DashboardPage";
+          : "/DMSDashboard";
       const uid = this.nextTabId++;
       const id = `tab-dashboard-${uid}`;
       const label = "Dashboard";

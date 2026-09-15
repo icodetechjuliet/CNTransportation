@@ -89,6 +89,80 @@
                     @update:model-value="applyFilters"
                   />
 
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    style="width: 150px"
+                    class="q-mx-xs"
+                    @update:model-value="applyFilters"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="fromDate"
+                            mask="YYYY-MM-DD"
+                            @update:model-value="applyFilters"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    style="width: 150px"
+                    class="q-mx-xs"
+                    @update:model-value="applyFilters"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="toDate"
+                            mask="YYYY-MM-DD"
+                            @update:model-value="applyFilters"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
                   <q-btn
                     unelevated
                     icon="refresh"
@@ -263,6 +337,8 @@ export default {
       tripOptions: ["All"],
       statusFilter: "All",
       searchText: "",
+      fromDate: "2026-04-01",
+      toDate: "2026-04-03",
       pagination: { page: 1, rowsPerPage: 15 },
 
       baseColumns: [
@@ -328,12 +404,29 @@ export default {
       return map[status] || "grey";
     },
 
+    // TranDate here is "DD/MM/YYYY" — convert to a lexically-comparable
+    // "YYYY-MM-DD" to compare against fromDate/toDate.
+    parseDMYDate(str) {
+      if (!str) return null;
+      const parts = String(str).split("/");
+      if (parts.length !== 3) return null;
+      const [d, m, y] = parts;
+      return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+    },
+
     applyFilters() {
       let result = [...this.allRows];
       if (this.tripFilter && this.tripFilter !== "All")
         result = result.filter((r) => r.TripNo === this.tripFilter);
       if (this.statusFilter && this.statusFilter !== "All")
         result = result.filter((r) => r.Status === this.statusFilter);
+      result = result.filter((r) => {
+        const td = this.parseDMYDate(r.TranDate);
+        if (!td) return true;
+        if (this.fromDate && td < this.fromDate) return false;
+        if (this.toDate && td > this.toDate) return false;
+        return true;
+      });
       if (this.searchText) {
         const s = this.searchText.toLowerCase();
         result = result.filter(

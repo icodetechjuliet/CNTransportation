@@ -58,6 +58,7 @@ export default {
   "Fin Year": "वित्तीय वर्ष",
   Series: "श्रृंखला",
   Tax: "कर",
+  "Master Tax": "मास्टर कर",
   "Service Tax Config": "सेवा कर सेटिंग",
   "Tax Apply On Tax": "कर पर लागू कर",
   "Tax System": "कर प्रणाली",

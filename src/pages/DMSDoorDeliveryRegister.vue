@@ -82,6 +82,86 @@
                     @update:model-value="applyFilters"
                   />
 
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    mask="##-##-####"
+                    style="width: 130px"
+                    class="q-mx-xs"
+                    @update:model-value="applyFilters"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="fromDate"
+                            mask="DD-MM-YYYY"
+                            color="black"
+                            @update:model-value="applyFilters"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    mask="##-##-####"
+                    style="width: 130px"
+                    class="q-mx-xs"
+                    @update:model-value="applyFilters"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="toDate"
+                            mask="DD-MM-YYYY"
+                            color="black"
+                            @update:model-value="applyFilters"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
                   <q-btn
                     unelevated
                     icon="refresh"
@@ -142,6 +222,8 @@ export default {
       transporterFilter: "All",
       transporterOptions: ["All", ...MOCK_DATA.transporters],
       searchText: "",
+      fromDate: "01-04-2026",
+      toDate: "04-04-2026",
       pagination: { page: 1, rowsPerPage: 15 },
 
       baseColumns: [
@@ -223,8 +305,26 @@ export default {
       this.applyFilters();
     },
 
+    parseDMDDate(dateStr) {
+      if (!dateStr) return null;
+      const [d, m, y] = dateStr.split("-").map(Number);
+      if (!d || !m || !y) return null;
+      return new Date(y, m - 1, d);
+    },
+
     applyFilters() {
       let result = [...this.allRows];
+      const from = this.parseDMDDate(this.fromDate);
+      const to = this.parseDMDDate(this.toDate);
+      if (from || to) {
+        result = result.filter((r) => {
+          const rDate = this.parseDMDDate(r.DoorDeliveryDate);
+          if (!rDate) return true;
+          if (from && rDate < from) return false;
+          if (to && rDate > to) return false;
+          return true;
+        });
+      }
       if (this.transporterFilter && this.transporterFilter !== "All")
         result = result.filter(
           (r) => r.TransporterAccount === this.transporterFilter
