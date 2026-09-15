@@ -4,7 +4,7 @@
 // of its own yet. Gated by the same MOCK_LOGIN_MODE flag as mockLogin.js —
 // flip that one flag off once the real APIs exist and every one of these
 // call sites falls back to its real axios call, unchanged.
-export { MOCK_LOGIN_MODE } from "src/IPConfig/mockLogin.js";
+export { MOCK_LOGIN_MODE } from "src/data/mockLogin.js";
 
 // Shape expected by MainLayout1.vue's fetchData() (`${CargoNet_API}/branches/{userid}`).
 export function buildMockBranches() {

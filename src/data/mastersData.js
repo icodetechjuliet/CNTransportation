@@ -56,7 +56,7 @@ const OPTIONS = {
   ledgerAccounts: ["Cash Account", "Bank Account - HDFC", "Bank Account - SBI", "Sundry Debtors", "Sundry Creditors", "Freight Income", "Commission Income", "Office Expenses"],
   bankAccounts: ["Bank Account - HDFC", "Bank Account - SBI"],
   // Matches this app's own top-level module groups (the "DMS" child-menu
-  // header rows in src/IPConfig/mockData.js) — what a Menu row's own
+  // header rows in src/data/mockData.js) — what a Menu row's own
   // ParentMenu would realistically be one of.
   menuGroups: ["(Top Level)", "Booking", "Trip", "Delivery", "Accounting", "Booking Office", "Sale", "Master", "Report Screens", "Reports", "Security", "Eway Bill"],
 };
@@ -330,7 +330,7 @@ const ENTITY_DEFS = {
   // ── Master > Tax submenu (old app's TAX_ServiceTaxConfig/TAX_TaxSystem/
   // TAX_TaxApplyOnTax/TAX_TaxSystemWiseTax tables) — flyout group under the
   // "Tax" row alongside the plain "tax" entity above (see the "Tax" group
-  // in src/IPConfig/mockData.js's DMS array). ──────────────────────────────
+  // in src/data/mockData.js's DMS array). ──────────────────────────────
   servicetaxconfig: {
     title: "Service Tax Config",
     icon: "settings",
