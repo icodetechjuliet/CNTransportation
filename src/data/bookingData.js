@@ -1208,10 +1208,21 @@ function persistCashCredits() {
   writeStorage(CASH_CREDITS_KEY, MOCK_CASH_CREDITS);
 }
 
-export function apiGetCredits(search) {
+export function apiGetCredits(search, fromDate, toDate) {
   return new Promise((resolve) => {
     setTimeout(() => {
       let result = [...MOCK_CASH_CREDITS];
+      const from = parseDMYDate(fromDate);
+      const to = parseDMYDate(toDate);
+      if (from || to) {
+        result = result.filter((o) => {
+          const oDate = parseDMYDate(o.VoucherDate);
+          if (!oDate) return true;
+          if (from && oDate < from) return false;
+          if (to && oDate > to) return false;
+          return true;
+        });
+      }
       if (search) {
         const s = search.toLowerCase();
         result = result.filter(
@@ -1315,10 +1326,21 @@ function persistBkCommissions() {
   writeStorage(BK_COMMISSIONS_KEY, MOCK_BK_COMMISSIONS);
 }
 
-export function apiGetCommissions(search) {
+export function apiGetCommissions(search, fromDate, toDate) {
   return new Promise((resolve) => {
     setTimeout(() => {
       let result = [...MOCK_BK_COMMISSIONS];
+      const from = parseDMYDate(fromDate);
+      const to = parseDMYDate(toDate);
+      if (from || to) {
+        result = result.filter((o) => {
+          const oDate = parseDMYDate(o.CommissionDate);
+          if (!oDate) return true;
+          if (from && oDate < from) return false;
+          if (to && oDate > to) return false;
+          return true;
+        });
+      }
       if (search) {
         const s = search.toLowerCase();
         result = result.filter(
@@ -1654,10 +1676,28 @@ function persistWebBookings() {
   writeStorage(WEB_BOOKINGS_KEY, MOCK_WEB_BOOKINGS);
 }
 
-export function apiGetWebBookings(search) {
+function parseDMYDate(dateStr) {
+  if (!dateStr) return null;
+  const [d, m, y] = dateStr.split("/").map(Number);
+  if (!d || !m || !y) return null;
+  return new Date(y, m - 1, d);
+}
+
+export function apiGetWebBookings(search, fromDate, toDate) {
   return new Promise((resolve) => {
     setTimeout(() => {
       let result = [...MOCK_WEB_BOOKINGS];
+      const from = parseDMYDate(fromDate);
+      const to = parseDMYDate(toDate);
+      if (from || to) {
+        result = result.filter((o) => {
+          const oDate = parseDMYDate(o.BookingWebDate);
+          if (!oDate) return true;
+          if (from && oDate < from) return false;
+          if (to && oDate > to) return false;
+          return true;
+        });
+      }
       if (search) {
         const s = search.toLowerCase();
         result = result.filter(

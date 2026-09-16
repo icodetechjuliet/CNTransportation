@@ -800,115 +800,36 @@
                           </q-card-section>
                         </div>
                         <template
-                          v-for="child in parent.children"
+                          v-for="child in groupSidebarChildren(parent)"
                           :key="child.id"
                         >
-                          <!-- DMS flat submenu: bold category label (Booking/
-                               Trip/Accounting) followed by its plain-text
-                               items, no icon/expand/tree-line — matches the
-                               flat category-list style used elsewhere in the
-                               app (nvocc-common.css's ".section-title"),
-                               instead of DMS reusing the icon+collapsible
-                               "Group row" tree below (still used by every
-                               other module). Always expanded — no toggle. -->
                           <div
-                            v-if="
-                              parent.ShortCode === 'DMS' &&
-                              child.children &&
-                              child.children.length
-                            "
-                            class="child-item dms-flat-group"
-                          >
-                            <div class="dms-flat-group-title">
-                              {{ child.MenuDesc }}
-                            </div>
-                            <div
-                              class="dms-flat-item"
-                              v-for="grandchild in child.children"
-                              :key="grandchild.id"
-                            >
-                              <template
-                                v-if="
-                                  grandchild.Link &&
-                                  !grandchild.Link.startsWith('/') &&
-                                  !grandchild.Link.startsWith('http') &&
-                                  !grandchild.Link.startsWith('#')
-                                "
-                              >
-                                <a
-                                  class="dms-flat-link"
-                                  @click="
-                                    handleLinkClick(grandchild, parent.MenuName)
-                                  "
-                                >
-                                  {{ grandchild.MenuDesc }}
-                                </a>
-                              </template>
-                              <template
-                                v-else-if="
-                                  grandchild.Link &&
-                                  grandchild.Link.startsWith('http')
-                                "
-                              >
-                                <a
-                                  class="dms-flat-link"
-                                  @click="
-                                    handleLinkClick(grandchild, parent.MenuName)
-                                  "
-                                >
-                                  {{ grandchild.MenuDesc }}
-                                </a>
-                              </template>
-                              <template v-else>
-                                <router-link
-                                  :to="grandchild.Link"
-                                  class="dms-flat-link"
-                                  @click="
-                                    handleLinkClick(grandchild, parent.MenuName)
-                                  "
-                                >
-                                  {{ grandchild.MenuDesc }}
-                                </router-link>
-                              </template>
-                            </div>
-                            <q-separator class="dms-flat-separator" />
-                          </div>
-
-                          <!-- Group row (e.g. every other module's own
-                               second-level dropdown): its own children stay
-                               collapsed until this row is clicked, so a
-                               module with several ~20-item groups doesn't
-                               dump all of them into the panel at once. -->
-                          <div
-                            v-else-if="child.children && child.children.length"
+                            v-if="child.children && child.children.length"
                             class="child-item child-group"
-                            :class="{ 'child-group--open': child.expanded }"
                           >
                             <q-expansion-item
                               dense
                               expand-separator
-                              expand-icon="expand_more"
-                              :icon="child.icon || 'description'"
+                              expand-icon="keyboard_arrow_down"
                               header-class="child-group-header"
                               :label="child.MenuDesc"
-                              :model-value="!!child.expanded"
-                              @click.stop="toggleGroup(child)"
+                              :model-value="isGroupExpanded(child)"
+                              @update:model-value="setGroupExpanded(child, $event)"
+                              @click.stop
                             >
                               <div
-                                class="child-item child-item--nested"
+                                class="child-item"
                                 :class="{
                                   'Submenu-class':
                                     grandchild.MenuDesc === 'Report',
                                   'no-click':
                                     grandchild.Link === '#menu-header' ||
                                     grandchild.MenuDesc === 'Report',
-                                  'child-item--active':
-                                    grandchild.Link === activeChildLink,
                                 }"
                                 v-for="grandchild in child.children"
                                 :key="grandchild.id"
                               >
-                                <q-card-section style="padding: 7px 12px 7px 24px">
+                                <q-card-section style="padding: 7px 12px">
                                   <div
                                     v-if="
                                       grandchild.Link === '#menu-header' ||
@@ -1399,6 +1320,7 @@ export default defineComponent({
       },
       showkeydialog: false,
       searchMenu: "",
+      expandedMenuGroups: {},
       selectedMenu: "",
       filterText: "",
       // Link of the last leaf menu item that was actually opened — drives
@@ -1521,21 +1443,21 @@ export default defineComponent({
     // returns nothing for the current branch/user.
     displayParentMenu() {
       if (!this.filterText) return this.parentMenu;
+      const parents = this.parentMenu.map((parent) => ({
+        ...parent,
+        children: this.groupSidebarChildren(parent),
+      }));
       const q = this.filterText.toLowerCase();
-      return this.parentMenu
-        .map((parent) => {
-          const nameMatch =
-            parent.MenuName && parent.MenuName.toLowerCase().includes(q);
-          const matchingChildren = (parent.children || []).filter(
-            (child) =>
-              child.MenuDesc && child.MenuDesc.toLowerCase().includes(q)
-          );
-          if (!nameMatch && matchingChildren.length === 0) return null;
-          // Only the matching child menus show up under an expanded
-          // parent — non-matching siblings stay hidden during a search.
-          return { ...parent, children: matchingChildren };
-        })
-        .filter(Boolean);
+      const matches = (label) => (label || "").toLowerCase().includes(q);
+      return parents.map((parent) => {
+        if (matches(parent.MenuName)) return parent;
+        const children = parent.children.flatMap((child) => {
+          if (matches(child.MenuDesc)) return [child];
+          const nested = (child.children || []).filter((item) => matches(item.MenuDesc));
+          return nested.length ? [{ ...child, children: nested }] : [];
+        });
+        return children.length ? { ...parent, children } : null;
+      }).filter(Boolean);
     },
   },
   provide() {
@@ -1908,8 +1830,39 @@ export default defineComponent({
     // "Group row" branch in the template. @click.stop on that row keeps
     // this from also bubbling into the outer q-expansion-item's
     // @click="toggleDropdown(parent)" and collapsing the whole module.
-    toggleGroup(group) {
-      group.expanded = !group.expanded;
+    groupSidebarChildren(parent) {
+      if (parent.ShortCode !== "DMS") return parent.children || [];
+      // Named icons for the handful of groups that have one; any other
+      // "#menu-header" category (Accounting, Booking Office, ...) still
+      // becomes a collapsible dropdown same as these — just with a
+      // generic default icon instead of a hand-picked one.
+      const icons = { Booking: "event_note", Trip: "local_shipping", Delivery: "inventory_2" };
+      const result = [];
+      let group = null;
+      for (const child of parent.children || []) {
+        if (child.Link === "#menu-header" && !child.children?.length) {
+          group = { ...child, icon: icons[child.MenuDesc] || child.icon || "folder", children: [] };
+          result.push(group);
+        } else if (child.children && child.children.length) {
+          group = null;
+          result.push({ ...child, icon: icons[child.MenuDesc] || child.icon });
+        } else if (group) {
+          group.children.push(child);
+        } else {
+          result.push(child);
+        }
+      }
+      return result;
+    },
+    isGroupExpanded(group) {
+      if (this.filterText) return true;
+      const key = group.id || group.MenuDesc;
+      return this.expandedMenuGroups[key] ?? (group.children || []).some(
+        (item) => item.Link === this.activeChildLink || item.Link === this.$route.path
+      );
+    },
+    setGroupExpanded(group, expanded) {
+      this.expandedMenuGroups[group.id || group.MenuDesc] = expanded;
     },
     async toggleDropdown(parent) {
       const userid = sessionStorage.getItem("APIUserID");
@@ -2011,7 +1964,7 @@ export default defineComponent({
       this.Logout();
     },
     goHome() {
-      this.$refs.dynamicTabs.openTab("/DashboardPage", "Home");
+      this.$refs.dynamicTabs.openTab("/DMSDashboard", "Home");
     },
     // Looks up a menu entry (e.g. "Customer Analysis") by its label across
     // the already-loaded sidebar menu tree, and opens it the same way a
@@ -2510,9 +2463,6 @@ export default defineComponent({
            specific, these win and keep the group's own scoped look instead
            of being flooded by the panel's theme color. */
         .q-item.dashboard-menu .child-group .q-expansion-item__content { background-color: transparent !important; }
-        .q-item.dashboard-menu .child-group-header:hover { background-color: ${t.hoverBg} !important; }
-        .q-item.dashboard-menu .child-item--nested:hover { background-color: ${t.hoverBg} !important; }
-        .q-item.dashboard-menu .child-item--nested.child-item--active { background-color: ${t.activeBg} !important; }
         .q-item.dashboard-menu .q-img.modul-icon .absolute-full:before {
           background: ${t.iconBg} !important; background-image: none !important;
         }
@@ -2521,7 +2471,7 @@ export default defineComponent({
         .q-expansion-item__toggle-icon { color: ${t.menuColor} !important; }
         .child-group-header .q-expansion-item__toggle-icon { color: ${t.linkColor} !important; }
         .menu-link, a.menu-link { color: ${t.linkColor} !important; }
-        .child-item:not(.child-group):not(.child-item--nested) { background-color: ${t.contentBg} !important; border-color: ${t.cardBorder} !important; }
+        .child-item:not(.child-group) { background-color: ${t.contentBg} !important; border-color: ${t.cardBorder} !important; }
         .child-item .q-card-section { color: ${t.linkColor} !important; }
         .left_menu_search .q-field__control { background-color: ${t.headerBg} !important; }
         .left_menu_search .q-field__native, .left_menu_search input { color: ${t.menuColor} !important; }
@@ -2704,7 +2654,10 @@ export default defineComponent({
         expansionStyle.id = "cn-expansion-style";
         document.head.appendChild(expansionStyle);
       }
-      expansionStyle.innerHTML = `q-expansion-item, .q-expansion-item:hover, .active-menu { background: ${expansionGradientColor};}`;
+      // :not(.child-group-header) keeps this gradient on each module's own
+      // top-level row only — the nested "Booking" group header stays a
+      // plain simple row (no colored hover fill) via cn-style.css instead.
+      expansionStyle.innerHTML = `q-expansion-item:not(.child-group-header), .q-expansion-item:hover:not(.child-group-header), .active-menu:not(.child-group-header) { background: ${expansionGradientColor};}`;
 
       // Update specific colors based on the provided color
       let updatedColor = color;
@@ -2936,103 +2889,25 @@ export default defineComponent({
   color: #ffffff;
 }
 
-/* Group row (e.g. DMS > Booking/Trip/Accounting): a second, independently
-   collapsible dropdown nested inside the module's own dropdown — see the
-   "Group row" branch in the template and toggleGroup(). Collapsed
-   (Trip/Accounting) it's a plain row, same ink color as any other menu
-   label; open (Booking) it gets a light-blue pill and blue ink, exactly
-   like the reference screenshot — DMS one level up is the "fully active"
-   solid-blue bar, this is one step lighter since it's a level deeper. */
+/* Group row (e.g. DMS > Booking/Trip/Accounting): a second, plain
+   collapsible dropdown nested inside the module's own dropdown — same
+   look as any other menu row, no icon/background/tree-line extras. */
 .child-group {
   padding: 0;
   margin-bottom: 4px;
-  border-radius: 8px;
-  overflow: hidden;
 }
 .child-group :deep(.q-item) {
   min-height: 0;
   padding: 8px 12px;
-  border-radius: 8px;
-}
-.child-group-header,
-.child-group-header :deep(.q-icon) {
-  color: #263238;
 }
 .child-group-header {
   font-size: 13.5px;
   font-weight: 700;
   font-family: "Jost", sans-serif;
 }
-.child-group--open :deep(.q-item) {
-  background: #e3f2fd;
-}
-.child-group--open .child-group-header,
-.child-group--open .child-group-header :deep(.q-icon) {
-  color: #0178bc;
-}
-/* Quasar's default toggle-icon rotation is 180deg (down <-> up), built
-   for its default down-arrow icon. We use a right-chevron instead
-   (expand-icon="chevron_right" above) so a collapsed group shows "›"
-   and only needs a 90deg turn to land on "pointing down" once open. */
-.child-group :deep(.q-expansion-item__toggle-icon--rotated) {
-  transform: rotate(90deg);
-}
 .child-group :deep(.q-expansion-item__content) {
   background: #ffffff;
   padding: 4px 0;
-}
-
-/* Thin guide line so a group's ~20 items read as nested under its header
-   rather than as more top-level rows, with a small dot marking each item
-   along it (both purely decorative, ::before/::after — no extra markup).
-   ::before also overrides cn-style.css's generic sliding hover-fill
-   (built for a plain single-row leaf, and otherwise still matches these
-   nested rows too) so it doesn't paint a stray partial-width patch
-   behind whichever nested row was last hovered/clicked. */
-.child-item--nested {
-  position: relative;
-  margin-left: 20px;
-  padding-left: 14px;
-  border-left: 2px solid #e0e6ec;
-}
-.child-item--nested::before {
-  content: "";
-  position: absolute;
-  left: -5px;
-  top: 16px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #cfd8dc;
-}
-.child-item--nested:hover {
-  background: rgba(1, 120, 188, 0.08);
-  border-radius: 6px;
-  cursor: pointer;
-}
-/* The currently-open leaf (see activeChildLink / handleLinkClick): a
-   light-blue pill + left accent bar, echoing the group's own open-state
-   tint one shade stronger since it's the most specific/active item. */
-.child-item--nested.child-item--active {
-  background: #e3f2fd;
-  border-radius: 6px;
-}
-.child-item--nested.child-item--active::before {
-  background: #0178bc;
-}
-.child-item--nested.child-item--active::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  border-radius: 2px;
-  background: #0178bc;
-}
-.child-item--nested.child-item--active :deep(.menu-link) {
-  color: #0178bc;
-  font-weight: 700;
 }
 </style>
 

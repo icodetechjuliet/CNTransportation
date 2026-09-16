@@ -278,10 +278,102 @@ export function buildMockChildMenu(menuCode) {
         MenuDesc: "Booking",
         Modulecode: "DMS",
       },
+      // "Booking View" onward matches the same "Booking" dropdown as above
+      // (see the now-unused "BK" list below), just filled in under DMS
+      // directly — these 13 were previously missing from this group even
+      // though every one of their pages/routes already existed. Link MUST
+      // be "/DMS<Name>" (matching the .vue file under src/pages) — clicking
+      // a DMS menu item doesn't navigate vue-router at all, it opens a tab
+      // via DynamicTab.vue's openTab(), which does its own dynamic
+      // `import("src/pages" + path + ".vue")` off this exact string
+      // (see MainLayout1.vue's handleLinkClick -> openTab). routes.js
+      // happens to register a handful of these same pages under a shorter
+      // path with no "DMS" prefix (e.g. "BookingWeb") — that's a separate,
+      // effectively unused registration; using it here (as an earlier pass
+      // of this fix did) makes the import 404 and openTab falls back to
+      // its errorComponent, which is the "under construction" page.
       {
         id: "dms-booking-bookingview",
-        Link: "/DMSBBookingView",
+        Link: "/DMSBookingViewReport",
         MenuDesc: "Booking View",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-bookingpod",
+        Link: "/DMSBookingPOD",
+        MenuDesc: "Booking POD",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-pendingforbooking",
+        Link: "/DMSPendingForBooking",
+        MenuDesc: "Pending For Booking",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-bookingweb",
+        Link: "/DMSBookingWeb",
+        MenuDesc: "Booking Web",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-cashcredit",
+        Link: "/DMSCashCredit",
+        MenuDesc: "Cash Credit",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-cashcreditdashboard",
+        Link: "/DMSCashCreditDashBoard",
+        MenuDesc: "Cash Credit Dash Board",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-outstandinglist",
+        Link: "/DMSBookingOutstandingList",
+        MenuDesc: "Outstanding List",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-chequeposting",
+        Link: "/DMSBookingChequePosting",
+        MenuDesc: "Booking List  - Cheque Posting",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-bookingemail",
+        Link: "/DMSBookingEmail",
+        MenuDesc: "Booking Email",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-pendingforinvoice",
+        Link: "/DMSBookingPendingForInvoice",
+        MenuDesc: "Booking List - Pending For Invoice",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-bookinglog",
+        Link: "/DMSBookingLog",
+        MenuDesc: "Booking Log",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-bookingdeletelog",
+        Link: "/DMSBookingDeleteLog",
+        MenuDesc: "Booking Delete Log",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-receiptnorenumbering",
+        Link: "/DMSReceiptNoRenumbering",
+        MenuDesc: "Receipt No Renumbering",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-booking-bookingseriestransfer",
+        Link: "/DMSBookingSeriesTransfer",
+        MenuDesc: "Booking Series Transfer",
         Modulecode: "DMS",
       },
 
@@ -717,23 +809,47 @@ export function buildMockChildMenu(menuCode) {
         MenuDesc: "Series",
         Modulecode: "DMS",
       },
-      // "Tax" is a flyout group (own nested children), not a plain leaf —
-      // matches the legacy app's own Master > Tax submenu exactly. See
-      // MainLayout1.vue's "Group row" branch (child.children.length) for
-      // how a DMS-array entry with its own `children` renders as an
-      // expandable flyout instead of a direct link.
+      // "Tax" used to be its own nested flyout group under Master (an entry
+      // with `children`), which rendered as a separate boxed sub-section
+      // instead of matching the plain "#menu-header" + flat-item style
+      // every other DMS category (Master, Sale, ...) uses. Flattened here
+      // to the same flat header + leaf-item shape, labeled "Master Tax" so
+      // it still reads as part of Master instead of a standalone menu.
       {
-        id: "dms-master-tax",
+        id: "dms-master-tax-header",
+        Link: "#menu-header",
+        MenuDesc: "Master Tax",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-master-tax-servicetaxconfig",
+        Link: "/DMSMasterServiceTaxConfig",
+        MenuDesc: "Service Tax Config",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-master-tax-tax",
+        Link: "/DMSMasterTax",
         MenuDesc: "Tax",
         Modulecode: "DMS",
-        icon: "percent",
-        children: [
-          { id: "dms-master-tax-servicetaxconfig", Link: "/DMSMasterServiceTaxConfig", MenuDesc: "Service Tax Config", Modulecode: "DMS" },
-          { id: "dms-master-tax-tax", Link: "/DMSMasterTax", MenuDesc: "Tax", Modulecode: "DMS" },
-          { id: "dms-master-tax-taxapplyontax", Link: "/DMSMasterTaxApplyOnTax", MenuDesc: "Tax Apply On Tax", Modulecode: "DMS" },
-          { id: "dms-master-tax-taxsystem", Link: "/DMSMasterTaxSystem", MenuDesc: "Tax System", Modulecode: "DMS" },
-          { id: "dms-master-tax-taxsystemwisetax", Link: "/DMSMasterTaxSystemWiseTax", MenuDesc: "Tax System Wise Tax", Modulecode: "DMS" },
-        ],
+      },
+      {
+        id: "dms-master-tax-taxapplyontax",
+        Link: "/DMSMasterTaxApplyOnTax",
+        MenuDesc: "Tax Apply On Tax",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-master-tax-taxsystem",
+        Link: "/DMSMasterTaxSystem",
+        MenuDesc: "Tax System",
+        Modulecode: "DMS",
+      },
+      {
+        id: "dms-master-tax-taxsystemwisetax",
+        Link: "/DMSMasterTaxSystemWiseTax",
+        MenuDesc: "Tax System Wise Tax",
+        Modulecode: "DMS",
       },
 
       // Item names/order matched 1:1 to the legacy EagleParcel WinForms

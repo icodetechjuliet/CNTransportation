@@ -36,10 +36,27 @@ function writeStorage(key, data) {
 const OPTIONS = {
   vehicleTypes: ["Truck", "Tempo", "Container", "Own Vehicle"],
   states: ["Gujarat", "Maharashtra", "Karnataka", "Telangana"],
-  cities: ["Rajkot-G", "Chakan", "Nasik", "Hyderabad", "Pune", "Mumbai", "Bangalore", "Vasai", "Vapi"],
+  cities: [
+    "Rajkot-G",
+    "Chakan",
+    "Nasik",
+    "Hyderabad",
+    "Pune",
+    "Mumbai",
+    "Bangalore",
+    "Vasai",
+    "Vapi",
+  ],
   units: ["Nos", "Kg", "Box", "Drum", "Carton"],
   paymentModes: ["Cash", "Cheque", "Online", "Bank Transfer"],
-  bookingOffices: ["Greenland", "Chakan", "Nasik", "Hyderabad", "Pune", "Vasai Eagle"],
+  bookingOffices: [
+    "Greenland",
+    "Chakan",
+    "Nasik",
+    "Hyderabad",
+    "Pune",
+    "Vasai Eagle",
+  ],
   taxTypes: ["CGST+SGST", "IGST", "Exempt"],
   commissionTypes: ["Percentage", "Fixed"],
   userTypes: ["Admin", "Operator", "Viewer"],
@@ -47,18 +64,48 @@ const OPTIONS = {
   // string list here rather than a live cross-reference, same as this
   // file's other OPTIONS lists).
   taxNames: ["GST 5%", "GST 5% (CGST+SGST)", "Exempt"],
-  accountGroups: ["Cash", "Bank", "Sundry Debtor", "Sundry Creditor", "Income", "Expense", "Capital"],
+  accountGroups: [
+    "Cash",
+    "Bank",
+    "Sundry Debtor",
+    "Sundry Creditor",
+    "Income",
+    "Expense",
+    "Capital",
+  ],
   balanceTypes: ["Debit", "Credit"],
   // Matches the "ledgeraccount" entity's own seed row names below (kept as
   // a plain string list here rather than a live cross-reference, same as
   // this file's other OPTIONS lists) — used by the Account/Contra/Journal
   // Voucher entities' Account select fields.
-  ledgerAccounts: ["Cash Account", "Bank Account - HDFC", "Bank Account - SBI", "Sundry Debtors", "Sundry Creditors", "Freight Income", "Commission Income", "Office Expenses"],
+  ledgerAccounts: [
+    "Cash Account",
+    "Bank Account - HDFC",
+    "Bank Account - SBI",
+    "Sundry Debtors",
+    "Sundry Creditors",
+    "Freight Income",
+    "Commission Income",
+    "Office Expenses",
+  ],
   bankAccounts: ["Bank Account - HDFC", "Bank Account - SBI"],
   // Matches this app's own top-level module groups (the "DMS" child-menu
   // header rows in src/data/mockData.js) — what a Menu row's own
   // ParentMenu would realistically be one of.
-  menuGroups: ["(Top Level)", "Booking", "Trip", "Delivery", "Accounting", "Booking Office", "Sale", "Master", "Report Screens", "Reports", "Security", "Eway Bill"],
+  menuGroups: [
+    "(Top Level)",
+    "Booking",
+    "Trip",
+    "Delivery",
+    "Accounting",
+    "Booking Office",
+    "Sale",
+    "Master",
+    "Report Screens",
+    "Reports",
+    "Security",
+    "Eway Bill",
+  ],
 };
 
 // ── Entity definitions — one per master screen. `fields` describes both
@@ -71,15 +118,41 @@ const ENTITY_DEFS = {
     idField: "VehicleID",
     fields: [
       { name: "VehicleNo", label: "Vehicle No.", type: "text" },
-      { name: "VehicleType", label: "Vehicle Type", type: "select", options: OPTIONS.vehicleTypes },
+      {
+        name: "VehicleType",
+        label: "Vehicle Type",
+        type: "select",
+        options: OPTIONS.vehicleTypes,
+      },
       { name: "Capacity", label: "Capacity (Kg)", type: "number" },
       { name: "Owner", label: "Owner", type: "text" },
       { name: "Remarks", label: "Remarks", type: "text" },
     ],
     seed: [
-      { VehicleID: 1, VehicleNo: "GJ3BW0003", VehicleType: "Own Vehicle", Capacity: 2000, Owner: "Self", Remarks: "" },
-      { VehicleID: 2, VehicleNo: "GJ03BV7545", VehicleType: "Truck", Capacity: 9000, Owner: "New Vishal Roadlines", Remarks: "" },
-      { VehicleID: 3, VehicleNo: "GJ03BV6768", VehicleType: "Own Vehicle", Capacity: 1500, Owner: "Self", Remarks: "" },
+      {
+        VehicleID: 1,
+        VehicleNo: "GJ3BW0003",
+        VehicleType: "Own Vehicle",
+        Capacity: 2000,
+        Owner: "Self",
+        Remarks: "",
+      },
+      {
+        VehicleID: 2,
+        VehicleNo: "GJ03BV7545",
+        VehicleType: "Truck",
+        Capacity: 9000,
+        Owner: "New Vishal Roadlines",
+        Remarks: "",
+      },
+      {
+        VehicleID: 3,
+        VehicleNo: "GJ03BV6768",
+        VehicleType: "Own Vehicle",
+        Capacity: 1500,
+        Owner: "Self",
+        Remarks: "",
+      },
     ],
   },
 
@@ -92,10 +165,26 @@ const ENTITY_DEFS = {
       { name: "Description", label: "Description", type: "text" },
     ],
     seed: [
-      { VehicleTypeID: 1, TypeName: "Truck", Description: "Large capacity, long haul" },
-      { VehicleTypeID: 2, TypeName: "Tempo", Description: "City/short-distance delivery" },
-      { VehicleTypeID: 3, TypeName: "Container", Description: "Sealed container carrier" },
-      { VehicleTypeID: 4, TypeName: "Own Vehicle", Description: "Company-owned vehicle" },
+      {
+        VehicleTypeID: 1,
+        TypeName: "Truck",
+        Description: "Large capacity, long haul",
+      },
+      {
+        VehicleTypeID: 2,
+        TypeName: "Tempo",
+        Description: "City/short-distance delivery",
+      },
+      {
+        VehicleTypeID: 3,
+        TypeName: "Container",
+        Description: "Sealed container carrier",
+      },
+      {
+        VehicleTypeID: 4,
+        TypeName: "Own Vehicle",
+        Description: "Company-owned vehicle",
+      },
     ],
   },
 
@@ -110,8 +199,20 @@ const ENTITY_DEFS = {
       { name: "Address", label: "Address", type: "text" },
     ],
     seed: [
-      { DriverID: 1, Name: "Mahendra Singh Jadeja", LicenseNo: "GJ0320210012345", Phone: "9876500001", Address: "Rajkot" },
-      { DriverID: 2, Name: "Ramesh Patel", LicenseNo: "GJ0320190054321", Phone: "9876500002", Address: "Chakan" },
+      {
+        DriverID: 1,
+        Name: "Mahendra Singh Jadeja",
+        LicenseNo: "GJ0320210012345",
+        Phone: "9876500001",
+        Address: "Rajkot",
+      },
+      {
+        DriverID: 2,
+        Name: "Ramesh Patel",
+        LicenseNo: "GJ0320190054321",
+        Phone: "9876500002",
+        Address: "Chakan",
+      },
     ],
   },
 
@@ -126,8 +227,20 @@ const ENTITY_DEFS = {
       { name: "Email", label: "Email", type: "text" },
     ],
     seed: [
-      { CarrierID: 1, Name: "Eagle Tradelinks Pvt Ltd", ContactPerson: "Ketan Solanki", Phone: "9876511111", Email: "ops@eagletradelinks.example" },
-      { CarrierID: 2, Name: "New Vishal Roadlines", ContactPerson: "Vishal Shah", Phone: "9876522222", Email: "info@newvishalroadlines.example" },
+      {
+        CarrierID: 1,
+        Name: "Eagle Tradelinks Pvt Ltd",
+        ContactPerson: "Ketan Solanki",
+        Phone: "9876511111",
+        Email: "ops@eagletradelinks.example",
+      },
+      {
+        CarrierID: 2,
+        Name: "New Vishal Roadlines",
+        ContactPerson: "Vishal Shah",
+        Phone: "9876522222",
+        Email: "info@newvishalroadlines.example",
+      },
     ],
   },
 
@@ -137,15 +250,35 @@ const ENTITY_DEFS = {
     idField: "CityID",
     fields: [
       { name: "CityName", label: "City Name", type: "text" },
-      { name: "State", label: "State", type: "select", options: OPTIONS.states },
+      {
+        name: "State",
+        label: "State",
+        type: "select",
+        options: OPTIONS.states,
+      },
       { name: "PinCode", label: "Pin Code", type: "text" },
     ],
     seed: [
       { CityID: 1, CityName: "Rajkot-G", State: "Gujarat", PinCode: "360001" },
-      { CityID: 2, CityName: "Chakan", State: "Maharashtra", PinCode: "410501" },
+      {
+        CityID: 2,
+        CityName: "Chakan",
+        State: "Maharashtra",
+        PinCode: "410501",
+      },
       { CityID: 3, CityName: "Nasik", State: "Maharashtra", PinCode: "422001" },
-      { CityID: 4, CityName: "Hyderabad", State: "Telangana", PinCode: "500001" },
-      { CityID: 5, CityName: "Bangalore", State: "Karnataka", PinCode: "560001" },
+      {
+        CityID: 4,
+        CityName: "Hyderabad",
+        State: "Telangana",
+        PinCode: "500001",
+      },
+      {
+        CityID: 5,
+        CityName: "Bangalore",
+        State: "Karnataka",
+        PinCode: "560001",
+      },
     ],
   },
 
@@ -222,8 +355,16 @@ const ENTITY_DEFS = {
       { name: "Description", label: "Description", type: "text" },
     ],
     seed: [
-      { InvoiceTypeID: 1, TypeName: "Tax Invoice", Description: "Standard GST tax invoice" },
-      { InvoiceTypeID: 2, TypeName: "Bill of Supply", Description: "For exempt/composition supply" },
+      {
+        InvoiceTypeID: 1,
+        TypeName: "Tax Invoice",
+        Description: "Standard GST tax invoice",
+      },
+      {
+        InvoiceTypeID: 2,
+        TypeName: "Bill of Supply",
+        Description: "For exempt/composition supply",
+      },
     ],
   },
 
@@ -238,7 +379,11 @@ const ENTITY_DEFS = {
     seed: [
       { PaymentModeID: 1, ModeName: "Cash", Description: "" },
       { PaymentModeID: 2, ModeName: "Cheque", Description: "" },
-      { PaymentModeID: 3, ModeName: "Online", Description: "UPI / NEFT / RTGS" },
+      {
+        PaymentModeID: 3,
+        ModeName: "Online",
+        Description: "UPI / NEFT / RTGS",
+      },
       { PaymentModeID: 4, ModeName: "Bank Transfer", Description: "" },
     ],
   },
@@ -253,9 +398,24 @@ const ENTITY_DEFS = {
       { name: "NextNumber", label: "Next Number", type: "number" },
     ],
     seed: [
-      { VoucherID: 1, VoucherType: "Payment Voucher", Prefix: "PV", NextNumber: 101 },
-      { VoucherID: 2, VoucherType: "Receipt Voucher", Prefix: "RV", NextNumber: 201 },
-      { VoucherID: 3, VoucherType: "Journal Voucher", Prefix: "JV", NextNumber: 51 },
+      {
+        VoucherID: 1,
+        VoucherType: "Payment Voucher",
+        Prefix: "PV",
+        NextNumber: 101,
+      },
+      {
+        VoucherID: 2,
+        VoucherType: "Receipt Voucher",
+        Prefix: "RV",
+        NextNumber: 201,
+      },
+      {
+        VoucherID: 3,
+        VoucherType: "Journal Voucher",
+        Prefix: "JV",
+        NextNumber: 51,
+      },
     ],
   },
 
@@ -276,7 +436,16 @@ const ENTITY_DEFS = {
       { name: "Web", label: "Web", type: "text" },
     ],
     seed: [
-      { CompanyID: 1, CompanyName: "CargoNet Transportation Pvt Ltd", Address: "Rajkot, Gujarat", GSTNo: "24AACCE1234C1Z5", PAN: "AACCE1234C", Tel: "+91-281-2345678", Email: "info@cargonettransportation.example", Web: "www.cargonettransportation.example" },
+      {
+        CompanyID: 1,
+        CompanyName: "CargoNet Transportation Pvt Ltd",
+        Address: "Rajkot, Gujarat",
+        GSTNo: "24AACCE1234C1Z5",
+        PAN: "AACCE1234C",
+        Tel: "+91-281-2345678",
+        Email: "info@cargonettransportation.example",
+        Web: "www.cargonettransportation.example",
+      },
     ],
   },
 
@@ -291,8 +460,20 @@ const ENTITY_DEFS = {
       { name: "IsCurrent", label: "Current Year", type: "checkbox" },
     ],
     seed: [
-      { FinYearID: 1, YearName: "2025-26", StartDate: "01-04-2025", EndDate: "31-03-2026", IsCurrent: true },
-      { FinYearID: 2, YearName: "2024-25", StartDate: "01-04-2024", EndDate: "31-03-2025", IsCurrent: false },
+      {
+        FinYearID: 1,
+        YearName: "2025-26",
+        StartDate: "01-04-2025",
+        EndDate: "31-03-2026",
+        IsCurrent: true,
+      },
+      {
+        FinYearID: 2,
+        YearName: "2024-25",
+        StartDate: "01-04-2024",
+        EndDate: "31-03-2025",
+        IsCurrent: false,
+      },
     ],
   },
 
@@ -306,8 +487,18 @@ const ENTITY_DEFS = {
       { name: "NextNumber", label: "Next Number", type: "number" },
     ],
     seed: [
-      { SeriesID: 1, SeriesName: "Booking Series", Prefix: "RKG2604", NextNumber: 16 },
-      { SeriesID: 2, SeriesName: "Trip Series", Prefix: "TRKG2604", NextNumber: 15 },
+      {
+        SeriesID: 1,
+        SeriesName: "Booking Series",
+        Prefix: "RKG2604",
+        NextNumber: 16,
+      },
+      {
+        SeriesID: 2,
+        SeriesName: "Trip Series",
+        Prefix: "TRKG2604",
+        NextNumber: 15,
+      },
     ],
   },
 
@@ -318,7 +509,12 @@ const ENTITY_DEFS = {
     fields: [
       { name: "TaxName", label: "Tax Name", type: "text" },
       { name: "Rate", label: "Rate (%)", type: "number" },
-      { name: "Type", label: "Type", type: "select", options: OPTIONS.taxTypes },
+      {
+        name: "Type",
+        label: "Type",
+        type: "select",
+        options: OPTIONS.taxTypes,
+      },
     ],
     seed: [
       { TaxID: 1, TaxName: "GST 5%", Rate: 5, Type: "IGST" },
@@ -328,9 +524,9 @@ const ENTITY_DEFS = {
   },
 
   // ── Master > Tax submenu (old app's TAX_ServiceTaxConfig/TAX_TaxSystem/
-  // TAX_TaxApplyOnTax/TAX_TaxSystemWiseTax tables) — flyout group under the
-  // "Tax" row alongside the plain "tax" entity above (see the "Tax" group
-  // in src/data/mockData.js's DMS array). ──────────────────────────────
+  // TAX_TaxApplyOnTax/TAX_TaxSystemWiseTax tables) — flat items under the
+  // "Master Tax" header alongside the plain "tax" entity above (see the
+  // "Master Tax" header + items in src/data/mockData.js's DMS array). ──
   servicetaxconfig: {
     title: "Service Tax Config",
     icon: "settings",
@@ -344,7 +540,15 @@ const ENTITY_DEFS = {
       { name: "IsActive", label: "Active", type: "checkbox" },
     ],
     seed: [
-      { ConfigID: 1, ConfigName: "Pre-GST Service Tax", ServiceTaxRate: 14, EducessRate: 0.5, SHEducessRate: 0.5, EffectiveFrom: "01-06-2015", IsActive: false },
+      {
+        ConfigID: 1,
+        ConfigName: "Pre-GST Service Tax",
+        ServiceTaxRate: 14,
+        EducessRate: 0.5,
+        SHEducessRate: 0.5,
+        EffectiveFrom: "01-06-2015",
+        IsActive: false,
+      },
     ],
   },
 
@@ -353,12 +557,27 @@ const ENTITY_DEFS = {
     icon: "layers",
     idField: "ID",
     fields: [
-      { name: "BaseTax", label: "Base Tax", type: "select", options: OPTIONS.taxNames },
-      { name: "ApplyOnTax", label: "Apply On Tax", type: "select", options: OPTIONS.taxNames },
+      {
+        name: "BaseTax",
+        label: "Base Tax",
+        type: "select",
+        options: OPTIONS.taxNames,
+      },
+      {
+        name: "ApplyOnTax",
+        label: "Apply On Tax",
+        type: "select",
+        options: OPTIONS.taxNames,
+      },
       { name: "Sequence", label: "Sequence", type: "number" },
     ],
     seed: [
-      { ID: 1, BaseTax: "GST 5%", ApplyOnTax: "GST 5% (CGST+SGST)", Sequence: 1 },
+      {
+        ID: 1,
+        BaseTax: "GST 5%",
+        ApplyOnTax: "GST 5% (CGST+SGST)",
+        Sequence: 1,
+      },
     ],
   },
 
@@ -372,8 +591,18 @@ const ENTITY_DEFS = {
       { name: "IsActive", label: "Active", type: "checkbox" },
     ],
     seed: [
-      { TaxSystemID: 1, SystemName: "GST", EffectiveFrom: "01-07-2017", IsActive: true },
-      { TaxSystemID: 2, SystemName: "Service Tax", EffectiveFrom: "01-06-2015", IsActive: false },
+      {
+        TaxSystemID: 1,
+        SystemName: "GST",
+        EffectiveFrom: "01-07-2017",
+        IsActive: true,
+      },
+      {
+        TaxSystemID: 2,
+        SystemName: "Service Tax",
+        EffectiveFrom: "01-06-2015",
+        IsActive: false,
+      },
     ],
   },
 
@@ -382,13 +611,28 @@ const ENTITY_DEFS = {
     icon: "rule",
     idField: "ID",
     fields: [
-      { name: "TaxSystem", label: "Tax System", type: "select", options: ["GST", "Service Tax"] },
-      { name: "TaxName", label: "Tax Name", type: "select", options: OPTIONS.taxNames },
+      {
+        name: "TaxSystem",
+        label: "Tax System",
+        type: "select",
+        options: ["GST", "Service Tax"],
+      },
+      {
+        name: "TaxName",
+        label: "Tax Name",
+        type: "select",
+        options: OPTIONS.taxNames,
+      },
       { name: "IsDefault", label: "Default", type: "checkbox" },
     ],
     seed: [
       { ID: 1, TaxSystem: "GST", TaxName: "GST 5%", IsDefault: true },
-      { ID: 2, TaxSystem: "GST", TaxName: "GST 5% (CGST+SGST)", IsDefault: false },
+      {
+        ID: 2,
+        TaxSystem: "GST",
+        TaxName: "GST 5% (CGST+SGST)",
+        IsDefault: false,
+      },
     ],
   },
 
@@ -403,9 +647,27 @@ const ENTITY_DEFS = {
       { name: "Phone", label: "Phone", type: "text" },
     ],
     seed: [
-      { BookingOfficeID: 1, OfficeName: "Greenland", City: "Rajkot-G", Address: "Greenland Complex, Rajkot", Phone: "9876500010" },
-      { BookingOfficeID: 2, OfficeName: "Chakan", City: "Chakan", Address: "MIDC Chakan", Phone: "9876500011" },
-      { BookingOfficeID: 3, OfficeName: "Vasai Eagle", City: "Vasai", Address: "Vasai East", Phone: "9876500012" },
+      {
+        BookingOfficeID: 1,
+        OfficeName: "Greenland",
+        City: "Rajkot-G",
+        Address: "Greenland Complex, Rajkot",
+        Phone: "9876500010",
+      },
+      {
+        BookingOfficeID: 2,
+        OfficeName: "Chakan",
+        City: "Chakan",
+        Address: "MIDC Chakan",
+        Phone: "9876500011",
+      },
+      {
+        BookingOfficeID: 3,
+        OfficeName: "Vasai Eagle",
+        City: "Vasai",
+        Address: "Vasai East",
+        Phone: "9876500012",
+      },
     ],
   },
 
@@ -414,7 +676,12 @@ const ENTITY_DEFS = {
     icon: "store",
     idField: "ID",
     fields: [
-      { name: "BookingOffice", label: "Booking Office", type: "select", options: OPTIONS.bookingOffices },
+      {
+        name: "BookingOffice",
+        label: "Booking Office",
+        type: "select",
+        options: OPTIONS.bookingOffices,
+      },
       { name: "City", label: "City", type: "select", options: OPTIONS.cities },
     ],
     seed: [
@@ -428,8 +695,18 @@ const ENTITY_DEFS = {
     icon: "store",
     idField: "ID",
     fields: [
-      { name: "BookingOffice", label: "Booking Office", type: "select", options: OPTIONS.bookingOffices },
-      { name: "ToCity", label: "To City", type: "select", options: OPTIONS.cities },
+      {
+        name: "BookingOffice",
+        label: "Booking Office",
+        type: "select",
+        options: OPTIONS.bookingOffices,
+      },
+      {
+        name: "ToCity",
+        label: "To City",
+        type: "select",
+        options: OPTIONS.cities,
+      },
     ],
     seed: [
       { ID: 1, BookingOffice: "Greenland", ToCity: "Vasai" },
@@ -442,8 +719,18 @@ const ENTITY_DEFS = {
     icon: "store",
     idField: "ID",
     fields: [
-      { name: "BookingOffice", label: "Booking Office", type: "select", options: OPTIONS.bookingOffices },
-      { name: "PaymentMode", label: "Payment Mode", type: "select", options: OPTIONS.paymentModes },
+      {
+        name: "BookingOffice",
+        label: "Booking Office",
+        type: "select",
+        options: OPTIONS.bookingOffices,
+      },
+      {
+        name: "PaymentMode",
+        label: "Payment Mode",
+        type: "select",
+        options: OPTIONS.paymentModes,
+      },
     ],
     seed: [
       { ID: 1, BookingOffice: "Greenland", PaymentMode: "Cash" },
@@ -456,12 +743,27 @@ const ENTITY_DEFS = {
     icon: "percent",
     idField: "ID",
     fields: [
-      { name: "BookingOffice", label: "Booking Office", type: "select", options: OPTIONS.bookingOffices },
-      { name: "CommissionType", label: "Commission Type", type: "select", options: OPTIONS.commissionTypes },
+      {
+        name: "BookingOffice",
+        label: "Booking Office",
+        type: "select",
+        options: OPTIONS.bookingOffices,
+      },
+      {
+        name: "CommissionType",
+        label: "Commission Type",
+        type: "select",
+        options: OPTIONS.commissionTypes,
+      },
       { name: "Rate", label: "Rate", type: "number" },
     ],
     seed: [
-      { ID: 1, BookingOffice: "Greenland", CommissionType: "Percentage", Rate: 2.5 },
+      {
+        ID: 1,
+        BookingOffice: "Greenland",
+        CommissionType: "Percentage",
+        Rate: 2.5,
+      },
       { ID: 2, BookingOffice: "Chakan", CommissionType: "Percentage", Rate: 3 },
     ],
   },
@@ -471,8 +773,18 @@ const ENTITY_DEFS = {
     icon: "payments",
     idField: "ID",
     fields: [
-      { name: "FromState", label: "From State", type: "select", options: OPTIONS.states },
-      { name: "ToState", label: "To State", type: "select", options: OPTIONS.states },
+      {
+        name: "FromState",
+        label: "From State",
+        type: "select",
+        options: OPTIONS.states,
+      },
+      {
+        name: "ToState",
+        label: "To State",
+        type: "select",
+        options: OPTIONS.states,
+      },
       { name: "ChargeAmount", label: "Charge Amount", type: "number" },
     ],
     seed: [
@@ -510,14 +822,55 @@ const ENTITY_DEFS = {
       { name: "FullName", label: "Full Name", type: "text" },
       { name: "Email", label: "Email", type: "text" },
       { name: "MobileNo", label: "Mobile No.", type: "text" },
-      { name: "UserType", label: "User Type", type: "select", options: OPTIONS.userTypes },
+      {
+        name: "UserType",
+        label: "User Type",
+        type: "select",
+        options: OPTIONS.userTypes,
+      },
       { name: "IsActive", label: "Active", type: "checkbox" },
     ],
     seed: [
-      { UserID: 1, UserName: "admin", Password: "admin@123", FullName: "System Administrator", Email: "admin@cargonet.com", MobileNo: "9876500000", UserType: "Admin", IsActive: true },
-      { UserID: 2, UserName: "ketan.patel", Password: "ketan@123", FullName: "Ketan Patel", Email: "ketan.patel@cargonet.com", MobileNo: "9876500001", UserType: "Operator", IsActive: true },
-      { UserID: 3, UserName: "suresh.rao", Password: "suresh@123", FullName: "Suresh Rao", Email: "suresh.rao@cargonet.com", MobileNo: "9876500002", UserType: "Operator", IsActive: true },
-      { UserID: 4, UserName: "devuser", Password: "dev@123", FullName: "Dev User", Email: "devuser@cargonet.com", MobileNo: "9876500003", UserType: "Viewer", IsActive: false },
+      {
+        UserID: 1,
+        UserName: "admin",
+        Password: "admin@123",
+        FullName: "System Administrator",
+        Email: "admin@cargonet.com",
+        MobileNo: "9876500000",
+        UserType: "Admin",
+        IsActive: true,
+      },
+      {
+        UserID: 2,
+        UserName: "ketan.patel",
+        Password: "ketan@123",
+        FullName: "Ketan Patel",
+        Email: "ketan.patel@cargonet.com",
+        MobileNo: "9876500001",
+        UserType: "Operator",
+        IsActive: true,
+      },
+      {
+        UserID: 3,
+        UserName: "suresh.rao",
+        Password: "suresh@123",
+        FullName: "Suresh Rao",
+        Email: "suresh.rao@cargonet.com",
+        MobileNo: "9876500002",
+        UserType: "Operator",
+        IsActive: true,
+      },
+      {
+        UserID: 4,
+        UserName: "devuser",
+        Password: "dev@123",
+        FullName: "Dev User",
+        Email: "devuser@cargonet.com",
+        MobileNo: "9876500003",
+        UserType: "Viewer",
+        IsActive: false,
+      },
     ],
   },
 
@@ -527,16 +880,49 @@ const ENTITY_DEFS = {
     idField: "MenuID",
     fields: [
       { name: "MenuName", label: "Menu Name", type: "text" },
-      { name: "ParentMenu", label: "Parent Menu", type: "select", options: OPTIONS.menuGroups },
+      {
+        name: "ParentMenu",
+        label: "Parent Menu",
+        type: "select",
+        options: OPTIONS.menuGroups,
+      },
       { name: "FormName", label: "Form Name", type: "text" },
       { name: "ShowOrder", label: "Show Order", type: "number" },
       { name: "Shortcut", label: "Shortcut", type: "text" },
     ],
     seed: [
-      { MenuID: 1, MenuName: "Booking", ParentMenu: "(Top Level)", FormName: "DMSBooking", ShowOrder: 1, Shortcut: "" },
-      { MenuID: 2, MenuName: "Booking Office", ParentMenu: "Booking", FormName: "DMSBookingOffice", ShowOrder: 1, Shortcut: "" },
-      { MenuID: 3, MenuName: "Trip", ParentMenu: "(Top Level)", FormName: "DMSTrip", ShowOrder: 2, Shortcut: "" },
-      { MenuID: 4, MenuName: "User", ParentMenu: "Security", FormName: "DMSSecurityUser", ShowOrder: 1, Shortcut: "" },
+      {
+        MenuID: 1,
+        MenuName: "Booking",
+        ParentMenu: "(Top Level)",
+        FormName: "DMSBooking",
+        ShowOrder: 1,
+        Shortcut: "",
+      },
+      {
+        MenuID: 2,
+        MenuName: "Booking Office",
+        ParentMenu: "Booking",
+        FormName: "DMSBookingOffice",
+        ShowOrder: 1,
+        Shortcut: "",
+      },
+      {
+        MenuID: 3,
+        MenuName: "Trip",
+        ParentMenu: "(Top Level)",
+        FormName: "DMSTrip",
+        ShowOrder: 2,
+        Shortcut: "",
+      },
+      {
+        MenuID: 4,
+        MenuName: "User",
+        ParentMenu: "Security",
+        FormName: "DMSSecurityUser",
+        ShowOrder: 1,
+        Shortcut: "",
+      },
     ],
   },
 
@@ -550,12 +936,20 @@ const ENTITY_DEFS = {
     ],
     seed: [
       { RightID: 1, RightName: "Add", Description: "Create a new record" },
-      { RightID: 2, RightName: "Edit", Description: "Modify an existing record" },
+      {
+        RightID: 2,
+        RightName: "Edit",
+        Description: "Modify an existing record",
+      },
       { RightID: 3, RightName: "Delete", Description: "Remove a record" },
       { RightID: 4, RightName: "Print", Description: "Print a record/report" },
       { RightID: 5, RightName: "Export", Description: "Export a report" },
       { RightID: 6, RightName: "Cancel", Description: "Cancel/void a record" },
-      { RightID: 7, RightName: "Approve", Description: "Approve a pending record" },
+      {
+        RightID: 7,
+        RightName: "Approve",
+        Description: "Approve a pending record",
+      },
     ],
   },
 
@@ -570,8 +964,20 @@ const ENTITY_DEFS = {
       { name: "AppliedBy", label: "Applied By", type: "text" },
     ],
     seed: [
-      { PatchID: 1, PatchNo: "P-2026-04-001", PatchDate: "01-04-2026", Description: "Booking Office Commission rate fix", AppliedBy: "admin" },
-      { PatchID: 2, PatchNo: "P-2026-04-002", PatchDate: "05-04-2026", Description: "E-Way Bill Part B consolidated support", AppliedBy: "admin" },
+      {
+        PatchID: 1,
+        PatchNo: "P-2026-04-001",
+        PatchDate: "01-04-2026",
+        Description: "Booking Office Commission rate fix",
+        AppliedBy: "admin",
+      },
+      {
+        PatchID: 2,
+        PatchNo: "P-2026-04-002",
+        PatchDate: "05-04-2026",
+        Description: "E-Way Bill Part B consolidated support",
+        AppliedBy: "admin",
+      },
     ],
   },
 
@@ -585,19 +991,77 @@ const ENTITY_DEFS = {
     idField: "LedgerAccountID",
     fields: [
       { name: "AccountName", label: "Account Name", type: "text" },
-      { name: "AccountGroup", label: "Account Group", type: "select", options: OPTIONS.accountGroups },
+      {
+        name: "AccountGroup",
+        label: "Account Group",
+        type: "select",
+        options: OPTIONS.accountGroups,
+      },
       { name: "OpeningBalance", label: "Opening Balance", type: "number" },
-      { name: "OpeningBalanceType", label: "Balance Type", type: "select", options: OPTIONS.balanceTypes },
+      {
+        name: "OpeningBalanceType",
+        label: "Balance Type",
+        type: "select",
+        options: OPTIONS.balanceTypes,
+      },
     ],
     seed: [
-      { LedgerAccountID: 1, AccountName: "Cash Account", AccountGroup: "Cash", OpeningBalance: 25000, OpeningBalanceType: "Debit" },
-      { LedgerAccountID: 2, AccountName: "Bank Account - HDFC", AccountGroup: "Bank", OpeningBalance: 185000, OpeningBalanceType: "Debit" },
-      { LedgerAccountID: 3, AccountName: "Bank Account - SBI", AccountGroup: "Bank", OpeningBalance: 92000, OpeningBalanceType: "Debit" },
-      { LedgerAccountID: 4, AccountName: "Sundry Debtors", AccountGroup: "Sundry Debtor", OpeningBalance: 0, OpeningBalanceType: "Debit" },
-      { LedgerAccountID: 5, AccountName: "Sundry Creditors", AccountGroup: "Sundry Creditor", OpeningBalance: 0, OpeningBalanceType: "Credit" },
-      { LedgerAccountID: 6, AccountName: "Freight Income", AccountGroup: "Income", OpeningBalance: 0, OpeningBalanceType: "Credit" },
-      { LedgerAccountID: 7, AccountName: "Commission Income", AccountGroup: "Income", OpeningBalance: 0, OpeningBalanceType: "Credit" },
-      { LedgerAccountID: 8, AccountName: "Office Expenses", AccountGroup: "Expense", OpeningBalance: 0, OpeningBalanceType: "Debit" },
+      {
+        LedgerAccountID: 1,
+        AccountName: "Cash Account",
+        AccountGroup: "Cash",
+        OpeningBalance: 25000,
+        OpeningBalanceType: "Debit",
+      },
+      {
+        LedgerAccountID: 2,
+        AccountName: "Bank Account - HDFC",
+        AccountGroup: "Bank",
+        OpeningBalance: 185000,
+        OpeningBalanceType: "Debit",
+      },
+      {
+        LedgerAccountID: 3,
+        AccountName: "Bank Account - SBI",
+        AccountGroup: "Bank",
+        OpeningBalance: 92000,
+        OpeningBalanceType: "Debit",
+      },
+      {
+        LedgerAccountID: 4,
+        AccountName: "Sundry Debtors",
+        AccountGroup: "Sundry Debtor",
+        OpeningBalance: 0,
+        OpeningBalanceType: "Debit",
+      },
+      {
+        LedgerAccountID: 5,
+        AccountName: "Sundry Creditors",
+        AccountGroup: "Sundry Creditor",
+        OpeningBalance: 0,
+        OpeningBalanceType: "Credit",
+      },
+      {
+        LedgerAccountID: 6,
+        AccountName: "Freight Income",
+        AccountGroup: "Income",
+        OpeningBalance: 0,
+        OpeningBalanceType: "Credit",
+      },
+      {
+        LedgerAccountID: 7,
+        AccountName: "Commission Income",
+        AccountGroup: "Income",
+        OpeningBalance: 0,
+        OpeningBalanceType: "Credit",
+      },
+      {
+        LedgerAccountID: 8,
+        AccountName: "Office Expenses",
+        AccountGroup: "Expense",
+        OpeningBalance: 0,
+        OpeningBalanceType: "Debit",
+      },
     ],
   },
 
@@ -610,9 +1074,21 @@ const ENTITY_DEFS = {
       { name: "City", label: "City", type: "select", options: OPTIONS.cities },
     ],
     seed: [
-      { CustomerWiseCityID: 1, CustomerName: "Rajsani Polymers", City: "Rajkot-G" },
-      { CustomerWiseCityID: 2, CustomerName: "Varun Casting Co", City: "Chakan" },
-      { CustomerWiseCityID: 3, CustomerName: "Mahindra Heavy Engines Ltd", City: "Vasai" },
+      {
+        CustomerWiseCityID: 1,
+        CustomerName: "Rajsani Polymers",
+        City: "Rajkot-G",
+      },
+      {
+        CustomerWiseCityID: 2,
+        CustomerName: "Varun Casting Co",
+        City: "Chakan",
+      },
+      {
+        CustomerWiseCityID: 3,
+        CustomerName: "Mahindra Heavy Engines Ltd",
+        City: "Vasai",
+      },
     ],
   },
 
@@ -630,12 +1106,24 @@ const ENTITY_DEFS = {
     fields: [
       { name: "VoucherNo", label: "Voucher No.", type: "text" },
       { name: "VoucherDate", label: "Voucher Date", type: "date" },
-      { name: "Account", label: "Account", type: "select", options: OPTIONS.ledgerAccounts },
+      {
+        name: "Account",
+        label: "Account",
+        type: "select",
+        options: OPTIONS.ledgerAccounts,
+      },
       { name: "Amount", label: "Amount", type: "number" },
       { name: "Narration", label: "Narration", type: "text" },
     ],
     seed: [
-      { AccountVoucherID: 1, VoucherNo: "AV-101", VoucherDate: "01-04-2026", Account: "Office Expenses", Amount: 1500, Narration: "Stationery purchase" },
+      {
+        AccountVoucherID: 1,
+        VoucherNo: "AV-101",
+        VoucherDate: "01-04-2026",
+        Account: "Office Expenses",
+        Amount: 1500,
+        Narration: "Stationery purchase",
+      },
     ],
   },
 
@@ -652,7 +1140,14 @@ const ENTITY_DEFS = {
       { name: "Narration", label: "Narration", type: "text" },
     ],
     seed: [
-      { CashPaymentID: 1, VoucherNo: "PV-101", VoucherDate: "01-04-2026", PaidTo: "Eagle Tradelinks Pvt Ltd", Amount: 5000, Narration: "Freight advance" },
+      {
+        CashPaymentID: 1,
+        VoucherNo: "PV-101",
+        VoucherDate: "01-04-2026",
+        PaidTo: "Eagle Tradelinks Pvt Ltd",
+        Amount: 5000,
+        Narration: "Freight advance",
+      },
     ],
   },
 
@@ -669,7 +1164,14 @@ const ENTITY_DEFS = {
       { name: "Narration", label: "Narration", type: "text" },
     ],
     seed: [
-      { CashReceiptID: 1, VoucherNo: "RV-201", VoucherDate: "01-04-2026", ReceivedFrom: "Rajsani Polymers", Amount: 12500, Narration: "SI20260001 collection" },
+      {
+        CashReceiptID: 1,
+        VoucherNo: "RV-201",
+        VoucherDate: "01-04-2026",
+        ReceivedFrom: "Rajsani Polymers",
+        Amount: 12500,
+        Narration: "SI20260001 collection",
+      },
     ],
   },
 
@@ -681,13 +1183,26 @@ const ENTITY_DEFS = {
     fields: [
       { name: "VoucherNo", label: "Voucher No.", type: "text" },
       { name: "VoucherDate", label: "Voucher Date", type: "date" },
-      { name: "BankAccount", label: "Bank Account", type: "select", options: OPTIONS.bankAccounts },
+      {
+        name: "BankAccount",
+        label: "Bank Account",
+        type: "select",
+        options: OPTIONS.bankAccounts,
+      },
       { name: "PaidTo", label: "Paid To", type: "text" },
       { name: "Amount", label: "Amount", type: "number" },
       { name: "Narration", label: "Narration", type: "text" },
     ],
     seed: [
-      { BankPaymentID: 1, VoucherNo: "BP-101", VoucherDate: "02-04-2026", BankAccount: "Bank Account - HDFC", PaidTo: "New Vishal Roadlines", Amount: 18500, Narration: "Vehicle hire settlement" },
+      {
+        BankPaymentID: 1,
+        VoucherNo: "BP-101",
+        VoucherDate: "02-04-2026",
+        BankAccount: "Bank Account - HDFC",
+        PaidTo: "New Vishal Roadlines",
+        Amount: 18500,
+        Narration: "Vehicle hire settlement",
+      },
     ],
   },
 
@@ -699,13 +1214,26 @@ const ENTITY_DEFS = {
     fields: [
       { name: "VoucherNo", label: "Voucher No.", type: "text" },
       { name: "VoucherDate", label: "Voucher Date", type: "date" },
-      { name: "BankAccount", label: "Bank Account", type: "select", options: OPTIONS.bankAccounts },
+      {
+        name: "BankAccount",
+        label: "Bank Account",
+        type: "select",
+        options: OPTIONS.bankAccounts,
+      },
       { name: "ReceivedFrom", label: "Received From", type: "text" },
       { name: "Amount", label: "Amount", type: "number" },
       { name: "Narration", label: "Narration", type: "text" },
     ],
     seed: [
-      { BankReceiptID: 1, VoucherNo: "BR-201", VoucherDate: "02-04-2026", BankAccount: "Bank Account - SBI", ReceivedFrom: "Varun Casting Co", Amount: 8400, Narration: "SI20260002 collection" },
+      {
+        BankReceiptID: 1,
+        VoucherNo: "BR-201",
+        VoucherDate: "02-04-2026",
+        BankAccount: "Bank Account - SBI",
+        ReceivedFrom: "Varun Casting Co",
+        Amount: 8400,
+        Narration: "SI20260002 collection",
+      },
     ],
   },
 
@@ -717,13 +1245,31 @@ const ENTITY_DEFS = {
     fields: [
       { name: "VoucherNo", label: "Voucher No.", type: "text" },
       { name: "VoucherDate", label: "Voucher Date", type: "date" },
-      { name: "FromAccount", label: "From Account", type: "select", options: OPTIONS.ledgerAccounts },
-      { name: "ToAccount", label: "To Account", type: "select", options: OPTIONS.ledgerAccounts },
+      {
+        name: "FromAccount",
+        label: "From Account",
+        type: "select",
+        options: OPTIONS.ledgerAccounts,
+      },
+      {
+        name: "ToAccount",
+        label: "To Account",
+        type: "select",
+        options: OPTIONS.ledgerAccounts,
+      },
       { name: "Amount", label: "Amount", type: "number" },
       { name: "Narration", label: "Narration", type: "text" },
     ],
     seed: [
-      { ContraVoucherID: 1, VoucherNo: "CV-101", VoucherDate: "03-04-2026", FromAccount: "Cash Account", ToAccount: "Bank Account - HDFC", Amount: 20000, Narration: "Cash deposited into bank" },
+      {
+        ContraVoucherID: 1,
+        VoucherNo: "CV-101",
+        VoucherDate: "03-04-2026",
+        FromAccount: "Cash Account",
+        ToAccount: "Bank Account - HDFC",
+        Amount: 20000,
+        Narration: "Cash deposited into bank",
+      },
     ],
   },
 
@@ -735,13 +1281,31 @@ const ENTITY_DEFS = {
     fields: [
       { name: "VoucherNo", label: "Voucher No.", type: "text" },
       { name: "VoucherDate", label: "Voucher Date", type: "date" },
-      { name: "DebitAccount", label: "Debit Account", type: "select", options: OPTIONS.ledgerAccounts },
-      { name: "CreditAccount", label: "Credit Account", type: "select", options: OPTIONS.ledgerAccounts },
+      {
+        name: "DebitAccount",
+        label: "Debit Account",
+        type: "select",
+        options: OPTIONS.ledgerAccounts,
+      },
+      {
+        name: "CreditAccount",
+        label: "Credit Account",
+        type: "select",
+        options: OPTIONS.ledgerAccounts,
+      },
       { name: "Amount", label: "Amount", type: "number" },
       { name: "Narration", label: "Narration", type: "text" },
     ],
     seed: [
-      { JournalVoucherID: 1, VoucherNo: "JV-51", VoucherDate: "03-04-2026", DebitAccount: "Sundry Debtors", CreditAccount: "Freight Income", Amount: 12500, Narration: "SI20260001 booked" },
+      {
+        JournalVoucherID: 1,
+        VoucherNo: "JV-51",
+        VoucherDate: "03-04-2026",
+        DebitAccount: "Sundry Debtors",
+        CreditAccount: "Freight Income",
+        Amount: 12500,
+        Narration: "SI20260001 booked",
+      },
     ],
   },
 };

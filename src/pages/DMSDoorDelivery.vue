@@ -8,7 +8,7 @@
             <div class="total-stat-tile total-stat-tile--inline">
               <q-icon name="local_shipping" size="16px" />
               <div class="total-stat-text">
-                <span class="total-stat-count">{{ rows.length }}</span>
+                <span class="total-stat-count">{{ filteredRows.length }}</span>
                 <span class="total-stat-label">Door Delivery Runs</span>
               </div>
             </div>
@@ -21,7 +21,7 @@
                GET-POST-PUT /api/Delivery/door-delivery. ── -->
           <q-table
             square
-            :rows="rows"
+            :rows="filteredRows"
             :columns="tableColumns"
             row-key="DoorDeliveryID"
             :rows-per-page-options="[15, 25, 50, 100]"
@@ -47,6 +47,74 @@
                     class="bg-dblue-lblue text-white radius-md q-px-sm text-no-wrap"
                     @click="openAdd"
                   />
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    mask="##-##-####"
+                    style="width: 130px"
+                    class="q-mx-sm"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="fromDate" mask="DD-MM-YYYY" color="black">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    mask="##-##-####"
+                    style="width: 130px"
+                    class="q-mx-xs"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" round color="black">
+                        <q-popup-proxy
+                          color="black"
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date v-model="toDate" mask="DD-MM-YYYY" color="black">
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="black"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
 
                   <q-btn
                     unelevated
@@ -137,6 +205,8 @@ export default {
   data() {
     return {
       rows: [],
+      fromDate: "01-04-2026",
+      toDate: "04-04-2026",
       pagination: { page: 1, rowsPerPage: 15 },
       mockData: MOCK_DATA,
 
@@ -185,9 +255,21 @@ export default {
     tableColumns() {
       return this.baseColumns;
     },
+    filteredRows() {
+      const from = this.parseDMDDate(this.fromDate);
+      const to = this.parseDMDDate(this.toDate);
+      if (!from && !to) return this.rows;
+      return this.rows.filter((r) => {
+        const rDate = this.parseDMDDate(r.DoorDeliveryDate);
+        if (!rDate) return true;
+        if (from && rDate < from) return false;
+        if (to && rDate > to) return false;
+        return true;
+      });
+    },
     maxPages() {
       const rows = this.pagination.rowsPerPage || 15;
-      return Math.max(1, Math.ceil(this.rows.length / rows));
+      return Math.max(1, Math.ceil(this.filteredRows.length / rows));
     },
   },
 
@@ -196,6 +278,13 @@ export default {
   },
 
   methods: {
+    parseDMDDate(dateStr) {
+      if (!dateStr) return null;
+      const [d, m, y] = dateStr.split("-").map(Number);
+      if (!d || !m || !y) return null;
+      return new Date(y, m - 1, d);
+    },
+
     handlePageChange(page) {
       this.pagination.page = page;
     },

@@ -65,6 +65,80 @@
                     </q-btn>
                   </div>
 
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="fromDate"
+                    label="From Date"
+                    style="width: 150px"
+                    class="q-mx-xs"
+                    @update:model-value="loadLogs"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="fromDate"
+                            mask="YYYY-MM-DD"
+                            @update:model-value="loadLogs"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
+                  <q-input
+                    square
+                    dense
+                    outlined
+                    bg-color="blue-1"
+                    v-model="toDate"
+                    label="To Date"
+                    style="width: 150px"
+                    class="q-mx-xs"
+                    @update:model-value="loadLogs"
+                  >
+                    <template v-slot:append>
+                      <q-icon name="event" class="cursor-pointer">
+                        <q-popup-proxy
+                          cover
+                          transition-show="scale"
+                          transition-hide="scale"
+                        >
+                          <q-date
+                            v-model="toDate"
+                            mask="YYYY-MM-DD"
+                            @update:model-value="loadLogs"
+                          >
+                            <div class="row items-center justify-end">
+                              <q-btn
+                                v-close-popup
+                                label="Close"
+                                color="primary"
+                                flat
+                              ></q-btn>
+                            </div>
+                          </q-date>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+
                   <q-btn
                     unelevated
                     icon="refresh"
@@ -303,6 +377,8 @@ export default {
       logs: [],
       filteredLogs: [],
       searchText: "",
+      fromDate: this.defaultFromDate(),
+      toDate: this.defaultToDate(),
       pagination: { page: 1, rowsPerPage: 15 },
       expandedMobileCards: [],
 
@@ -348,8 +424,34 @@ export default {
       this.loadLogs();
     },
 
+    defaultFromDate() {
+      return "2026-03-30";
+    },
+
+    defaultToDate() {
+      return "2026-03-31";
+    },
+
+    // BookingDate here is "DD/MM/YYYY" — convert to a lexically-comparable
+    // "YYYY-MM-DD" to compare against fromDate/toDate.
+    parseDMYDate(str) {
+      if (!str) return null;
+      const parts = String(str).split(" ")[0].split("/");
+      if (parts.length !== 3) return null;
+      const [d, m, y] = parts;
+      return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+    },
+
     async loadLogs() {
-      this.filteredLogs = await apiGetDeleteLogs(this.searchText);
+      let result = await apiGetDeleteLogs(this.searchText);
+      result = result.filter((l) => {
+        const bd = this.parseDMYDate(l.BookingDate);
+        if (!bd) return true;
+        if (this.fromDate && bd < this.fromDate) return false;
+        if (this.toDate && bd > this.toDate) return false;
+        return true;
+      });
+      this.filteredLogs = result;
     },
 
     viewLog(row) {

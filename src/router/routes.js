@@ -22,12 +22,16 @@ const routes = [
     path: "/",
     component: () => import("layouts/MainLayout1.vue"),
     children: [
-      { path: "IndexPage", component: () => import("pages/DashboardPage.vue") },
+      // Main dashboard — DMSDashboard.vue (bookings/trips/freight KPIs +
+      // charts, same layout convention as SalesDashboard.vue) replaces the
+      // old DashboardPage.vue here; that file is left in place/routable
+      // elsewhere rather than deleted, in case anything else still links to it.
+      { path: "IndexPage", component: () => import("pages/DMSDashboard.vue") },
       { path: "DMSMenu", component: () => import("pages/DMSMenu.vue") },
       {
         path: "/",
         name: "IndexPage",
-        component: () => import("pages/DashboardPage.vue"),
+        component: () => import("pages/DMSDashboard.vue"),
       },
       {
         path: "UserLogDetails",

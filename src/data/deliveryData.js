@@ -302,12 +302,36 @@ export const MOCK_DATA = {
 };
 
 // ── Pre-Delivery list — mirrors GET /api/Delivery/pre-delivery ────────────
-export function apiGetPreDeliveryList(recordType = "All", search = "", searchField = null) {
+function parseDMDDate(dateStr) {
+  if (!dateStr) return null;
+  const [d, m, y] = dateStr.split("-").map(Number);
+  if (!d || !m || !y) return null;
+  return new Date(y, m - 1, d);
+}
+
+export function apiGetPreDeliveryList(
+  recordType = "All",
+  search = "",
+  searchField = null,
+  fromDate = null,
+  toDate = null
+) {
   return new Promise((resolve) => {
     setTimeout(() => {
       let result = [...MOCK_BOOKINGS];
       if (recordType === "Pending") result = result.filter((b) => !b.DeliveryID);
       else if (recordType === "Delivered") result = result.filter((b) => !!b.DeliveryID);
+      const from = parseDMDDate(fromDate);
+      const to = parseDMDDate(toDate);
+      if (from || to) {
+        result = result.filter((b) => {
+          const bDate = parseDMDDate(b.BookingDate);
+          if (!bDate) return true;
+          if (from && bDate < from) return false;
+          if (to && bDate > to) return false;
+          return true;
+        });
+      }
       if (search) {
         const s = search.toLowerCase();
         result = result.filter((b) => {
@@ -481,6 +505,17 @@ export function apiGetDeliveryRegister(fromDate = "", toDate = "", search = "") 
           NetAmount: booking.NetAmount || 0,
         };
       });
+      const from = parseDMDDate(fromDate);
+      const to = parseDMDDate(toDate);
+      if (from || to) {
+        result = result.filter((d) => {
+          const dDate = parseDMDDate(d.DeliveryDate);
+          if (!dDate) return true;
+          if (from && dDate < from) return false;
+          if (to && dDate > to) return false;
+          return true;
+        });
+      }
       if (search) {
         const s = search.toLowerCase();
         result = result.filter(
