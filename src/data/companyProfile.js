@@ -5,10 +5,13 @@
 // updates every print header at once, same spirit as the reference layout
 // (logo left, business name/address/contact right-aligned).
 import { apiGetMasterList } from "src/data/mastersData.js";
-// Same brand mark used by the app's own sidebar (src/layouts/mainlayout2/
-// Ml2Sidebar.vue): the small round icon + "CargoNet" wordmark + tagline,
-// not the bare 512x512 icon (src/assets/cargonet-logo.png) on its own.
-import cargoNetLogoUrl from "src/assets/logo-round.png";
+// The full "CargoNet" wordmark lockup (icon + name + tagline baked into one
+// image) rather than composing icon + styled text ourselves — besides
+// matching the brand mark used elsewhere in the app more closely, a flat
+// image is also more robust for html2canvas/html2pdf (src/Utils/
+// downloadIframePdf.js's real-PDF export) than multi-element text layout,
+// which was the actual root cause of an earlier print-header rendering bug.
+import cargoNetLogoUrl from "src/assets/logo-2.png";
 
 const FALLBACK_PROFILE = {
   name: "CargoNet Transportation Pvt Ltd",
@@ -67,19 +70,7 @@ export function buildPrintHeaderHtml(logoDataUrl, company) {
   return `<table class="hdr">
   <tr>
     <td class="hdr-logo">
-      <table class="hdr-brand">
-        <tr>
-          ${
-            logoDataUrl
-              ? `<td class="hdr-brand-icon"><img src="${logoDataUrl}" alt="CargoNet" /></td>`
-              : ""
-          }
-          <td class="hdr-brand-text">
-            <div class="hdr-brand-name">CargoNet</div>
-            <div class="hdr-brand-tagline">Web Centric Logistics Software</div>
-          </td>
-        </tr>
-      </table>
+      ${logoDataUrl ? `<img src="${logoDataUrl}" alt="CargoNet" />` : ""}
     </td>
     <td class="hdr-info">
       <div class="hdr-company">${company.name}</div>
@@ -99,13 +90,8 @@ export function buildPrintHeaderHtml(logoDataUrl, company) {
 // of the old centered-text header — shared by every buildXHtml()'s <style>.
 export const PRINT_HEADER_CSS = `
   .hdr{width:100%;border-collapse:collapse;margin-bottom:10px}
-  .hdr-logo{width:230px;vertical-align:middle;padding-right:10px;text-align:left}
-  .hdr-brand{border-collapse:collapse}
-  .hdr-brand-icon{width:46px;padding-right:8px;vertical-align:middle}
-  .hdr-brand-icon img{width:42px;height:42px;display:inline-block}
-  .hdr-brand-text{vertical-align:middle;white-space:nowrap}
-  .hdr-brand-name{font-size:15pt;font-weight:800;color:#173a5e;letter-spacing:.2px}
-  .hdr-brand-tagline{font-size:6.5pt;font-weight:600;font-style:italic;color:#0178bc;letter-spacing:.2px}
+  .hdr-logo{width:190px;vertical-align:middle;padding-right:10px;text-align:left}
+  .hdr-logo img{width:180px;height:auto;display:inline-block}
   .hdr-info{vertical-align:middle;text-align:right}
   .hdr-company{font-size:13pt;font-weight:bold;text-transform:uppercase;color:#0178bc;letter-spacing:.5px}
   .hdr-sub{font-size:8.5pt;color:#0178bc;letter-spacing:.3px;margin:1px 0 2px}

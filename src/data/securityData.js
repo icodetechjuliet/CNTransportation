@@ -49,7 +49,7 @@ const MOCK_USERS = [
 
 // Item lists each assignment type picks from. Menu items mirror the real
 // module groups this app's own sidebar renders (see the "DMS" child-menu
-// header rows in src/IPConfig/mockData.js); Booking Offices/Fin Years mirror
+// header rows in src/data/mockData.js); Booking Offices/Fin Years mirror
 // the Trip/Booking Office modules' own mock option lists.
 const ASSIGNMENT_DEFS = {
   menu: {

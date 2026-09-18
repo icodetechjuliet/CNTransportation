@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import { buildMockChildMenu } from "src/IPConfig/mockData";
+import { buildMockChildMenu } from "src/data/mockData";
 import hindi from "src/data/dmsMenuHindi";
 
 const icons = [

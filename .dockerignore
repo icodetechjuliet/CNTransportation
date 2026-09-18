@@ -1,0 +1,16 @@
+node_modules
+dist
+.quasar
+.git
+.husky
+.vscode
+.claude
+tests
+cypress
+cypress.config.js
+*.log
+npm-debug.log*
+.editorconfig
+.eslintignore
+.eslintrc.js
+README.md

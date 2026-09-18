@@ -48,7 +48,7 @@ const routes = [
       { path: "DMSDoorDeliveryRateForm", component: () => import("pages/DMSDoorDeliveryRateForm.vue"), props: route => ({ params: route.query }) },
       { path: "DMSSaleSIForm", component: () => import("pages/DMSSaleSIForm.vue"), props: route => ({ params: route.query }) },
       { path: "DMSEWayBillPartAForm", component: () => import("pages/DMSEWayBillPartAForm.vue"), props: route => ({ params: route.query }) },
-      // Booking module (sidebar menu built in src/IPConfig/mockData.js's
+      // Booking module (sidebar menu built in src/data/mockData.js's
       // buildMockParentMenu/buildMockChildMenu) — BBooking/Booking/Truck
       // Booking are 3 separate pages now (DMSBBooking.vue / DMSBooking.vue /
       // DMSTruckBooking.vue), each fixed to its own mode with no in-page
@@ -72,7 +72,7 @@ const routes = [
         component: () => import("pages/DMSBBookingView.vue"),
         props: route => ({ params: route.query }),
       },
-      // DMS > Trip submenu (src/IPConfig/mockData.js's buildMockChildMenu
+      // DMS > Trip submenu (src/data/mockData.js's buildMockChildMenu
       // DMS group), menu item names/order matched 1:1 to the legacy
       // EagleParcel WinForms app's own "Trip" menu — all 8 items now have
       // a real built page (see each .vue file's own header comment for
@@ -204,7 +204,7 @@ const routes = [
         path: "DMSEWayBill",
         component: () => import("pages/DMSEWayBill.vue"),
       },
-      // DMS > Trip / Accounting submenus (src/IPConfig/mockData.js's
+      // DMS > Trip / Accounting submenus (src/data/mockData.js's
       // buildMockChildMenu DMS group) don't have built pages yet, so they
       // route to the shared "under construction" placeholder, same as the
       // rest of the not-yet-built Booking menu above.
@@ -287,7 +287,7 @@ const routes = [
         path: "DMSDeliveryRegisterScreenPartyCopy",
         component: () => import("pages/DMSDeliveryRegisterScreenPartyCopy.vue"),
       },
-      // DMS > Account menu (src/IPConfig/mockData.js's "dms-account-*"
+      // DMS > Account menu (src/data/mockData.js's "dms-account-*"
       // group) — voucher entry screens, all rendered through
       // GenericMasterList.vue same as the masters below (see
       // src/data/mastersData.js's accountvoucher/cashpayment/cashreceipt/
@@ -344,7 +344,7 @@ const routes = [
 
       // DMS > Booking Office / Sale / Master / Report Screens / Reports
       // submenus, item names/order matched 1:1 to the legacy EagleParcel
-      // WinForms app's own menus (src/IPConfig/mockData.js's
+      // WinForms app's own menus (src/data/mockData.js's
       // buildMockChildMenu DMS group). Every item routes to a real page:
       // simple entity masters (Vehicle, City, State, ...) and read-only
       // report/register screens are both rendered through one shared

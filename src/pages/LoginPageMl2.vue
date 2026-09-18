@@ -185,7 +185,7 @@ import CustomLoader from "src/pages/loader.vue";
 import {
   MOCK_LOGIN_MODE,
   buildMockLoginResponse,
-} from "src/IPConfig/mockLogin.js";
+} from "src/data/mockLogin.js";
 
 export default {
   mixins: [LoaderMixin],

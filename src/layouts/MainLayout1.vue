@@ -1215,7 +1215,7 @@ import {
   buildMockParentMenu,
   buildMockChildMenu,
   buildMockFinancialYears,
-} from "src/IPConfig/mockData.js";
+} from "src/data/mockData.js";
 
 // Lazy-loaded: MainLayout2's own global <style> block must not be bundled
 // (and its CSS injected) until the user actually switches to it — a static
@@ -1823,7 +1823,7 @@ export default defineComponent({
     },
     // A parent's children can be one level deeper for modules like DMS
     // (Booking/Trip/Accounting sub-menus, each with ~20 of their own
-    // routable items — see src/IPConfig/mockData.js's buildMockChildMenu
+    // routable items — see src/data/mockData.js's buildMockChildMenu
     // DMS group, identified by having its own non-empty `children`).
     // Rendered as a second, independently collapsible dropdown so all of
     // a group's items aren't dumped into the panel at once — see the

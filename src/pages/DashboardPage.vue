@@ -1442,7 +1442,7 @@ import FilterPanel from "src/components/ApplyFiltersComponent.vue";
 import {
   MOCK_LOGIN_MODE,
   buildMockBranchFields,
-} from "src/IPConfig/mockData.js";
+} from "src/data/mockData.js";
 
 Chart.register(...registerables);
 
