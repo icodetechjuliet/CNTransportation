@@ -22,9 +22,9 @@ pipeline {
             description: 'Build number to redeploy without rebuilding. Leave blank for a normal build+deploy.'
         )
         string(
-            name: 'APP_HOST',
-            defaultValue: 'transportation.gocargonet.com',
-            description: 'Ingress hostname to route to this deployment.'
+            name: 'APP_PATH',
+            defaultValue: 'transdemo',
+            description: 'URL path segment this deployment is reached at, under the shared host. e.g. "transdemo" -> http://b2.gocargonet.com/transdemo'
         )
     }
 
@@ -34,6 +34,7 @@ pipeline {
         KUBECONFIG            = credentials('k3s-kubeconfig')        // Secret file
         IMAGE_NAME  = "cargonettransportation"
         NAMESPACE   = "cargonettms"
+        APP_HOST    = "b2.gocargonet.com"
     }
 
     stages {
@@ -77,11 +78,11 @@ pipeline {
 
         stage('Apply Manifests') {
             steps {
-                withEnv(["IMAGE=${env.FULL_IMAGE}", "APP_HOST=${params.APP_HOST}"]) {
+                withEnv(["IMAGE=${env.FULL_IMAGE}", "APP_PATH=${params.APP_PATH}"]) {
                     sh '''
-                        envsubst < k8s/deployment.yaml.tpl | kubectl apply -f -
-                        envsubst < k8s/service.yaml.tpl    | kubectl apply -f -
-                        envsubst < k8s/ingress.yaml.tpl    | kubectl apply -f -
+                        envsubst < k8s/deployment.yaml.tpl   | kubectl apply -f -
+                        envsubst < k8s/service.yaml.tpl      | kubectl apply -f -
+                        envsubst < k8s/ingress-path.yaml.tpl | kubectl apply -f -
                         kubectl rollout status deployment/cargonettransportation -n ${NAMESPACE} --timeout=120s
                     '''
                 }
@@ -98,7 +99,7 @@ pipeline {
 
     post {
         success {
-            echo "Deployed ${env.FULL_IMAGE} to namespace ${NAMESPACE} (host: ${params.APP_HOST})"
+            echo "Deployed ${env.FULL_IMAGE} to namespace ${NAMESPACE} — reachable at http://${env.APP_HOST}/${params.APP_PATH}"
         }
         failure {
             echo "Pipeline failed — check console output above."
