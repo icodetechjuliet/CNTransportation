@@ -11,6 +11,4 @@ cypress.config.js
 *.log
 npm-debug.log*
 .editorconfig
-.eslintignore
-.eslintrc.js
 README.md
