@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cargonettransportation
+  namespace: cargonettms
+  labels:
+    app: cargonettransportation
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cargonettransportation
+  template:
+    metadata:
+      labels:
+        app: cargonettransportation
+    spec:
+      containers:
+        - name: cargonettransportation
+          image: ${IMAGE}
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
