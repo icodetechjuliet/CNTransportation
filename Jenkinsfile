@@ -80,6 +80,7 @@ pipeline {
             steps {
                 withEnv(["IMAGE=${env.FULL_IMAGE}", "APP_PATH=${params.APP_PATH}"]) {
                     sh '''
+                        kubectl get namespace ${NAMESPACE} || kubectl create namespace ${NAMESPACE}
                         envsubst < k8s/deployment.yaml.tpl   | kubectl apply -f -
                         envsubst < k8s/service.yaml.tpl      | kubectl apply -f -
                         envsubst < k8s/ingress-path.yaml.tpl | kubectl apply -f -
