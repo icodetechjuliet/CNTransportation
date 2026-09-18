@@ -1,6 +1,6 @@
 import axios from "axios";
-import CargoNet_API from "/src/IPConfig/config.js";
-import CargoNetAIConfig from "/src/IPConfig/configAI.js";
+import CargoNet_API from "/src/data/config.js";
+import CargoNetAIConfig from "/src/data/configAI.js";
 export const ConnectAImixin = {
   data() {
     return {

@@ -2,6 +2,11 @@
 .thumbs.db
 node_modules
 
+# Local secrets (API keys, etc.) — never commit
+.env
+.env.local
+.env.*.local
+
 # Quasar core related directories
 .quasar
 /dist
@@ -35,18 +40,3 @@ yarn-error.log*
 cypress/screenshots
 cypress/videos
 scratch_screens
-
-# Local API/service credentials (kept out of version control) — every
-# other src/IPConfig/*.js file (mockData.js/mockLogin.js excluded, they're
-# just mock fixtures, not real config) holds live endpoint/API-key config
-# for a specific service integration and must never be committed.
-src/IPConfig/Metabaseconfig.js
-src/IPConfig/config.js
-src/IPConfig/configAI.js
-src/IPConfig/configAmazon.js
-src/IPConfig/configChat.js
-src/IPConfig/configClaude.js
-src/IPConfig/configGeolocatorMap.js
-src/IPConfig/configLogin.js
-src/IPConfig/configReports.js
-src/IPConfig/mongoconfig.js

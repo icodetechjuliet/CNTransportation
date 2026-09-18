@@ -278,102 +278,10 @@ export function buildMockChildMenu(menuCode) {
         MenuDesc: "Booking",
         Modulecode: "DMS",
       },
-      // "Booking View" onward matches the same "Booking" dropdown as above
-      // (see the now-unused "BK" list below), just filled in under DMS
-      // directly — these 13 were previously missing from this group even
-      // though every one of their pages/routes already existed. Link MUST
-      // be "/DMS<Name>" (matching the .vue file under src/pages) — clicking
-      // a DMS menu item doesn't navigate vue-router at all, it opens a tab
-      // via DynamicTab.vue's openTab(), which does its own dynamic
-      // `import("src/pages" + path + ".vue")` off this exact string
-      // (see MainLayout1.vue's handleLinkClick -> openTab). routes.js
-      // happens to register a handful of these same pages under a shorter
-      // path with no "DMS" prefix (e.g. "BookingWeb") — that's a separate,
-      // effectively unused registration; using it here (as an earlier pass
-      // of this fix did) makes the import 404 and openTab falls back to
-      // its errorComponent, which is the "under construction" page.
       {
         id: "dms-booking-bookingview",
-        Link: "/DMSBookingViewReport",
+        Link: "/DMSBBookingView",
         MenuDesc: "Booking View",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-bookingpod",
-        Link: "/DMSBookingPOD",
-        MenuDesc: "Booking POD",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-pendingforbooking",
-        Link: "/DMSPendingForBooking",
-        MenuDesc: "Pending For Booking",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-bookingweb",
-        Link: "/DMSBookingWeb",
-        MenuDesc: "Booking Web",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-cashcredit",
-        Link: "/DMSCashCredit",
-        MenuDesc: "Cash Credit",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-cashcreditdashboard",
-        Link: "/DMSCashCreditDashBoard",
-        MenuDesc: "Cash Credit Dash Board",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-outstandinglist",
-        Link: "/DMSBookingOutstandingList",
-        MenuDesc: "Outstanding List",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-chequeposting",
-        Link: "/DMSBookingChequePosting",
-        MenuDesc: "Booking List  - Cheque Posting",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-bookingemail",
-        Link: "/DMSBookingEmail",
-        MenuDesc: "Booking Email",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-pendingforinvoice",
-        Link: "/DMSBookingPendingForInvoice",
-        MenuDesc: "Booking List - Pending For Invoice",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-bookinglog",
-        Link: "/DMSBookingLog",
-        MenuDesc: "Booking Log",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-bookingdeletelog",
-        Link: "/DMSBookingDeleteLog",
-        MenuDesc: "Booking Delete Log",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-receiptnorenumbering",
-        Link: "/DMSReceiptNoRenumbering",
-        MenuDesc: "Receipt No Renumbering",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-booking-bookingseriestransfer",
-        Link: "/DMSBookingSeriesTransfer",
-        MenuDesc: "Booking Series Transfer",
         Modulecode: "DMS",
       },
 
@@ -496,103 +404,33 @@ export function buildMockChildMenu(menuCode) {
         Modulecode: "DMS",
       },
 
+      // Invoice/Receipt/Ledger are read-only report screens rendered
+      // through the shared GenericReportList.vue component (config in
+      // src/data/reportsData.js), same as the Booking Office/Sale/Report
+      // Screens/Reports groups below.
       {
         id: "dms-accounting-header",
         Link: "#menu-header",
-        MenuDesc: "Account",
-        Modulecode: "DMS",
-      },
-
-      // Item names/order matched 1:1 to the legacy EagleParcel WinForms
-      // app's own "Account" menu (Account Voucher/Cash Payment/Cash
-      // Receipt/Bank Payment/Bank Receipt/Contra Voucher/Journal Voucher/
-      // Parcel Handling Rates/Customer Wise City/Configuration). Every
-      // voucher + Customer Wise City is rendered through
-      // GenericMasterList.vue (config in src/data/mastersData.js), same as
-      // the Booking Office/Sale/Master groups below. "Configuration" is a
-      // nested flyout (same shape as the Master group's own "Tax" entry).
-      {
-        id: "dms-account-voucher",
-        Link: "/DMSAccountVoucher",
-        MenuDesc: "Account Voucher",
-        Modulecode: "DMS",
-      },
-      // EagleParcel LOCRPT/Account/ACC_AccountVoucher/ACC_AccountVoucher_Register
-      // — read-only voucher register (GenericReportList.vue), rendered right
-      // after the Account Voucher master it registers.
-      {
-        id: "dms-account-voucherregister",
-        Link: "/DMSAccountVoucherRegister",
-        MenuDesc: "Account Voucher Register",
+        MenuDesc: "Accounting",
         Modulecode: "DMS",
       },
       {
-        id: "dms-account-cashpayment",
-        Link: "/DMSCashPayment",
-        MenuDesc: "Cash Payment",
+        id: "dms-accounting-invoice",
+        Link: "/DMSAccountingInvoice",
+        MenuDesc: "Invoice",
         Modulecode: "DMS",
       },
       {
-        id: "dms-account-cashreceipt",
-        Link: "/DMSCashReceipt",
-        MenuDesc: "Cash Receipt",
+        id: "dms-accounting-receipt",
+        Link: "/DMSAccountingReceipt",
+        MenuDesc: "Receipt",
         Modulecode: "DMS",
       },
       {
-        id: "dms-account-bankpayment",
-        Link: "/DMSBankPayment",
-        MenuDesc: "Bank Payment",
+        id: "dms-accounting-ledger",
+        Link: "/DMSAccountingLedger",
+        MenuDesc: "Ledger",
         Modulecode: "DMS",
-      },
-      {
-        id: "dms-account-bankreceipt",
-        Link: "/DMSBankReceipt",
-        MenuDesc: "Bank Receipt",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-account-contravoucher",
-        Link: "/DMSContraVoucher",
-        MenuDesc: "Contra Voucher",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-account-journalvoucher",
-        Link: "/DMSJournalVoucher",
-        MenuDesc: "Journal Voucher",
-        Modulecode: "DMS",
-      },
-      // EagleParcel LOCRPT/Account/ACC_JournalTran/ACC_JournalTran_AccountLedger
-      // — running debit/credit/balance ledger for one account
-      // (GenericReportList.vue), placed right after the Journal Voucher
-      // entries that (along with the other vouchers) feed it.
-      {
-        id: "dms-account-ledger",
-        Link: "/DMSAccountLedger",
-        MenuDesc: "Account Ledger",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-account-parcelhandlingrates",
-        Link: "/DMSAccountParcelHandlingCharge",
-        MenuDesc: "Parcel Handling Rates",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-account-customerwisecity",
-        Link: "/DMSCustomerWiseCity",
-        MenuDesc: "Customer Wise City",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-account-configuration",
-        MenuDesc: "Configuration",
-        Modulecode: "DMS",
-        icon: "settings",
-        children: [
-          { id: "dms-account-configuration-ledgeraccount", Link: "/DMSMasterLedgerAccount", MenuDesc: "Ledger / Chart of Accounts", Modulecode: "DMS" },
-          { id: "dms-account-configuration-vouchernumbering", Link: "/DMSMasterVoucher", MenuDesc: "Voucher Numbering", Modulecode: "DMS" },
-        ],
       },
 
       // Item names/order matched 1:1 to the legacy EagleParcel WinForms
@@ -701,12 +539,6 @@ export function buildMockChildMenu(menuCode) {
         id: "dms-sale-siemail",
         Link: "/DMSSaleSIEmail",
         MenuDesc: "SI Email",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-sale-siprint",
-        Link: "/DMSSaleSIPrint",
-        MenuDesc: "SI Print",
         Modulecode: "DMS",
       },
 
@@ -962,33 +794,6 @@ export function buildMockChildMenu(menuCode) {
         MenuDesc: "City Wise Period Wise Collection",
         Modulecode: "DMS",
       },
-      // Added against the legacy EagleParcel RDLC set under
-      // Reports/Booking/BUK_Booking + BUK_BookingM — no equivalent screen
-      // existed here yet.
-      {
-        id: "dms-rs-bookinginwardoutwardregister",
-        Link: "/DMSRSBookingInwardOutwardRegister",
-        MenuDesc: "Booking Inward Outward Register",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-rs-dailycollectionregister",
-        Link: "/DMSRSDailyCollectionRegister",
-        MenuDesc: "Daily Collection Register",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-rs-bookingmpendingfordeliverym",
-        Link: "/DMSRSBookingMPendingForDeliveryM",
-        MenuDesc: "Pending List For Delivery (M)",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-rs-bookingmregister",
-        Link: "/DMSRSBookingMRegister",
-        MenuDesc: "Booking M Register",
-        Modulecode: "DMS",
-      },
 
       // Item names/order matched 1:1 to the legacy EagleParcel WinForms
       // app's own "Reports" menu.
@@ -1008,24 +813,6 @@ export function buildMockChildMenu(menuCode) {
         id: "dms-rpt-doordeliverysummary",
         Link: "/DMSRptDoorDeliverySummary",
         MenuDesc: "Door Delivery Summary",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-rpt-deliverymregister",
-        Link: "/DMSRptDeliveryMRegister",
-        MenuDesc: "Delivery M Register",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-rpt-doordeliverymregister",
-        Link: "/DMSRptDoorDeliveryMRegister",
-        MenuDesc: "Door Delivery M Register",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-rpt-doordeliverydetail",
-        Link: "/DMSRptDoorDeliveryDetail",
-        MenuDesc: "Door Delivery Detail",
         Modulecode: "DMS",
       },
       {
@@ -1092,23 +879,6 @@ export function buildMockChildMenu(menuCode) {
         id: "dms-rpt-bookingdeletelogregister",
         Link: "/DMSRptBookingDeleteLogRegister",
         MenuDesc: "Booking Delete Log Register",
-        Modulecode: "DMS",
-      },
-      // BUK_OtherStateFreightChargePrint(+_FreightDeliveryCharge)/
-      // BUK_OtherStateFreightCharge_SummaryPrint.rdlc — no register/print
-      // screen existed for the Other State Freight Charge voucher yet
-      // (DMSOtherStateFreightCharge.vue / DMSBOOtherStateFreightCharge.vue
-      // are entry-only).
-      {
-        id: "dms-rpt-otherstatefreightchargeregister",
-        Link: "/DMSRptOtherStateFreightChargeRegister",
-        MenuDesc: "Other State Freight Charge Register",
-        Modulecode: "DMS",
-      },
-      {
-        id: "dms-rpt-otherstatefreightchargesummary",
-        Link: "/DMSRptOtherStateFreightChargeSummary",
-        MenuDesc: "Other State Freight Charge Summary",
         Modulecode: "DMS",
       },
 
