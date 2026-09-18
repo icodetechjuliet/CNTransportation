@@ -2,6 +2,11 @@
 .thumbs.db
 node_modules
 
+# Local secrets (API keys, etc.) — never commit
+.env
+.env.local
+.env.*.local
+
 # Quasar core related directories
 .quasar
 /dist

@@ -13,6 +13,14 @@ const ESLintPlugin = require("eslint-webpack-plugin");
 
 const { configure } = require("quasar/wrappers");
 
+// .env.local is gitignored and optional — CI/production set OPENAI_API_KEY
+// directly in the environment instead of via a file.
+try {
+  process.loadEnvFile(path.resolve(__dirname, ".env.local"));
+} catch (err) {
+  // no .env.local present — fall through to whatever is already in process.env
+}
+
 module.exports = configure(function (ctx) {
   return {
     // https://v2.quasar.dev/quasar-cli-webpack/supporting-ts
@@ -48,6 +56,10 @@ module.exports = configure(function (ctx) {
     // Full list of options: https://v2.quasar.dev/quasar-cli-webpack/quasar-config-js#Property%3A-build
     build: {
       vueRouterMode: "hash", // available values: 'hash', 'history'
+
+      env: {
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY || "",
+      },
 
       // MainLayout1.vue (and MainLayout1_don'tuse.vue) have a bare
       // `@import "node_modules/quasar/dist/quasar.sass";` in one of their
